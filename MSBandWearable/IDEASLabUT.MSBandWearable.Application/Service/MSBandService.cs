@@ -1,4 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Domain;
+﻿using IDEASLabUT.MSBandWearable.Application.Model;
 using Microsoft.Band;
 using System;
 using System.Linq;
@@ -20,9 +20,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public static MSBandService Singleton { get; private set; } = null;
 
+
         private MSBandService()
         {
-            // private constructor
+            // private initialization
         }
 
         public BandStatus BandStatus { get; set; } = BandStatus.NO_PAIR_BAND_FOUND;

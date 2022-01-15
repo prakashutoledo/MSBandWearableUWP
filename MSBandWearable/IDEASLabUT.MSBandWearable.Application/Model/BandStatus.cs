@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Domain
+namespace IDEASLabUT.MSBandWearable.Application.Model
 {
     public enum BandStatus
     {

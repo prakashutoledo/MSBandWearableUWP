@@ -116,6 +116,10 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Domain\AccelerometerEvent.cs" />
+    <Compile Include="Domain\BandStatus.cs" />
+    <Compile Include="Domain\BaseEvent.cs" />
+    <Compile Include="Json\ZonedDateTimeOptionalNanoConverter.cs" />
     <Compile Include="MSBandWerableApplication.xaml.cs">
       <DependentUpon>MSBandWerableApplication.xaml</DependentUpon>
     </Compile>
@@ -123,7 +127,9 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModel\Acceleration.cs" />
+    <Compile Include="Service\MSBandService.cs" />
+    <Compile Include="Util\MSBandWearableUtil.cs" />
+    <Compile Include="ViewModel\AccelerationSensor.cs" />
     <Compile Include="ViewModel\BaseModel.cs" />
     <Compile Include="Views\MSBandPage.xaml.cs">
       <DependentUpon>MSBandPage.xaml</DependentUpon>
@@ -164,6 +170,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.13</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

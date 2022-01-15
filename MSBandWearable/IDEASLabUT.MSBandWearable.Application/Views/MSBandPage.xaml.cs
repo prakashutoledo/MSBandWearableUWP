@@ -1,8 +1,13 @@
-﻿using System;
+﻿using IDEASLabUT.MSBandWearable.Application.Model;
+using IDEASLabUT.MSBandWearable.Application.ViewModel;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +27,17 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
     /// </summary>
     public sealed partial class MSBandPage : Page
     {
+        private AccelerometerSensor accelerationSensor = new AccelerometerSensor();
+
         public MSBandPage()
         {
             InitializeComponent();
+            accelerationSensor.SensorValueChanged += AccelerometerSensorValueChanged;
+        }
+
+        public async void AccelerometerSensorValueChanged(AccelerometerEvent accelerometerEvent)
+        {
+
         }
     }
 }

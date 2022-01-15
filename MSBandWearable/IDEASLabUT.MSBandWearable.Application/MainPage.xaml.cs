@@ -1,5 +1,7 @@
-﻿using System;
+﻿using IDEASLabUT.MSBandWearable.Application.Domain;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,6 +27,17 @@ namespace IDEASLabUT.MSBandWearable.Application
         public MainPage()
         {
             this.InitializeComponent();
+            AccelerometerEvent sensor = new AccelerometerEvent
+            {
+                AccelerationX = 1.4,
+                AccelerationY = 1.5,
+                AccelerationZ = 2.6,
+                AcquiredTime = DateTime.Now,
+                ActualTime = DateTime.Now,
+                FromView = "Test View",
+                SubjectId = "Test Subject"
+            };
+            Debug.WriteLine(sensor.ToString());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Views;
 using System;
+using System.Diagnostics;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;

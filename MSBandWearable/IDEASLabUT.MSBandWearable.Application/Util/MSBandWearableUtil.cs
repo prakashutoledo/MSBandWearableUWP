@@ -7,7 +7,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
 {
     public class MSBandWearableUtil
     {
-        public async Task RunLaterInUIThread(Action action = null, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
+        public static async Task RunLaterInUIThread(Action action = null, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
         {
             if (action == null)
             {
