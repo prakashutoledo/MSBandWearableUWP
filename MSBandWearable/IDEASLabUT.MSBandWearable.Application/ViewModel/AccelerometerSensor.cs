@@ -10,6 +10,41 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class AccelerometerSensor : BaseSensorModel<AccelerometerEvent>
     {
         public event SensorValueChangedHandler SensorValueChanged;
+        public AccelerometerSensor() : base(new AccelerometerEvent())
+        {
+            
+        }
+
+        public double AccelerationX
+        {
+            get => Model.AccelerationX;
+            set
+            {
+                Model.AccelerationX = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public double AccelerationY
+        {
+            get => Model.AccelerationY;
+            set
+            {
+                Model.AccelerationY = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public double AccelerationZ
+        {
+            get => Model.AccelerationZ;
+            set
+            {
+                Model.AccelerationZ = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// A task that can subscribe accelerometer sensor from Microsoft Band 2
         /// </summary>
@@ -17,7 +52,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            MSBandService.Singleton.BandClient.SensorManager.Accelerometer.ReadingChanged += AccelerometerRedingChanged;
+            MSBandService.Singleton.BandClient.SensorManager.Accelerometer.ReadingChanged += AccelerometerReadingChanged;
         }
 
         /// <summary>
@@ -25,19 +60,15 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// </summary>
         /// <param name="sender">A sender of the current changed event</param>
         /// <param name="readingEventArgs">A accelerometer reading event Argument</param>
-        private async void AccelerometerRedingChanged(object sender, BandSensorReadingEventArgs<IBandAccelerometerReading> readingEventArgs)
+        private async void AccelerometerReadingChanged(object sender, BandSensorReadingEventArgs<IBandAccelerometerReading> readingEventArgs)
         {
             IBandAccelerometerReading accelerometerReading = readingEventArgs.SensorReading;
             await RunLaterInUIThread(() =>
             {
-                AccelerometerEvent accelerometerEvent = new AccelerometerEvent
-                {
-                    AccelerationX = accelerometerReading.AccelerationX,
-                    AccelerationY = accelerometerReading.AccelerationY,
-                    AccelerationZ = accelerometerReading.AccelerationZ
-                };
-                Data = accelerometerEvent;
-                SensorValueChanged?.Invoke(accelerometerEvent);
+                AccelerationX = accelerometerReading.AccelerationX;
+                AccelerationY = accelerometerReading.AccelerationY;
+                AccelerationZ = accelerometerReading.AccelerationZ;
+                SensorValueChanged?.Invoke(Model);
             });
         }
     }

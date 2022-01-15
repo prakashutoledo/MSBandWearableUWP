@@ -5,6 +5,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
     public class BaseSensorModel<T> : BaseModel where T : BaseEvent
     {
+        public BaseSensorModel(T model) => Model = model;
+
         /// <summary>
         /// An asynchronous task delegate for notifying listener that value has been changed.
         /// </summary>
@@ -12,12 +14,12 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <returns></returns>
         public delegate void SensorValueChangedHandler(T value);
 
-        private T data;
-        public T Data
+        private T model;
+        protected T Model
         {
-            get => data;
+            get => model;
             // Notifies changes for all the property
-            set => UpdateAndNotify(ref data, value, string.Empty);
+            set => UpdateAndNotify(ref model, value, string.Empty);
         }
 
         /// <summary>

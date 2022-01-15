@@ -37,7 +37,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         public async void AccelerometerSensorValueChanged(AccelerometerEvent accelerometerEvent)
         {
-
+            await Task.Delay(1);
         }
     }
 }

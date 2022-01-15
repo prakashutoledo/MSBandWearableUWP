@@ -1,4 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Domain;
+﻿using IDEASLabUT.MSBandWearable.Application.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
