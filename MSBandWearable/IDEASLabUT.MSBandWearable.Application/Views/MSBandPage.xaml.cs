@@ -1,21 +1,9 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
+using IDEASLabUT.MSBandWearable.Application.Service;
 using IDEASLabUT.MSBandWearable.Application.ViewModel;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
@@ -27,17 +15,26 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
     /// </summary>
     public sealed partial class MSBandPage : Page
     {
-        private AccelerometerSensor accelerationSensor = new AccelerometerSensor();
+        private MSBandService Service { get; } = MSBandService.Singleton;
+        private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
 
         public MSBandPage()
         {
             InitializeComponent();
-            accelerationSensor.SensorValueChanged += AccelerometerSensorValueChanged;
+            Service.Accelerometer.SensorValueChanged += AccelerometerSensorValueChanged;
         }
 
-        public async void AccelerometerSensorValueChanged(AccelerometerEvent accelerometerEvent)
+        protected async override void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
-            await Task.Delay(1);
+            await Service.ConnectBand();
+            await Service.SubscribeSensors();
+            base.OnNavigatedTo(navigationEventArgs);
+        }
+
+        public async Task AccelerometerSensorValueChanged(AccelerometerEvent accelerometerEvent)
+        {
+            Debug.WriteLine(accelerometerEvent.ToString());
+            await Task.CompletedTask;
         }
     }
 }

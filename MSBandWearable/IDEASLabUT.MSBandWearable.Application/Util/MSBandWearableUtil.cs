@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 
 namespace IDEASLabUT.MSBandWearable.Application.Util
 {
-    public class MSBandWearableUtil
+    public sealed class MSBandWearableUtil
     {
         public static async Task RunLaterInUIThread(Action action = null, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
         {
@@ -24,6 +25,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
             {
                 await coreDispatcher.RunAsync(coreDispatcherPriority, new DispatchedHandler(action)).AsTask().ConfigureAwait(false);
             }
+        }
+
+        private MSBandWearableUtil()
+        {
+            // private initialization
         }
     }
 }

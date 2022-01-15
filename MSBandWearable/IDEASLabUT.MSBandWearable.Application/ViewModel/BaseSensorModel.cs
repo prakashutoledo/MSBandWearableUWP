@@ -3,6 +3,12 @@ using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
+    /// <summary>
+    /// Provides a sensor manager basis for all available Microsoft Band 2 sensors. If the sensor is
+    /// subscribed, this will provides a handler base of sensor value changed. This will also notifies 
+    /// to all the listeners for as model value changes
+    /// </summary>
+    /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
     public class BaseSensorModel<T> : BaseModel where T : BaseEvent
     {
         public BaseSensorModel(T model) => Model = model;
@@ -10,16 +16,16 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <summary>
         /// An asynchronous task delegate for notifying listener that value has been changed.
         /// </summary>
-        /// <param name="value">An underlying value that has been changed</param>
-        /// <returns></returns>
-        public delegate void SensorValueChangedHandler(T value);
+        /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
+        /// <returns>A task that can be complete or can be handled later</returns>
+        public delegate Task SensorValueChangedHandler(T value);
 
         private T model;
-        protected T Model
+        public T Model
         {
             get => model;
             // Notifies changes for all the property
-            set => UpdateAndNotify(ref model, value, string.Empty);
+            protected set => UpdateAndNotify(ref model, value);
         }
 
         /// <summary>

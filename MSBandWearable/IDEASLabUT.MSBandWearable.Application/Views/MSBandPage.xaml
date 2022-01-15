@@ -9,6 +9,16 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <StackPanel x:Name="syncStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Accelerometer.Model.AccelerationX, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Gsr.Model.Gsr, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Gyroscope.Model.AngularX, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.HeartRate.Model.Bpm, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.HeartRate.MinBpm, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.HeartRate.MaxBpm, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Temperature.Model.Temperature, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.CurrentView, Mode=OneWay}"></TextBlock>
+            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.SubjectId, Mode=OneWay}"></TextBlock>
+        </StackPanel>
     </Grid>
 </Page>

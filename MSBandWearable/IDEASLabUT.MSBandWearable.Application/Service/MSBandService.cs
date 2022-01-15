@@ -1,4 +1,5 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
+using IDEASLabUT.MSBandWearable.Application.ViewModel;
 using Microsoft.Band;
 using System;
 using System.Linq;
@@ -10,16 +11,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     public class MSBandService
     {
-        static MSBandService()
-        {
-            if (Singleton == null)
-            {
-                Singleton = new MSBandService();
-            }
-        }
+        private static readonly Lazy<MSBandService> Instance = new Lazy<MSBandService>(() => new MSBandService());
 
-        public static MSBandService Singleton { get; private set; } = null;
-
+        // Lazy singleton pattern
+        public static MSBandService Singleton => Instance.Value;
 
         private MSBandService()
         {
@@ -28,6 +23,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public BandStatus BandStatus { get; set; } = BandStatus.NO_PAIR_BAND_FOUND;
         public IBandClient BandClient { get; private set; }
+        public AccelerometerSensor Accelerometer { get; } = new AccelerometerSensor();
+        public GSRSensor Gsr { get; } = new GSRSensor();
+        public GyroscopeSensor Gyroscope { get; } = new GyroscopeSensor();
+        public HeartRateSensor HeartRate { get; } = new HeartRateSensor();
+        public TemperatureSensor Temperature { get; } = new TemperatureSensor();
 
         public async Task ConnectBand()
         {
@@ -37,21 +37,30 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 BandClient = await BandClientManager.Instance.ConnectAsync(pairedBands[0]).ConfigureAwait(false);
                 BandStatus = BandStatus.SYNCED_SUSCRIBING;
             }
-            catch(BandAccessDeniedException)
+            catch (BandAccessDeniedException)
             {
                 BandStatus = BandStatus.NO_SYNC_PERMISSION;
                 throw;
             }
-            catch(BandIOException)
+            catch (BandIOException)
             {
                 BandStatus = BandStatus.BAND_IO_EXCEPTION;
                 throw;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 BandStatus = BandStatus.SYNC_ERROR;
                 throw;
             }
+        }
+
+        public async Task SubscribeSensors()
+        {
+            await Accelerometer.Subscribe();
+            await Gsr.Subscribe();
+            await Gyroscope.Subscribe();
+            await HeartRate.Subscribe();
+            await Temperature.Subscribe();
         }
 
         public async Task<IOrderedEnumerable<string>> GetPairedBands()
