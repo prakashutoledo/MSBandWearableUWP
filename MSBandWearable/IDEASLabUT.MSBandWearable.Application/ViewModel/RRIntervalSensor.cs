@@ -34,18 +34,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
             await base.Subscribe().ConfigureAwait(false);
             IBandSensor<IBandRRIntervalReading> ibi = MSBandService.Singleton.BandClient.SensorManager.RRInterval;
-            bool requestIBIUserConsent = false;
 
-            if (ibi.GetCurrentUserConsent() == UserConsent.Granted)
-            {
-                requestIBIUserConsent = true;
-            }
-            else
-            {
-                requestIBIUserConsent = await ibi.RequestUserConsentAsync();
-            }
-
-            if (!requestIBIUserConsent)
+            bool userConsent = UserConsent.Granted == ibi.GetCurrentUserConsent() || await ibi.RequestUserConsentAsync().ConfigureAwait(false);
+            if (!userConsent)
             {
                 return;
             }
@@ -63,8 +54,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 Ibi = rrIntervalReading.Interval,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = rrIntervalReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView.Value,
-                SubjectId = subjectViewService.SubjectId.Value
+                FromView = subjectViewService.CurrentView,
+                SubjectId = subjectViewService.SubjectId
             };
 
             await RunLaterInUIThread(() => Ibi = ibiEvent.Ibi).ConfigureAwait(false);
@@ -75,7 +66,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
 
 
-            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            if (SubjectViewService.Singleton.IsSessionInProgress)
             {
 
             }

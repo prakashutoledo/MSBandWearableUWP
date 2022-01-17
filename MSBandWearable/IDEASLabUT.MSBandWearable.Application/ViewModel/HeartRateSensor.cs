@@ -20,14 +20,14 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
         }
 
-        private double maxBpm;
+        private double maxBpm = 0;
         public double MaxBpm
         {
             get => maxBpm;
             set => UpdateAndNotify(ref maxBpm, value);
         }
 
-        public double minBpm;
+        public double minBpm = 220;
         public double MinBpm
         {
             get => minBpm;
@@ -50,8 +50,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             set => UpdateAndNotify(ref heartRateStatus, value);
         }
 
-        private bool IsFirstBpmValue { get; set; } = true;
-
         /// <summary>
         /// A task that can subscribe heart rate sensor from Microsoft Band 2
         /// </summary>
@@ -60,23 +58,12 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
             await base.Subscribe().ConfigureAwait(false);
             IBandSensor<IBandHeartRateReading> heartRate = MSBandService.Singleton.BandClient.SensorManager.HeartRate;
-            bool requestHeartRateUserConsent = false;
-
-            if (heartRate.GetCurrentUserConsent() == UserConsent.Granted)
-            {
-                requestHeartRateUserConsent = true;
-            }
-            else
-            {
-                requestHeartRateUserConsent = await heartRate.RequestUserConsentAsync();
-            }
-
-            if (!requestHeartRateUserConsent)
+            bool userConsent = UserConsent.Granted == heartRate.GetCurrentUserConsent() || await heartRate.RequestUserConsentAsync().ConfigureAwait(false);
+            if (!userConsent)
             {
                 return;
             }
            
-
             heartRate.ReadingChanged += HeartRateReadingChanged;
             _ = await heartRate.StartReadingsAsync().ConfigureAwait(false);
         }
@@ -96,8 +83,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 Bpm = heartRateReading.HeartRate,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = heartRateReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView.Value,
-                SubjectId = subjectViewService.SubjectId.Value
+                FromView = subjectViewService.CurrentView,
+                SubjectId = subjectViewService.SubjectId
             };
 
             await RunLaterInUIThread(UpdateHeartRateValue, heartRateEvent).ConfigureAwait(false);
@@ -109,7 +96,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
 
 
-            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            if (SubjectViewService.Singleton.IsSessionInProgress)
             {
 
             }
@@ -118,14 +105,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         private void UpdateHeartRateValue(HeartRateEvent heartRateEvent)
         {
             Bpm = heartRateEvent.Bpm;
-
-            if (IsFirstBpmValue)
-            {
-                MaxBpm = heartRateEvent.Bpm;
-                MinBpm = heartRateEvent.Bpm;
-                IsFirstBpmValue = false;
-                return;
-            }
 
             if (heartRateEvent.Bpm > MaxBpm)
             {

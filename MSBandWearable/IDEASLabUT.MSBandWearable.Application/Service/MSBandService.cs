@@ -1,7 +1,7 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.ViewModel;
 using Microsoft.Band;
-using Microsoft.Band.Personalization;
+using Microsoft.Band.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +68,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             await HeartRate.Subscribe().ConfigureAwait(false);
             await RRInterval.Subscribe().ConfigureAwait(false);
             await Temperature.Subscribe().ConfigureAwait(false);
-            await BandClient.NotificationManager.VibrateAsync(Microsoft.Band.Notifications.VibrationType.NotificationOneTone).ConfigureAwait(false);
+            await BandClient.NotificationManager.VibrateAsync(VibrationType.NotificationOneTone).ConfigureAwait(false);
             BandStatus = BandStatus.SYNCED;
         }
 

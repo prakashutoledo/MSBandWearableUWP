@@ -209,14 +209,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             string label = "Pause Session";
             bool sessionInProgress = true;
 
-            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            if (SubjectViewService.Singleton.IsSessionInProgress)
             {
                 symbolIcon = new SymbolIcon(Symbol.Play);
                 label = "Resume Session";
                 sessionInProgress = false;
             }
 
-            SubjectViewService.Singleton.IsSessionInProgress.Value = sessionInProgress;
+            SubjectViewService.Singleton.IsSessionInProgress = sessionInProgress;
             await RunLaterInUIThread(() =>
             {
                 startOrStopSessionButtton.Icon = symbolIcon;

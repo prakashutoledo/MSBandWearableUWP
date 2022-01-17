@@ -24,7 +24,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public T Model
         {
             get => model;
-            // Notifies changes for all the property
             protected set => UpdateAndNotify(ref model, value);
         }
 
@@ -33,9 +32,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// Currently, it will just returns the task that is already completed
         /// </summary>
         /// <returns>A completed subscribing task</returns>
-        public virtual Task Subscribe()
+        public virtual async Task Subscribe()
         {
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
     }
 }

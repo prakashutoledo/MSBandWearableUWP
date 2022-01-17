@@ -10,12 +10,36 @@ namespace IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch
 {
     public class ElasticsearchBatchEventFormatter : BatchFormatter
     {
-        private const char EscapeChar = '\\';
+        private const char StringSplitChar = '\\';
 
         public ElasticsearchBatchEventFormatter(long? eventBodyLimitBytes = 256 * KB) : base(eventBodyLimitBytes)
         {
         }
 
+        /// <summary>
+        /// Formats the given enumeration of log events to an Elasticsearch bulk request json request data and gets
+        /// written into given output text writer. Each events are in the format of 
+        /// <code>
+        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
+        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
+        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
+        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
+        /// </code>
+        /// This gets formatted by splitting string for character `\` to create two json strings as shown below 
+        /// <code>
+        /// {"index" : {"_index" : "test"}}
+        /// {"accelerometerX"}
+        /// {"index" : {"_index" : "test"}}
+        /// {"accelerometerX"}
+        /// {"index" : {"_index" : "test"}}
+        /// {"accelerometerX"}
+        /// {"index" : {"_index" : "test"}}
+        /// {"accelerometerX"}
+        /// </code>
+        /// <see href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html"/>
+        /// </summary>
+        /// <param name="logEvents"></param>
+        /// <param name="output"></param>
         public override void Format(IEnumerable<string> logEvents, TextWriter output)
         {
             if (logEvents == null)
@@ -40,7 +64,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch
                     continue;
                 }
 
-                IEnumerable<string> logs = logEvent.Split(EscapeChar)
+                IEnumerable<string> logs = logEvent.Split(StringSplitChar)
                     .Where(log => !string.IsNullOrWhiteSpace(log))
                     .Select(log => log.Trim());
 

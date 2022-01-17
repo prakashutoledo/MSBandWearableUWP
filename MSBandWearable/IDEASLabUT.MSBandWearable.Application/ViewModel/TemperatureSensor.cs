@@ -46,8 +46,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 Temperature = temperatureReading.Temperature,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = temperatureReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView.Value,
-                SubjectId = subjectViewService.SubjectId.Value
+                FromView = subjectViewService.CurrentView,
+                SubjectId = subjectViewService.SubjectId
             };
 
             await RunLaterInUIThread(() => Temperature = temperatureEvent.Temperature);
@@ -57,7 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 await SensorValueChanged.Invoke(temperatureEvent).ConfigureAwait(false);
             }
 
-            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            if (SubjectViewService.Singleton.IsSessionInProgress)
             {
 
             }

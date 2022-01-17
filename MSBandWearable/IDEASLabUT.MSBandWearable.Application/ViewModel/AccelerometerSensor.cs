@@ -73,8 +73,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 AccelerationZ = accelerometerReading.AccelerationZ,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = accelerometerReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView.Value,
-                SubjectId = subjectViewService.SubjectId.Value
+                FromView = subjectViewService.CurrentView,
+                SubjectId = subjectViewService.SubjectId
             };
 
             await RunLaterInUIThread(() => { AccelerationX = accelerometerEvent.AccelerationX; AccelerationY = accelerometerEvent.AccelerationY; AccelerationZ = accelerometerEvent.AccelerationZ; }).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 await SensorValueChanged.Invoke(accelerometerEvent).ConfigureAwait(false);
             }
 
-            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            if (SubjectViewService.Singleton.IsSessionInProgress)
             {
 
             }

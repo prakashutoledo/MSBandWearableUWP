@@ -76,8 +76,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 AngularZ = gyroscopeReading.AccelerationZ,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = gyroscopeReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView.Value,
-                SubjectId = subjectViewService.SubjectId.Value
+                FromView = subjectViewService.CurrentView,
+                SubjectId = subjectViewService.SubjectId
             };
 
             await RunLaterInUIThread(() => { AngularX = gyroscopeEvent.AngularX; AngularY = gyroscopeEvent.AngularY; AngularZ = gyroscopeEvent.AngularZ; }).ConfigureAwait(false);
@@ -88,7 +88,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
 
 
-            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            if (SubjectViewService.Singleton.IsSessionInProgress)
             {
 
             }

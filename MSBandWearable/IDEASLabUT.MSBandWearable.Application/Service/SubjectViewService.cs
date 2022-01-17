@@ -6,18 +6,34 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
     public class SubjectViewService
     {
         private static readonly Lazy<SubjectViewService> Instance = new Lazy<SubjectViewService>(() => new SubjectViewService());
+        private static string subjectId = "Not Available";
+        private static string currentView = "Not Available";
+        private static object sessionInProgress = false;
 
         // Lazy singleton pattern
         public static SubjectViewService Singleton => Instance.Value;
+
         private SubjectViewService()
         {
             // private initialization
         }
 
-        public ThreadLocal<string> SubjectId { get; } = new ThreadLocal<string>(() => "Not Available");
+        public string SubjectId 
+        {
+            get => subjectId;
+            set => Interlocked.Exchange(ref subjectId, value);
+        }
 
-        public ThreadLocal<string> CurrentView { get; } = new ThreadLocal<string>(() => "Not Available");
+        public string CurrentView
+        {
+            get => currentView;
+            set => Interlocked.Exchange(ref currentView, value);
+        }
 
-        public ThreadLocal<bool> IsSessionInProgress { get; } = new ThreadLocal<bool>(() => false);
+        public bool IsSessionInProgress
+        {
+            get => (bool) sessionInProgress;
+            set => Interlocked.Exchange(ref sessionInProgress, value);
+        }
     }
 }
