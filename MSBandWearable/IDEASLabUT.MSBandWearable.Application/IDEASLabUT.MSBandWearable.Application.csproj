@@ -117,9 +117,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Converter\GsrToStringConverter.cs" />
-    <Compile Include="Control\LineGraphCanvas.xaml.cs">
-      <DependentUpon>LineGraphCanvas.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converter\HeartRateToStringConverter.cs" />
     <Compile Include="Converter\LineGraphLabelConverter.cs" />
     <Compile Include="Converter\TemperatureToStringConverter.cs" />
@@ -177,10 +174,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Control\LineGraphCanvas.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Style\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

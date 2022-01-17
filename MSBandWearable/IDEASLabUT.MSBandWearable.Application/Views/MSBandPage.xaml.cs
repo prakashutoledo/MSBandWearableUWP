@@ -28,7 +28,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 {
     public class MeasureModel
     {
-        public double DateTime { get; set; }
+        public long DateTime { get; set; }
         public double Value { get; set; }
     }
 
@@ -61,11 +61,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private void AddLiveCharts()
         {
-            var mapper = Mappers.Xy<MeasureModel>()
-                .X(model => model.DateTime)   //use DateTime.Ticks as X
-                .Y(model => model.Value);           //use the value property as Y
+            CartesianMapper<MeasureModel> mapper = Mappers.Xy<MeasureModel>()
+                .X(model => model.DateTime)
+                .Y(model => model.Value);
 
-            //lets save the mapper globally.
             Charting.For<MeasureModel>(mapper);
 
             Timer = new DispatcherTimer
@@ -73,9 +72,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 Interval = TimeSpan.FromSeconds(1)
             };
             Timer.Tick += TimerOnTick;
-            //DataContext = this;
-            GsrChart.AxisX[0].ShowLabels = false;
-            IbiChart.AxisX[0].ShowLabels = false;
         }
 
         private async void TimerOnTick(object sender, object eventArgs)
@@ -102,7 +98,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 IbiDataPoint.Add(new MeasureModel
                 {
                     DateTime = DateTime.Now.Ticks,
-                    Value = 1 / value.Ibi
+                    Value = value.Ibi
                 });
 
                 if (IbiDataPoint.Count > 20)
@@ -116,28 +112,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             await RunLaterInUIThread(() =>
             {
-                /*GsrDataPoint.Add(new MeasureModel
-                {
-                    DateTime = DateTime.Now.Ticks,
-                    Value = 1 / value.Gsr
-                });
-
-               
-
-                if (GsrDataPoint.Count > 30)
-                {
-                    GsrDataPoint.RemoveAt(0);
-                }*/
                 gsrValue = 1 / value.Gsr;
             });
-        }
-
-        private void AddLineGraphDetails()
-        {
-            //gsrLineGraphCanvas.Label = "GSR";
-            //gsrLineGraphCanvas.AddLineGraph(30, "gsr", new SolidColorBrush(Blue));
-            //ibiLineGraphCanvas.Label = "IBI";
-            //ibiLineGraphCanvas.AddLineGraph(30, "ibi", new SolidColorBrush(BlueViolet));
         }
 
         private async Task HeartRateSensorValueChanged(HeartRateEvent value)
