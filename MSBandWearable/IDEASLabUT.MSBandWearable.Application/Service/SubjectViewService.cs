@@ -17,5 +17,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public ThreadLocal<string> SubjectId { get; } = new ThreadLocal<string>(() => "Not Available");
 
         public ThreadLocal<string> CurrentView { get; } = new ThreadLocal<string>(() => "Not Available");
+
+        public ThreadLocal<bool> IsSessionInProgress { get; } = new ThreadLocal<bool>(() => false);
     }
 }

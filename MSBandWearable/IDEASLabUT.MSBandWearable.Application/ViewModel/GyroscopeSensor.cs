@@ -79,16 +79,17 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 SubjectId = subjectViewService.SubjectId.Value
             };
 
-            await RunLaterInUIThread(() =>
-            {
-                AngularX = gyroscopeEvent.AngularX;
-                AngularY = gyroscopeEvent.AngularY;
-                AngularZ = gyroscopeEvent.AngularZ;
-            });
+            await RunLaterInUIThread(() => { AngularX = gyroscopeEvent.AngularX; AngularY = gyroscopeEvent.AngularY; AngularZ = gyroscopeEvent.AngularZ; }).ConfigureAwait(false);
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(gyroscopeEvent);
+                await SensorValueChanged.Invoke(gyroscopeEvent).ConfigureAwait(false);
+            }
+
+
+            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            {
+
             }
         }
     }

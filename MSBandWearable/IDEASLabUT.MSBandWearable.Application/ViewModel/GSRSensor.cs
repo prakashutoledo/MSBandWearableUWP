@@ -5,6 +5,7 @@ using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -33,8 +34,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
             await base.Subscribe().ConfigureAwait(false);
             var gsr = MSBandService.Singleton.BandClient.SensorManager.Gsr;
+            gsr.ReportingInterval = TimeSpan.FromMilliseconds(5000);
             gsr.ReadingChanged += GsrReadingChanged;
-            _ = await gsr.StartReadingsAsync().ConfigureAwait(false);
+            _ = await gsr.StartReadingsAsync();
         }
 
         private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)
@@ -50,11 +52,11 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 SubjectId = subjectViewService.SubjectId.Value
             };
 
-            await RunLaterInUIThread(() => Gsr = gsrEvent.Gsr);
+            await RunLaterInUIThread(() => Gsr = gsrEvent.Gsr).ConfigureAwait(false);
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(gsrEvent);
+                await SensorValueChanged.Invoke(gsrEvent).ConfigureAwait(false);
             }
         }
     }

@@ -54,7 +54,12 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(temperatureEvent);
+                await SensorValueChanged.Invoke(temperatureEvent).ConfigureAwait(false);
+            }
+
+            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            {
+
             }
         }
     }

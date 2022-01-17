@@ -53,6 +53,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
             await base.Subscribe().ConfigureAwait(false);
             IBandSensor<IBandAccelerometerReading> accelerometer = MSBandService.Singleton.BandClient.SensorManager.Accelerometer;
+            //accelerometer.ReportingInterval = TimeSpan.FromMilliseconds(16.0);
             accelerometer.ReadingChanged += AccelerometerReadingChanged;
             _ = await accelerometer.StartReadingsAsync().ConfigureAwait(false);
         }
@@ -77,17 +78,16 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 SubjectId = subjectViewService.SubjectId.Value
             };
 
-            await RunLaterInUIThread(() =>
-            {
-                AccelerationX = accelerometerEvent.AccelerationX;
-                AccelerationY = accelerometerEvent.AccelerationY;
-                AccelerationZ = accelerometerEvent.AccelerationZ;
-            });
-
+            await RunLaterInUIThread(() => { AccelerationX = accelerometerEvent.AccelerationX; AccelerationY = accelerometerEvent.AccelerationY; AccelerationZ = accelerometerEvent.AccelerationZ; }).ConfigureAwait(false);
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(accelerometerEvent);
+                await SensorValueChanged.Invoke(accelerometerEvent).ConfigureAwait(false);
+            }
+
+            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            {
+
             }
         }
     }

@@ -2,23 +2,240 @@
     x:Class="IDEASLabUT.MSBandWearable.Application.Views.MSBandPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:IDEASLabUT.MSBandWearable.Application.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:converter="using:IDEASLabUT.MSBandWearable.Application.Converter"
+    xmlns:control="using:IDEASLabUT.MSBandWearable.Application.Control"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lvc="using:LiveCharts.Uwp"
+    Loaded="PageLoaded" 
+    Unloaded="PageUnloaded"
     mc:Ignorable="d"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    RequestedTheme="Dark"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <ResourceDictionary>
+            <converter:GsrToStringConverter x:Key="GsrConverter" />
+            <converter:TemperatureToStringConverter x:Key="TemperatureConverter" />
+            <converter:HeartRateToStringConverter x:Key="HeartRateConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    
+    <Page.BottomAppBar>
+        <CommandBar x:Name="commandBar" IsEnabled="False">
+            <AppBarButton x:Name="syncBandButton" Icon="Sync" Label="Sync Band" Click="SyncBandButtonAction" />
+            <AppBarSeparator />
+            <AppBarButton x:Name="startOrStopSessionButtton" Icon="Play" Label="Start Session" Click="StartOrStopSessionButttonAction" />
+        </CommandBar>
+    </Page.BottomAppBar>
+
     <Grid>
-        <StackPanel x:Name="syncStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Accelerometer.Model.AccelerationX, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Gsr.Model.Gsr, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Gyroscope.Model.AngularX, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.HeartRate.Model.Bpm, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.HeartRate.MinBpm, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.HeartRate.MaxBpm, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=Service.Temperature.Model.Temperature, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.CurrentView, Mode=OneWay}"></TextBlock>
-            <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.SubjectId, Mode=OneWay}"></TextBlock>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1" x:Name="dashboardGrid">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6*"/>
+                    <ColumnDefinition Width="11*"/>
+                    <ColumnDefinition Width="733*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".4*" />
+                    <RowDefinition Height=".4*" />
+                    <RowDefinition Height=".7*" />
+                </Grid.RowDefinitions>
+                <Grid x:Name="healthDataGrid" Grid.Row="0" Grid.ColumnSpan="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".25*" />
+                        <ColumnDefinition Width=".18*" />
+                        <ColumnDefinition Width=".3*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="heartActivityGrid" Grid.Column="1">
+                        <StackPanel Padding="15">
+                            <TextBlock FontSize="32" Margin="0 0 0 20">Heart activity</TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Grid x:Name="heartRateGrid">
+                                    <Canvas x:Name="heartRateCanvas" Height="60" Width="60">
+                                        <Path x:Name="heartRatePath" Fill="Transparent" Stroke="White" StrokeThickness="1"
+                                                Data="M 241,200 
+                                                      A 20,20 0 0 0 200,240
+                                                      C 210,250 240,270 240,270
+                                                      C 240,270 260,260 280,240
+                                                      A 20,20 0 0 0 240,200
+                                                      " Stretch="Fill" 
+                                                Width="{Binding ActualWidth, ElementName=heartRateCanvas}" Height="{Binding ActualHeight, ElementName=heartRateCanvas}">
+                                        </Path>
+                                    </Canvas>
+                                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                               FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=Service.HeartRate.Model.Bpm,Mode=OneWay}"></TextBlock>
+                                </Grid>
+                                <StackPanel Margin="20 0 0 0">
+                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=Service.HeartRate.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=Service.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
+                                    <TextBlock>RR Interval: <Run Text="{x:Bind Path=Service.RRInterval.Model.Ibi,Mode=OneWay}" /></TextBlock>
+                                    <TextBlock>Status: <Run Text="{x:Bind Path=Service.HeartRate.HeartRateStatus,Mode=OneWay}" /></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="skinActivityGrid" Grid.Column="2">
+                        <StackPanel Padding="15">
+                            <TextBlock FontSize="32" Margin="0 0 0 0">Skin activity</TextBlock>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Background="White" CornerRadius="3" Margin="0 0 15 0" Padding="5 0" Height="20">
+                                        <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">GSR</TextBlock>
+                                    </Border>
+                                    <TextBlock FontSize="52" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0 0 0 18"
+                                               Text="{x:Bind Path=Service.Gsr.Model.Gsr,Mode=OneWay,Converter={StaticResource GsrConverter}}"></TextBlock>
+                                    <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">K&#937;</TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
+                                    <Border Background="White" CornerRadius="3" Margin="0 0 15 0" Padding="5 0" Height="20">
+                                        <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">TEMP</TextBlock>
+                                    </Border>
+                                    <TextBlock FontSize="52" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0 0 0 18"
+                                               Text="{x:Bind Path=Service.Temperature.Model.Temperature,Mode=OneWay,Converter={StaticResource TemperatureConverter}}"></TextBlock>
+                                    <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">°C</TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="connectedBandGrid" Grid.Column="0">
+                        <StackPanel Padding="15">
+                            <TextBlock FontSize="32" Margin="0 0 0 0">MS Band</TextBlock>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 0" Padding="0 13 0 0">
+                                    <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
+                                        <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">Name</TextBlock>
+                                    </Border>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.MSBandSerialNumber,Mode=OneWay}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid x:Name="isoDataGrid" Grid.Row="1" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".25*" />
+                        <ColumnDefinition Width=".18*" />
+                        <ColumnDefinition Width=".3*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid x:Name="subjectIdGrid" Grid.Column="1">
+                        <StackPanel Padding="15">
+                            <TextBlock FontSize="32" Margin="0 0 0 0">User</TextBlock>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 0" Padding="0 13 0 0">
+                                    <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
+                                        <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">ID</TextBlock>
+                                    </Border>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.SubjectId,Mode=OneWay}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="currentViewGrid" Grid.Column="2">
+                        <StackPanel Padding="15">
+                            <TextBlock FontSize="32" Margin="0 0 0 0">Current View</TextBlock>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 0" Padding="0 13 0 0">
+                                    <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
+                                        <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">Name</TextBlock>
+                                    </Border>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.CurrentView,Mode=OneWay}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <Grid x:Name="empaticaE4BandGrid" Grid.Column="0">
+                        <StackPanel Padding="15">
+                            <TextBlock FontSize="32" Margin="0 0 0 0">Empatica E4 Band</TextBlock>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 0" Padding="0 13 0 0">
+                                    <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
+                                        <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">Name</TextBlock>
+                                    </Border>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.E4SerialNumber,Mode=OneWay}"></TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <Grid x:Name="gsrDataGrid" Grid.Row="2" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".2*" />
+                        <ColumnDefinition Width=".2*" />
+                    </Grid.ColumnDefinitions>
+                    <!-- <control:LineGraphCanvas x:Name="gsrLineGraphCanvas" Grid.Column="0" XScale="40" YScale="0.001" /> -->
+                    <Grid Grid.Column="0" Padding="0 0 25 0">
+                        <TextBlock FontSize="32" Margin="200 0 0 0">GSR</TextBlock>
+                        <lvc:CartesianChart x:Name="GsrChart">
+                            <lvc:CartesianChart.Series>
+                                <lvc:LineSeries Values="{Binding GsrDataPoint}" PointGeometrySize="0" StrokeThickness="2" />
+                            </lvc:CartesianChart.Series>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis DisableAnimations="True">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False"></lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis DisableAnimations="True" ShowLabels="False">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False"></lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+                    </Grid>
+                    <Grid Grid.Column="1" Padding="25 0 0 0">
+                        <TextBlock FontSize="32" Margin="200 0 0 0">IBI</TextBlock>
+                        <lvc:CartesianChart x:Name="IbiChart">
+                            <lvc:CartesianChart.Series>
+                                <lvc:LineSeries Values="{Binding IbiDataPoint}" PointGeometrySize="0" StrokeThickness="2" />
+                            </lvc:CartesianChart.Series>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis DisableAnimations="True">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False" StrokeThickness="0"></lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis DisableAnimations="True" ShowLabels="False">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator IsEnabled="False" StrokeThickness="0"></lvc:Separator>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                        </lvc:CartesianChart>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="syncGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Visibility="Collapsed">
+            <StackPanel x:Name="syncStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressRing x:Name="syncProgressRing" IsActive="True" Height="48" Width="48" />
+                <TextBlock x:Name="syncTextBlock" Margin="0 20 0 0"></TextBlock>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="availableBandGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Visibility="Collapsed">
+            <StackPanel x:Name="availableBandStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ComboBox x:Name="availableBandComboBox" Header="Microsoft Bands" PlaceholderText="Select a Band" PlaceholderForeground="WhiteSmoke" ItemsSource="{x:Bind AvailableBands}" SelectionChanged="BandSelectionChanged" Style="{StaticResource NewComboBoxStyle}"></ComboBox>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" x:Name="searchBandGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Visibility="Collapsed">
+            <StackPanel x:Name="searchBandStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="searchNowButton" Grid.Row="2" Grid.Column="0" Click="SearchBandButtonAction">Search Paired Bands</Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

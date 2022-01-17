@@ -43,6 +43,13 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
         }
 
+        public HeartRateQuality heartRateStatus;
+        public HeartRateQuality HeartRateStatus
+        {
+            get => heartRateStatus;
+            set => UpdateAndNotify(ref heartRateStatus, value);
+        }
+
         private bool IsFirstBpmValue { get; set; } = true;
 
         /// <summary>
@@ -93,10 +100,11 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 SubjectId = subjectViewService.SubjectId.Value
             };
 
-
-            await RunLaterInUIThread(() =>
+            /*await RunLaterInUIThread(() =>
             {
                 Bpm = heartRateEvent.Bpm;
+                HeartRateStatus = heartRateReading.Quality;
+
                 if (IsFirstBpmValue)
                 {
                     MaxBpm = heartRateEvent.Bpm;
@@ -111,16 +119,49 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                     return;
                 }
 
-                if (heartRateEvent.Bpm >= MinBpm)
+                if (heartRateEvent.Bpm < MinBpm)
                 {
-                    return;
+                    MinBpm = heartRateEvent.Bpm;
                 }
-                MinBpm = heartRateEvent.Bpm;
-            });
+            }).ConfigureAwait(false);
+            */
+
+            await RunLaterInUIThread(UpdateHeartRateValue, heartRateEvent).ConfigureAwait(false);
+            await RunLaterInUIThread(() => HeartRateStatus = heartRateReading.Quality).ConfigureAwait(false);
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(heartRateEvent);
+                await SensorValueChanged.Invoke(heartRateEvent).ConfigureAwait(false);
+            }
+
+
+            if (SubjectViewService.Singleton.IsSessionInProgress.Value)
+            {
+
+            }
+        }
+
+        private void UpdateHeartRateValue(HeartRateEvent heartRateEvent)
+        {
+            Bpm = heartRateEvent.Bpm;
+
+            if (IsFirstBpmValue)
+            {
+                MaxBpm = heartRateEvent.Bpm;
+                MinBpm = heartRateEvent.Bpm;
+                IsFirstBpmValue = false;
+                return;
+            }
+
+            if (heartRateEvent.Bpm > MaxBpm)
+            {
+                MaxBpm = heartRateEvent.Bpm;
+                return;
+            }
+
+            if (heartRateEvent.Bpm < MinBpm)
+            {
+                MinBpm = heartRateEvent.Bpm;
             }
         }
     }
