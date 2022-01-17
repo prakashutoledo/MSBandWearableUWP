@@ -59,7 +59,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var heartRate = MSBandService.Singleton.BandClient.SensorManager.HeartRate;
+            IBandSensor<IBandHeartRateReading> heartRate = MSBandService.Singleton.BandClient.SensorManager.HeartRate;
             bool requestHeartRateUserConsent = false;
 
             if (heartRate.GetCurrentUserConsent() == UserConsent.Granted)
@@ -89,42 +89,16 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <see cref="BandSensorReadingEventArgs{T}"/>
         private async void HeartRateReadingChanged(object sender, BandSensorReadingEventArgs<IBandHeartRateReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
-            var heartRateReading = readingEventArgs.SensorReading;
-            var heartRateEvent = new HeartRateEvent
+            SubjectViewService subjectViewService = SubjectViewService.Singleton;
+            IBandHeartRateReading heartRateReading = readingEventArgs.SensorReading;
+            HeartRateEvent heartRateEvent = new HeartRateEvent
             {
                 Bpm = heartRateReading.HeartRate,
-                AcquiredTime = DateTime.Now,
+                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = heartRateReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView.Value,
                 SubjectId = subjectViewService.SubjectId.Value
             };
-
-            /*await RunLaterInUIThread(() =>
-            {
-                Bpm = heartRateEvent.Bpm;
-                HeartRateStatus = heartRateReading.Quality;
-
-                if (IsFirstBpmValue)
-                {
-                    MaxBpm = heartRateEvent.Bpm;
-                    MinBpm = heartRateEvent.Bpm;
-                    IsFirstBpmValue = false;
-                    return;
-                }
-
-                if (heartRateEvent.Bpm > MaxBpm)
-                {
-                    MaxBpm = heartRateEvent.Bpm;
-                    return;
-                }
-
-                if (heartRateEvent.Bpm < MinBpm)
-                {
-                    MinBpm = heartRateEvent.Bpm;
-                }
-            }).ConfigureAwait(false);
-            */
 
             await RunLaterInUIThread(UpdateHeartRateValue, heartRateEvent).ConfigureAwait(false);
             await RunLaterInUIThread(() => HeartRateStatus = heartRateReading.Quality).ConfigureAwait(false);

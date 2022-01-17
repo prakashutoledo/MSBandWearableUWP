@@ -33,7 +33,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var ibi = MSBandService.Singleton.BandClient.SensorManager.RRInterval;
+            IBandSensor<IBandRRIntervalReading> ibi = MSBandService.Singleton.BandClient.SensorManager.RRInterval;
             bool requestIBIUserConsent = false;
 
             if (ibi.GetCurrentUserConsent() == UserConsent.Granted)
@@ -56,12 +56,12 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
         private async void RRIntervalReadingChanged(object sender, BandSensorReadingEventArgs<IBandRRIntervalReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
-            var rrIntervalReading = readingEventArgs.SensorReading;
-            var ibiEvent = new RRIntervalEvent
+            SubjectViewService subjectViewService = SubjectViewService.Singleton;
+            IBandRRIntervalReading rrIntervalReading = readingEventArgs.SensorReading;
+            RRIntervalEvent ibiEvent = new RRIntervalEvent
             {
                 Ibi = rrIntervalReading.Interval,
-                AcquiredTime = DateTime.Now,
+                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = rrIntervalReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView.Value,
                 SubjectId = subjectViewService.SubjectId.Value

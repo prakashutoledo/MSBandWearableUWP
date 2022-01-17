@@ -31,7 +31,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public HeartRateSensor HeartRate { get; } = new HeartRateSensor();
         public TemperatureSensor Temperature { get; } = new TemperatureSensor();
         public RRIntervalSensor RRInterval { get; } = new RRIntervalSensor();
-        public BandImage BandBackgroundImage { get; private set; }
         public string BandName { get; private set; }
 
         public async Task ConnectBand(string bandName, int selectedIndex)
@@ -69,7 +68,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             await HeartRate.Subscribe().ConfigureAwait(false);
             await RRInterval.Subscribe().ConfigureAwait(false);
             await Temperature.Subscribe().ConfigureAwait(false);
-            BandBackgroundImage = await BandClient.PersonalizationManager.GetMeTileImageAsync().ConfigureAwait(false);
             await BandClient.NotificationManager.VibrateAsync(Microsoft.Band.Notifications.VibrationType.NotificationOneTone).ConfigureAwait(false);
             BandStatus = BandStatus.SYNCED;
         }

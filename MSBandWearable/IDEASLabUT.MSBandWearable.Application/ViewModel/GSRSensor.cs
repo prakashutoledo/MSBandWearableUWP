@@ -2,10 +2,9 @@
 
 using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
-using Microsoft.Band.Sensors;
-using System;
+using Microsoft.Band.Portable.Sensors;
+
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -33,20 +32,19 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var gsr = MSBandService.Singleton.BandClient.SensorManager.Gsr;
-            gsr.ReportingInterval = TimeSpan.FromMilliseconds(5000);
+            IBandSensor<BandGsrSensor> gsr = MSBandService.Singleton.BandClient.SensorManager.Gsr;
             gsr.ReadingChanged += GsrReadingChanged;
             _ = await gsr.StartReadingsAsync();
         }
 
         private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
-            var gsrReading = readingEventArgs.SensorReading;
-            var gsrEvent = new GSREvent
+            SubjectViewService subjectViewService = SubjectViewService.Singleton;
+            IBandGsrReading gsrReading = readingEventArgs.SensorReading;
+            GSREvent gsrEvent = new GSREvent
             {
                 Gsr = gsrReading.Resistance,
-                AcquiredTime = DateTime.Now,
+                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = gsrReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView.Value,
                 SubjectId = subjectViewService.SubjectId.Value

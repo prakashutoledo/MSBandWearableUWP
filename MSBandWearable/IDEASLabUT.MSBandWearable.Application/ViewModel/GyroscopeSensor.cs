@@ -66,14 +66,15 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="readingEventArgs">An gyroscope reading event Argument</param>
         private async void GyroscopeReadingChanged(object sender, BandSensorReadingEventArgs<IBandGyroscopeReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
+            SubjectViewService subjectViewService = SubjectViewService.Singleton;
             IBandGyroscopeReading gyroscopeReading = readingEventArgs.SensorReading;
+
             GyroscopeEvent gyroscopeEvent = new GyroscopeEvent
             {
                 AngularX = gyroscopeReading.AccelerationX,
                 AngularY = gyroscopeReading.AccelerationY,
                 AngularZ = gyroscopeReading.AccelerationZ,
-                AcquiredTime = DateTime.Now,
+                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = gyroscopeReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView.Value,
                 SubjectId = subjectViewService.SubjectId.Value

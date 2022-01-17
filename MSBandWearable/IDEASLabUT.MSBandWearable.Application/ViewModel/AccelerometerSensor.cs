@@ -53,7 +53,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
             await base.Subscribe().ConfigureAwait(false);
             IBandSensor<IBandAccelerometerReading> accelerometer = MSBandService.Singleton.BandClient.SensorManager.Accelerometer;
-            //accelerometer.ReportingInterval = TimeSpan.FromMilliseconds(16.0);
             accelerometer.ReadingChanged += AccelerometerReadingChanged;
             _ = await accelerometer.StartReadingsAsync().ConfigureAwait(false);
         }
@@ -65,14 +64,14 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="readingEventArgs">An accelerometer reading event arguments</param>
         private async void AccelerometerReadingChanged(object sender, BandSensorReadingEventArgs<IBandAccelerometerReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
+            SubjectViewService subjectViewService = SubjectViewService.Singleton;
             IBandAccelerometerReading accelerometerReading = readingEventArgs.SensorReading;
             AccelerometerEvent accelerometerEvent = new AccelerometerEvent
             {
                 AccelerationX = accelerometerReading.AccelerationX,
                 AccelerationY = accelerometerReading.AccelerationY,
                 AccelerationZ = accelerometerReading.AccelerationZ,
-                AcquiredTime = DateTime.Now,
+                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = accelerometerReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView.Value,
                 SubjectId = subjectViewService.SubjectId.Value

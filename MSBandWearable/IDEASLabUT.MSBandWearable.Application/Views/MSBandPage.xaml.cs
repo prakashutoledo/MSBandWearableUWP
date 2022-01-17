@@ -283,19 +283,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private async Task StartDashboard()
         {
             await SetSyncMessage("Preparing the sensor log...");
-            // Unsuscribe all sensors (current active suscriptions)
-            //await band.UnsuscribeSensors();
-
-            // Suscribe all sensors
             await Service.SubscribeSensors();
-
-            //await StartBandClock();
             await RunLaterInUIThread(() =>
             {
                 commandBar.Visibility = Visibility.Visible;
                 SubjectAndView.MSBandSerialNumber = Service.BandName;
             });
-
             UpdateUI();
             Timer.Start();
         }
