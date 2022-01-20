@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:converter="using:IDEASLabUT.MSBandWearable.Application.Converter"
-    xmlns:control="using:IDEASLabUT.MSBandWearable.Application.Control"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:lvc="using:LiveCharts.Uwp"
     Loaded="PageLoaded" 
@@ -16,9 +15,9 @@
 
     <Page.Resources>
         <ResourceDictionary>
-            <converter:GsrToStringConverter x:Key="GsrConverter" />
-            <converter:TemperatureToStringConverter x:Key="TemperatureConverter" />
-            <converter:HeartRateToStringConverter x:Key="HeartRateConverter" />
+            <converter:GsrConverter x:Key="GsrConverter" />
+            <converter:TemperatureConverter x:Key="TemperatureConverter" />
+            <converter:HeartRateConverter x:Key="HeartRateConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Style\Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -53,8 +52,8 @@
                 </Grid.RowDefinitions>
                 <Grid x:Name="healthDataGrid" Grid.Row="0" Grid.ColumnSpan="4">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".25*" />
-                        <ColumnDefinition Width=".18*" />
+                        <ColumnDefinition Width=".23*" />
+                        <ColumnDefinition Width=".15*" />
                         <ColumnDefinition Width=".3*" />
                     </Grid.ColumnDefinitions>
                     <Grid x:Name="heartActivityGrid" Grid.Column="1">
@@ -74,10 +73,10 @@
                                         </Path>
                                     </Canvas>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                               FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=Service.HeartRate.Model.Bpm,Mode=OneWay}"></TextBlock>
+                                               FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=Service.HeartRate.Model.Bpm, Mode=OneWay}"></TextBlock>
                                 </Grid>
                                 <StackPanel Margin="20 0 0 0">
-                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=Service.HeartRate.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=Service.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
+                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=Service.HeartRate.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=Service.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
                                     <TextBlock>RR Interval: <Run Text="{x:Bind Path=Service.RRInterval.Model.Ibi,Mode=OneWay}" /></TextBlock>
                                     <TextBlock>Status: <Run Text="{x:Bind Path=Service.HeartRate.HeartRateStatus,Mode=OneWay}" /></TextBlock>
                                 </StackPanel>
@@ -94,7 +93,7 @@
                                     </Border>
                                     <TextBlock FontSize="52" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0 0 0 18"
                                                Text="{x:Bind Path=Service.Gsr.Model.Gsr,Mode=OneWay,Converter={StaticResource GsrConverter}}"></TextBlock>
-                                    <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">K&#937;</TextBlock>
+                                    <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">&#181;S</TextBlock>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
                                     <Border Background="White" CornerRadius="3" Margin="0 0 15 0" Padding="5 0" Height="20">

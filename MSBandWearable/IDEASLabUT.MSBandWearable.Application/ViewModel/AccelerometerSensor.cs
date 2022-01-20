@@ -5,6 +5,8 @@ using Microsoft.Band.Sensors;
 using System.Threading.Tasks;
 using IDEASLabUT.MSBandWearable.Application.Service;
 using System;
+using Serilog.Core;
+using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -12,10 +14,11 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     /// A sensor manager for Microsoft Band 2 accelerometer sensor
     /// </summary>
     public class AccelerometerSensor : BaseSensorModel<AccelerometerEvent>
-    {
+    { 
         public event SensorValueChangedHandler SensorValueChanged;
-        public AccelerometerSensor() : base(new AccelerometerEvent())
+        public AccelerometerSensor(ILogger logger) : base(new AccelerometerEvent(), logger)
         {
+            
         }
 
         private double AccelerationX
@@ -86,7 +89,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {
-
+                logger.Information("{accelerometer}", accelerometerEvent);
             }
         }
     }

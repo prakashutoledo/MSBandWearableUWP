@@ -5,6 +5,7 @@ using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
 using System;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -14,7 +15,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class GyroscopeSensor : BaseSensorModel<GyroscopeEvent>
     {
         public event SensorValueChangedHandler SensorValueChanged;
-        public GyroscopeSensor() : base(new GyroscopeEvent())
+        public GyroscopeSensor(ILogger logger) : base(new GyroscopeEvent(), logger)
         {
         }
 
@@ -90,7 +91,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {
-
+                logger.Information("{gyroscope}", gyroscopeEvent);
             }
         }
     }

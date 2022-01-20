@@ -3,12 +3,19 @@ using Windows.UI.Xaml.Data;
 
 namespace IDEASLabUT.MSBandWearable.Application.Converter
 {
-    public class GsrToStringConverter : IValueConverter
+    class HeartRateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType,
                 object parameter, string language)
         {
-            return string.Format("{0,-10:0.##}", System.Convert.ToDouble(value));
+            if (parameter.ToString() == "min")
+            {
+                return ((double)value >= 250) ? "--" : value.ToString();
+            }
+            else
+            {
+                return ((double)value <= 0) ? "--" : value.ToString();
+            }
         }
 
         public object ConvertBack(object value, Type targetType,

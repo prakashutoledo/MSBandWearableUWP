@@ -216,6 +216,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ApplicationProperties.json" />
 	<Content Include="ApplicationProperties.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

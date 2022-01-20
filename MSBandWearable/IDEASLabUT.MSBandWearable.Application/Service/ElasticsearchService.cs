@@ -1,4 +1,5 @@
-﻿using static System.Net.Http.HttpMethod;
+﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
+using static System.Net.Http.HttpMethod;
 using static System.Text.Encoding;
 
 using System;
@@ -15,10 +16,15 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private const string JsonContentType = "application/json";
         private const string BasicAuthorization = "Basic";
         private readonly HttpClient httpClient;
-
-        public ElasticsearchService()
+        private readonly IConfiguration applicationProperties;
+        public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, new HttpClient())
         {
-            httpClient = new HttpClient();
+        }
+
+        public ElasticsearchService(IConfiguration applicationProperties, HttpClient httpClient)
+        {
+            this.applicationProperties = applicationProperties;
+            this.httpClient = httpClient;
         }
 
         ~ElasticsearchService()
@@ -29,6 +35,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public virtual void Configure(IConfiguration configuration)
         {
         }
+
         public async Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
         {
             HttpResponseMessage response;
@@ -38,7 +45,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             using (StringContent stringContent = new StringContent(json, UTF8, JsonContentType))
             {
                 stringContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
-                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, System.Convert.ToBase64String(UTF8.GetBytes("ideaslabut:9845315216@Pk")));
+                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey));
                 postRequest.Content = content;
                 response = await httpClient.SendAsync(postRequest).ConfigureAwait(false);
             }

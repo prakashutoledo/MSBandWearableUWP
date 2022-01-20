@@ -1,4 +1,5 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
@@ -11,7 +12,13 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
     public class BaseSensorModel<T> : BaseModel where T : BaseEvent
     {
-        public BaseSensorModel(T model) => Model = model;
+        protected readonly ILogger logger;
+
+        public BaseSensorModel(T model, ILogger logger)
+        {
+            Model = model;
+            this.logger = logger;
+        }
 
         /// <summary>
         /// An asynchronous task delegate for notifying listener that value has been changed.

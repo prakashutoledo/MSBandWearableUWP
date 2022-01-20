@@ -1,0 +1,15 @@
+﻿{
+    "logger": {
+        "file": {
+            "uri": "sensor-log"
+        }
+    },
+    "elasticsearch": {
+        "uri": "https://search-ideaslab-wearables-ukbqpdpbk27rbpductpnavkbui.us-east-2.es.amazonaws.com/_bulk",
+        "authenticationKey": "ideaslabut:9845315216@Pk"
+    },
+    "aws": {
+        "cognitoPoolId": "",
+        "sqsName": ""
+    }
+}

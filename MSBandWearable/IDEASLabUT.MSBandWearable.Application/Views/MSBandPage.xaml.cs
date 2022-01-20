@@ -71,6 +71,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
+
             Timer.Tick += TimerOnTick;
         }
 
@@ -112,7 +113,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             await RunLaterInUIThread(() =>
             {
-                gsrValue = 1 / value.Gsr;
+                gsrValue = value.Gsr;
             });
         }
 
@@ -139,7 +140,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private async Task LoadBands()
         {
             commandBar.Visibility = Visibility.Collapsed;
-            await SetSyncMessage("Loading Paired Bands", true);
+            await HideAllGrids("Loading Paired Bands", true);
             await Task.Delay(200);
             IEnumerable<string> availableBandNames = await Service.GetPairedBands();
             if (!availableBandNames.Any())
@@ -180,13 +181,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
         }
 
-        private async Task SetSyncMessage(string message, bool progress = true)
+        private async Task HideAllGrids(string message, bool isProgress = true)
         {
             await RunLaterInUIThread(() =>
             {
                 searchBandGrid.Visibility = Visibility.Collapsed;
                 availableBandGrid.Visibility = Visibility.Collapsed;
-                syncProgressRing.IsActive = progress;
+                syncProgressRing.IsActive = isProgress;
                 syncTextBlock.Text = message;
                 syncGrid.Visibility = Visibility.Visible;
             });
@@ -241,11 +242,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task ConnectBand(string bandName, int selectedIndex)
         {
-            MessageDialog msgDlg = new MessageDialog("");
+            MessageDialog msgDlg = new MessageDialog(string.Empty);
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 
-            await SetSyncMessage("Connecting to your band...");
+            await HideAllGrids($"Connecting to band ({bandName})...");
 
             try
             {
@@ -253,12 +254,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
             catch (BandAccessDeniedException)
             {
-                msgDlg.Content = "Make sure your Microsoft Band (" + bandName + ") has permission to synchorize to this device.";
+                msgDlg.Content = $"Microsoft Band ({bandName}) doesn't have a permission to synchorize with this device";
                 msgDlg.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
             }
             catch (BandIOException)
             {
-                msgDlg.Content = "Failed to connect to your Microsoft Band (" + bandName + ").";
+                msgDlg.Content = $"Failed to connect to Microsoft Band ({bandName}).";
                 msgDlg.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
             }
             catch (Exception ex)
@@ -267,10 +268,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
             finally
             {
-                if (msgDlg.Content != "")
+                if (!string.IsNullOrEmpty(msgDlg.Content))
                 {
                     syncStackPanel.Visibility = Visibility.Collapsed;
-
                     _ = await msgDlg.ShowAsync();
                 }
                 else
@@ -282,24 +282,24 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task StartDashboard()
         {
-            await SetSyncMessage("Preparing the sensor log...");
+            await HideAllGrids($"Preparing Dashboard for Microsoft Band ({Service.BandName})...");
             await Service.SubscribeSensors();
             await RunLaterInUIThread(() =>
             {
                 commandBar.Visibility = Visibility.Visible;
                 SubjectAndView.MSBandSerialNumber = Service.BandName;
+                UpdateCommandBar();
             });
-            UpdateUI();
             Timer.Start();
         }
 
-        private void UpdateUI()
+        private void UpdateCommandBar()
         {
             switch (Service.BandStatus)
             {
-                case BandStatus.SYNCED:
-                case BandStatus.SYNCED_LIMITED_ACCESS:
-
+                case BandStatus.Connected:
+                    return;
+                case BandStatus.Subscribed:
                     syncBandButton.Icon = new SymbolIcon(Symbol.DisableUpdates);
                     syncBandButton.Label = "Unsync Band";
 
@@ -309,12 +309,15 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                     commandBar.IsEnabled = true;
                     commandBar.IsOpen = true;
                     break;
-                case BandStatus.SYNCED_TERMINATED:
 
+                case BandStatus.UnSubscribed:
                     syncBandButton.Icon = new SymbolIcon(Symbol.Sync);
                     syncBandButton.Label = "sync band";
                     startOrStopSessionButtton.IsEnabled = false;
                     break;
+
+                case BandStatus.Error:
+                case BandStatus.UNKNOWN:
                 default:
                     commandBar.IsEnabled = false;
                     break;

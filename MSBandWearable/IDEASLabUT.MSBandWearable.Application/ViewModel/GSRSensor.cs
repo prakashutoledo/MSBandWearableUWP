@@ -5,7 +5,7 @@ using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
 using System;
 using System.Threading.Tasks;
-
+using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -13,7 +13,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public GSRSensor() : base(new GSREvent())
+        public GSRSensor(ILogger logger) : base(new GSREvent(), logger)
         {
         }
 
@@ -44,7 +44,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             IBandGsrReading gsrReading = readingEventArgs.SensorReading;
             GSREvent gsrEvent = new GSREvent
             {
-                Gsr = gsrReading.Resistance,
+                Gsr = 1000.0 / gsrReading.Resistance,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = gsrReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
@@ -61,7 +61,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {
-
+                logger.Information("{gsr}", gsrEvent);
             }
         }
     }

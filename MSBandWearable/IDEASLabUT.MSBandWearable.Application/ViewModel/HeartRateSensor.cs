@@ -6,6 +6,7 @@ using Microsoft.Band.Sensors;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Band;
+using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -16,7 +17,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public HeartRateSensor() : base(new HeartRateEvent())
+        public HeartRateSensor(ILogger logger) : base(new HeartRateEvent(), logger)
         {
         }
 
@@ -98,7 +99,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {
-
+                logger.Information("{heartrate}", heartRateEvent);
             }
         }
 

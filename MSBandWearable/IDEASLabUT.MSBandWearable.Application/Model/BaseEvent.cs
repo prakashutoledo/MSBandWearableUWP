@@ -15,7 +15,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Model
         public DateTime ActualTime { get; set; }
 
         [JsonProperty("bandType")]
-        public string BandType { get; private set; } = "MSBAND";
+        public string BandType { get; private set; } = MSBandWearableApplicationGlobals.MSBandTypeName;
 
         [JsonProperty("fromView")]
         public string FromView { get; set; }

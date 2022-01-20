@@ -5,6 +5,7 @@ using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
 using System;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -12,7 +13,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public TemperatureSensor() : base(new TemperatureEvent())
+        public TemperatureSensor(ILogger logger) : base(new TemperatureEvent(), logger)
         {
         }
 
@@ -41,6 +42,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         {
             SubjectViewService subjectViewService = SubjectViewService.Singleton;
             IBandSkinTemperatureReading temperatureReading = readingEventArgs.SensorReading;
+
             TemperatureEvent temperatureEvent = new TemperatureEvent
             {
                 Temperature = temperatureReading.Temperature,
@@ -59,7 +61,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {
-
+                logger.Information("{temperature}", temperatureEvent);
             }
         }
     }

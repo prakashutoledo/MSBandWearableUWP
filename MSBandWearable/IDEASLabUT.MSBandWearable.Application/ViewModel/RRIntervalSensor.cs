@@ -6,6 +6,7 @@ using Microsoft.Band.Sensors;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Band;
+using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
@@ -13,7 +14,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public RRIntervalSensor() : base(new RRIntervalEvent())
+        public RRIntervalSensor(ILogger logger) : base(new RRIntervalEvent(), logger)
         {
         }
 
@@ -68,7 +69,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {
-
+                logger.Information("{ibi}", ibiEvent.ToString());
             }
         }
     }
