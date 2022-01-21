@@ -58,7 +58,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
                 return;
             }
 
-            CoreDispatcher coreDispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+            var coreDispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
 
             if (coreDispatcher.HasThreadAccess)
             {

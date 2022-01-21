@@ -46,10 +46,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public async void MessageReceivedEvent(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs receivedEventArgs)
         {
-            using (DataReader dataReader = receivedEventArgs.GetDataReader())
+            using (var dataReader = receivedEventArgs.GetDataReader())
             {
                 dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
-                string message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
+                var message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
                 if (OnMessageReceived != null)
                 {
                     await OnMessageReceived.Invoke(message).ConfigureAwait(false);

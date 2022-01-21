@@ -36,7 +36,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch
         /// <seealso cref="ElasticsearchBatchEventFormatter"/>
         public void Format(LogEvent logEvent, TextWriter output)
         {
-            KeyValuePair<string, LogEventPropertyValue> eventPair = logEvent.Properties.Select(property => property).First();
+            var eventPair = logEvent.Properties.Select(property => property).First();
             output.Write($"{{\"index\":{{\"_index\": \"{eventPair.Key}\"}}}}");
             output.Write(StringSplitChar);
 

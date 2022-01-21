@@ -41,15 +41,19 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
     {
 
         private MSBandService Service { get; } = MSBandService.Singleton;
+
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
+
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
 
         public ChartValues<MeasureModel> GsrDataPoint { get; } = new ChartValues<MeasureModel>();
+
         public ChartValues<MeasureModel> IbiDataPoint { get; } = new ChartValues<MeasureModel>();
 
         public DispatcherTimer Timer { get; set; }
 
         private double gsrValue;
+
         public MSBandPage()
         {
             InitializeComponent();
@@ -61,7 +65,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private void AddLiveCharts()
         {
-            CartesianMapper<MeasureModel> mapper = Mappers.Xy<MeasureModel>()
+            var mapper = Mappers.Xy<MeasureModel>()
                 .X(model => model.DateTime)
                 .Y(model => model.Value);
 
@@ -145,7 +149,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             IEnumerable<string> availableBandNames = await Service.GetPairedBands();
             if (!availableBandNames.Any())
             {
-                MessageDialog messageDialog = new MessageDialog("")
+                var messageDialog = new MessageDialog("")
                 {
                     Content = "No Paired Bands Available!"
                 };
@@ -206,7 +210,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async void StartOrStopSessionButttonAction(object sender, RoutedEventArgs routedEventArgs)
         {
-            SymbolIcon symbolIcon = new SymbolIcon(Symbol.Pause);
+            var symbolIcon = new SymbolIcon(Symbol.Pause);
             string label = "Pause Session";
             bool sessionInProgress = true;
 
@@ -242,7 +246,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task ConnectBand(string bandName, int selectedIndex)
         {
-            MessageDialog msgDlg = new MessageDialog(string.Empty);
+            var msgDlg = new MessageDialog(string.Empty);
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 

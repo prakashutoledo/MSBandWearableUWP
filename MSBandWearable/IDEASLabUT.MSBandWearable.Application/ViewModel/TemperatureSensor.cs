@@ -33,17 +33,16 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            IBandSensor<IBandSkinTemperatureReading> temperature = MSBandService.Singleton.BandClient.SensorManager.SkinTemperature;
+            var temperature = MSBandService.Singleton.BandClient.SensorManager.SkinTemperature;
             temperature.ReadingChanged += TemperatueReadingChanged;
             _ = await temperature.StartReadingsAsync().ConfigureAwait(false);
         }
 
         private async void TemperatueReadingChanged(object sender, BandSensorReadingEventArgs<IBandSkinTemperatureReading> readingEventArgs)
         {
-            SubjectViewService subjectViewService = SubjectViewService.Singleton;
-            IBandSkinTemperatureReading temperatureReading = readingEventArgs.SensorReading;
-
-            TemperatureEvent temperatureEvent = new TemperatureEvent
+            var subjectViewService = SubjectViewService.Singleton;
+            var temperatureReading = readingEventArgs.SensorReading
+            var temperatureEvent = new TemperatureEvent
             {
                 Temperature = temperatureReading.Temperature,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,

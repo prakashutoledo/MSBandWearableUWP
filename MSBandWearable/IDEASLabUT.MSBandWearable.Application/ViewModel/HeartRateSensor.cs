@@ -58,7 +58,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            IBandSensor<IBandHeartRateReading> heartRate = MSBandService.Singleton.BandClient.SensorManager.HeartRate;
+            var heartRate = MSBandService.Singleton.BandClient.SensorManager.HeartRate;
             bool userConsent = UserConsent.Granted == heartRate.GetCurrentUserConsent() || await heartRate.RequestUserConsentAsync().ConfigureAwait(false);
             if (!userConsent)
             {
@@ -77,9 +77,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <see cref="BandSensorReadingEventArgs{T}"/>
         private async void HeartRateReadingChanged(object sender, BandSensorReadingEventArgs<IBandHeartRateReading> readingEventArgs)
         {
-            SubjectViewService subjectViewService = SubjectViewService.Singleton;
-            IBandHeartRateReading heartRateReading = readingEventArgs.SensorReading;
-            HeartRateEvent heartRateEvent = new HeartRateEvent
+            var subjectViewService = SubjectViewService.Singleton;
+            var heartRateReading = readingEventArgs.SensorReading;
+            var heartRateEvent = new HeartRateEvent
             {
                 Bpm = heartRateReading.HeartRate,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,

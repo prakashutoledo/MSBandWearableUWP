@@ -41,8 +41,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             HttpResponseMessage response;
             string json = await content.ReadAsStringAsync().ConfigureAwait(false);
 
-            using (HttpRequestMessage postRequest= new HttpRequestMessage(Post, requestUri))
-            using (StringContent stringContent = new StringContent(json, UTF8, JsonContentType))
+            using (var postRequest= new HttpRequestMessage(Post, requestUri))
+            using (var stringContent = new StringContent(json, UTF8, JsonContentType))
             {
                 stringContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
                 postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey));

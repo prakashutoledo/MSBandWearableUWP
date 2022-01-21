@@ -55,7 +55,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            IBandSensor<IBandAccelerometerReading> accelerometer = MSBandService.Singleton.BandClient.SensorManager.Accelerometer;
+            var accelerometer = MSBandService.Singleton.BandClient.SensorManager.Accelerometer;
             accelerometer.ReadingChanged += AccelerometerReadingChanged;
             _ = await accelerometer.StartReadingsAsync().ConfigureAwait(false);
         }
@@ -67,9 +67,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="readingEventArgs">An accelerometer reading event arguments</param>
         private async void AccelerometerReadingChanged(object sender, BandSensorReadingEventArgs<IBandAccelerometerReading> readingEventArgs)
         {
-            SubjectViewService subjectViewService = SubjectViewService.Singleton;
-            IBandAccelerometerReading accelerometerReading = readingEventArgs.SensorReading;
-            AccelerometerEvent accelerometerEvent = new AccelerometerEvent
+            var subjectViewService = SubjectViewService.Singleton;
+            var accelerometerReading = readingEventArgs.SensorReading;
+            var accelerometerEvent = new AccelerometerEvent
             {
                 AccelerationX = accelerometerReading.AccelerationX,
                 AccelerationY = accelerometerReading.AccelerationY,

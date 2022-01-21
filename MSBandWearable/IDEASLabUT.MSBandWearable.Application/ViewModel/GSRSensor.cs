@@ -33,16 +33,16 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            IBandSensor<IBandGsrReading> gsr = MSBandService.Singleton.BandClient.SensorManager.Gsr;
+            var gsr = MSBandService.Singleton.BandClient.SensorManager.Gsr;
             gsr.ReadingChanged += GsrReadingChanged;
             _ = await gsr.StartReadingsAsync();
         }
 
         private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)
         {
-            SubjectViewService subjectViewService = SubjectViewService.Singleton;
-            IBandGsrReading gsrReading = readingEventArgs.SensorReading;
-            GSREvent gsrEvent = new GSREvent
+            var subjectViewService = SubjectViewService.Singleton;
+            var gsrReading = readingEventArgs.SensorReading;
+            var gsrEvent = new GSREvent
             {
                 Gsr = 1000.0 / gsrReading.Resistance,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,

@@ -64,7 +64,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch
                     continue;
                 }
 
-                IEnumerable<string> logs = logEvent.Split(StringSplitChar)
+                var logs = logEvent.Split(StringSplitChar)
                     .Where(log => !string.IsNullOrWhiteSpace(log))
                     .Select(log => log.Trim());
 

@@ -55,7 +55,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            IBandSensor<IBandGyroscopeReading> gyroscope = MSBandService.Singleton.BandClient.SensorManager.Gyroscope;
+            var gyroscope = MSBandService.Singleton.BandClient.SensorManager.Gyroscope;
             gyroscope.ReadingChanged += GyroscopeReadingChanged;
             _ = await gyroscope.StartReadingsAsync().ConfigureAwait(false);
         }
@@ -67,10 +67,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="readingEventArgs">An gyroscope reading event Argument</param>
         private async void GyroscopeReadingChanged(object sender, BandSensorReadingEventArgs<IBandGyroscopeReading> readingEventArgs)
         {
-            SubjectViewService subjectViewService = SubjectViewService.Singleton;
-            IBandGyroscopeReading gyroscopeReading = readingEventArgs.SensorReading;
-
-            GyroscopeEvent gyroscopeEvent = new GyroscopeEvent
+            var subjectViewService = SubjectViewService.Singleton;
+            var gyroscopeReading = readingEventArgs.SensorReading;
+            var gyroscopeEvent = new GyroscopeEvent
             {
                 AngularX = gyroscopeReading.AccelerationX,
                 AngularY = gyroscopeReading.AccelerationY,

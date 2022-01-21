@@ -36,13 +36,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Json
             }
            
 
-            string dateTimeString = reader.Value.ToString();
+            var dateTime = reader.Value.ToString();
             if (objectType == typeof(DateTimeOffset))
             {
-                return DateTimeOffset.Parse(dateTimeString);
+                return DateTimeOffset.Parse(dateTime);
             }
 
-            return DateTime.Parse(dateTimeString);
+            return DateTime.Parse(dateTime);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

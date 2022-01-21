@@ -50,7 +50,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             try
             {
 
-                IBandInfo[] pairedBands = await BandClientManager.Instance.GetBandsAsync().ConfigureAwait(false);
+                var pairedBands = await BandClientManager.Instance.GetBandsAsync().ConfigureAwait(false);
                 BandClient = await BandClientManager.Instance.ConnectAsync(pairedBands[selectedIndex]).ConfigureAwait(false);
                 bandStatus = BandStatus.Connected;
                 BandName = bandName;
@@ -87,7 +87,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public async Task<IEnumerable<string>> GetPairedBands()
         {
-            DeviceInformationCollection devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true)).AsTask().ConfigureAwait(false);
+            var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true)).AsTask().ConfigureAwait(false);
             return devices.Where(device => device.Name.StartsWith("MSFT Band 2")).Select(device => device.Name);
         }
     }
