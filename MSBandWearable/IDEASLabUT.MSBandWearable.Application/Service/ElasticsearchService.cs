@@ -1,10 +1,11 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
-using static System.Net.Http.HttpMethod;
-using static System.Text.Encoding;
 
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.Http;
@@ -16,14 +17,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private const string JsonContentType = "application/json";
         private const string BasicAuthorization = "Basic";
         private readonly HttpClient httpClient;
-        private readonly IConfiguration applicationProperties;
+        private readonly string elastisearchPassword;
         public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, new HttpClient())
         {
         }
 
         public ElasticsearchService(IConfiguration applicationProperties, HttpClient httpClient)
         {
-            this.applicationProperties = applicationProperties;
+            elastisearchPassword = applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey);
             this.httpClient = httpClient;
         }
 
@@ -36,23 +37,24 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
         }
 
-        public async Task<HttpResponseMessage> PostAsync(string requestUri, HttpContent content)
+        public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
+            Debug.WriteLine("test");
             HttpResponseMessage response;
-            string json = await content.ReadAsStringAsync().ConfigureAwait(false);
-
-            using (var postRequest= new HttpRequestMessage(Post, requestUri))
-            using (var stringContent = new StringContent(json, UTF8, JsonContentType))
+            string json = await new StreamReader(contentStream).ReadToEndAsync().ConfigureAwait(false);
+            
+            using (var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri))
+            using (var stringContent = new StringContent(json, Encoding.UTF8, JsonContentType))
             {
                 stringContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
-                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey));
-                postRequest.Content = content;
+                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, Convert.ToBase64String(Encoding.UTF8.GetBytes("ideaslabut:9845315216@Pk")));
+                postRequest.Content = stringContent;
                 response = await httpClient.SendAsync(postRequest).ConfigureAwait(false);
             }
 
-            System.Diagnostics.Trace.WriteLine(response.StatusCode);
-            System.Diagnostics.Trace.WriteLine(await response.Content.ReadAsStringAsync());
-            System.Diagnostics.Trace.WriteLine("-------------------------------------------------------------------------------------------------");
+            Debug.WriteLine(response.StatusCode);
+            Debug.WriteLine(await response.Content.ReadAsStringAsync());
+            Debug.WriteLine("-------------------------------------------------------------------------------------------------");
             return response;
         }
 

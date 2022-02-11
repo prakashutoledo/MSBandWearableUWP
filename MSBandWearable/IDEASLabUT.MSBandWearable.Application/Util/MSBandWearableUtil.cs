@@ -15,6 +15,7 @@ using Windows.UI.Core;
 using Windows.Storage;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Application.Util
 {
@@ -45,6 +46,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
                     period: TimeSpan.FromSeconds(5)
                 );
             });
+
+            Debug.WriteLine(ApplicationData.Current.LocalFolder.Path);
+            Debug.WriteLine(ApplicationProperties.GetValue<string>(ElasticsearchUriJsonKey));
         }
 
         public static LoggerConfiguration LoggerFactory => LoggerConfigurationInstance.Value;

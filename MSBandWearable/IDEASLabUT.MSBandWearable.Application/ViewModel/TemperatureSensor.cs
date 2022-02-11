@@ -41,7 +41,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         private async void TemperatueReadingChanged(object sender, BandSensorReadingEventArgs<IBandSkinTemperatureReading> readingEventArgs)
         {
             var subjectViewService = SubjectViewService.Singleton;
-            var temperatureReading = readingEventArgs.SensorReading
+            var temperatureReading = readingEventArgs.SensorReading;
             var temperatureEvent = new TemperatureEvent
             {
                 Temperature = temperatureReading.Temperature,
