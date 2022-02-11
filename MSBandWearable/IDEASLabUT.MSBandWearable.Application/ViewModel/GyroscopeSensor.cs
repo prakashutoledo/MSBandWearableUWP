@@ -3,7 +3,6 @@
 using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
-using System;
 using System.Threading.Tasks;
 using Serilog;
 
@@ -86,7 +85,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             {
                 await SensorValueChanged.Invoke(gyroscopeEvent).ConfigureAwait(false);
             }
-
 
             if (SubjectViewService.Singleton.IsSessionInProgress)
             {

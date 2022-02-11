@@ -120,6 +120,8 @@
     <Compile Include="Converter\HeartRateConverter.cs" />
     <Compile Include="Converter\LineGraphLabelConverter.cs" />
     <Compile Include="Converter\TemperatureConverter.cs" />
+    <Compile Include="Json\PayloadActionConverter.cs" />
+    <Compile Include="Json\PayloadTypeConverter.cs" />
     <Compile Include="Model\AccelerometerEvent.cs" />
     <Compile Include="Model\BandStatus.cs" />
     <Compile Include="Model\BaseEvent.cs" />
@@ -129,6 +131,15 @@
     <Compile Include="Model\GSREvent.cs" />
     <Compile Include="Model\GyroscopeEvent.cs" />
     <Compile Include="Model\HeartRateEvent.cs" />
+    <Compile Include="Model\Notification\BaseMessage.cs" />
+    <Compile Include="Model\Notification\Device.cs" />
+    <Compile Include="Model\Notification\EmpaticaE4Band.cs" />
+    <Compile Include="Model\Notification\EmpaticaE4BandMessage.cs" />
+    <Compile Include="Model\Notification\Message.cs" />
+    <Compile Include="Model\Notification\MessageReader.cs" />
+    <Compile Include="Model\Notification\Payload.cs" />
+    <Compile Include="Model\Notification\PayloadAction.cs" />
+    <Compile Include="Model\Notification\PayloadType.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
     <Compile Include="Service\ElasticsearchService.cs" />
     <Compile Include="Service\NtpSyncService.cs" />
@@ -216,7 +227,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-	<Content Include="ApplicationProperties.json">
+    <Content Include="ApplicationProperties.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using IDEASLabUT.MSBandWearable.Application.Model.Notification;
+using Newtonsoft.Json;
+using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
@@ -12,8 +15,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         // Lazy singleton pattern
         public static WebSocketService Singleton => Instance.Value;
 
-        public delegate Task MessageReceivedHandler(string message);
-        private event MessageReceivedHandler OnMessageReceived;
+        public delegate Task MessageReceivedHandler(EmpaticaE4Band empaticaE4Band);
+        private event MessageReceivedHandler OnEmpaticaE4BandMessageReceived;
 
         private readonly MessageWebSocket messageWebSocket;
 
@@ -22,15 +25,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             this.messageWebSocket = messageWebSocket;
         }
 
-        public async Task Connect(string webSocketUrl, MessageReceivedHandler onMessageReceived)
+        public async Task Connect(MessageReceivedHandler onEmpaticaE4BandMessageReceived, string webSocketUrl = "wss://2wutjv5l5m.execute-api.us-east-2.amazonaws.com/production")
         {
-            if(onMessageReceived != null)
+            if(onEmpaticaE4BandMessageReceived != null)
             {
-                OnMessageReceived += onMessageReceived;
+                OnEmpaticaE4BandMessageReceived += onEmpaticaE4BandMessageReceived;
             }
-
-            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask().ConfigureAwait(false);
             messageWebSocket.MessageReceived += MessageReceivedEvent;
+            messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
+
+           await messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask().ConfigureAwait(false);
         }
 
 
@@ -50,11 +54,27 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
                 var message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
-                if (OnMessageReceived != null)
+                if (OnEmpaticaE4BandMessageReceived != null)
                 {
-                    await OnMessageReceived.Invoke(message).ConfigureAwait(false);
+                    await ParseMessageAndSend(message).ConfigureAwait(false);
                 }
-                messageWebSocket.Dispose();
+            }
+        }
+
+        public async Task ParseMessageAndSend(string message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+            var messageReader = JsonConvert.DeserializeObject<MessageReader>(message);
+
+            switch(messageReader.PayloadType)
+            {
+                case PayloadType.E4Band:
+                    var empaticaE4BandMessage = JsonConvert.DeserializeObject<EmpaticaE4BandMessage>(message);
+                    await OnEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload).ConfigureAwait(false);
+                    break;
             }
         }
 

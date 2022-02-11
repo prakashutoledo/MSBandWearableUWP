@@ -16,44 +16,43 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
     {
         private const string JsonContentType = "application/json";
         private const string BasicAuthorization = "Basic";
+
         private readonly HttpClient httpClient;
-        private readonly string elastisearchPassword;
+        private readonly string elastisearchAuthenticationKey;
+
         public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, new HttpClient())
         {
         }
 
         public ElasticsearchService(IConfiguration applicationProperties, HttpClient httpClient)
         {
-            elastisearchPassword = applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey);
+            elastisearchAuthenticationKey = applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey);
             this.httpClient = httpClient;
-        }
-
-        ~ElasticsearchService()
-        {
-            Dispose(false);
         }
 
         public virtual void Configure(IConfiguration configuration)
         {
+            // not needed at this point
         }
 
         public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
-            Debug.WriteLine("test");
             HttpResponseMessage response;
-            string json = await new StreamReader(contentStream).ReadToEndAsync().ConfigureAwait(false);
+            string jsonBody = await new StreamReader(contentStream).ReadToEndAsync().ConfigureAwait(false);
             
             using (var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri))
-            using (var stringContent = new StringContent(json, Encoding.UTF8, JsonContentType))
+            using (var postBody = new StringContent(jsonBody, Encoding.UTF8, JsonContentType))
             {
-                stringContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
-                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, Convert.ToBase64String(Encoding.UTF8.GetBytes("ideaslabut:9845315216@Pk")));
-                postRequest.Content = stringContent;
+                postBody.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
+                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, elastisearchAuthenticationKey);
+                //postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, Convert.ToBase64String(Encoding.UTF8.GetBytes("ideaslabut:9845315216@Pk")));
+                //postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, Convert.ToBase64String(Encoding.UTF8.GetBytes("ideaslabut:9845315216@Pk")));
+                postRequest.Content = postBody;
                 response = await httpClient.SendAsync(postRequest).ConfigureAwait(false);
             }
 
             Debug.WriteLine(response.StatusCode);
-            Debug.WriteLine(await response.Content.ReadAsStringAsync());
+            Debug.WriteLine(await response.Content.ReadAsStringAsync()); 
             Debug.WriteLine("-------------------------------------------------------------------------------------------------");
             return response;
         }
@@ -70,6 +69,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 httpClient.Dispose();
             }
+        }
+
+        ~ElasticsearchService()
+        {
+            Dispose(false);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+using static Microsoft.Band.Sensors.HeartRateQuality;
+using static Windows.UI.Colors;
 
 using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
@@ -12,17 +14,13 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using Microsoft.Band;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
-using Microsoft.Band.Sensors;
-using static Microsoft.Band.Sensors.HeartRateQuality;
-using static Windows.UI.Colors;
 using System.Diagnostics;
-using System.ComponentModel;
 using LiveCharts;
 using LiveCharts.Configurations;
+using IDEASLabUT.MSBandWearable.Application.Model.Notification;
+using Newtonsoft.Json;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
 {
@@ -39,19 +37,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
     /// </summary>
     public sealed partial class MSBandPage
     {
-
         private MSBandService Service { get; } = MSBandService.Singleton;
-
+        private WebSocketService SocketService { get; } = WebSocketService.Singleton;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
-
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
-
         public ChartValues<MeasureModel> GsrDataPoint { get; } = new ChartValues<MeasureModel>();
-
         public ChartValues<MeasureModel> IbiDataPoint { get; } = new ChartValues<MeasureModel>();
-
-        public DispatcherTimer Timer { get; set; }
-
+        private DispatcherTimer Timer { get; set; }
         private double gsrValue;
 
         public MSBandPage()
@@ -81,6 +73,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async void TimerOnTick(object sender, object eventArgs)
         {
+
             await RunLaterInUIThread(() =>
             {
                 GsrDataPoint.Add(new MeasureModel
@@ -129,6 +122,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private async void PageLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             await SearchBands();
+            //await SocketService.Connect(OnMessageReceived).ConfigureAwait(false);
         }
 
         private async void PageUnloaded(object sender, RoutedEventArgs routedEventArgs)
@@ -140,6 +134,25 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             await LoadBands();
         }
+
+
+        private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
+        {
+            SubjectViewService.Singleton.CurrentView = empaticaE4Band.FromView;
+            SubjectViewService.Singleton.SubjectId = empaticaE4Band.SubjectId;
+            
+            await RunLaterInUIThread(() =>
+            {
+                SubjectAndView.CurrentView = empaticaE4Band.FromView;
+                SubjectAndView.SubjectId = empaticaE4Band.SubjectId;
+
+                if (empaticaE4Band.Device.Connected)
+                {
+                    SubjectAndView.E4SerialNumber = empaticaE4Band.Device.SerialNumber;
+                }
+            });
+        }
+
 
         private async Task LoadBands()
         {
@@ -201,6 +214,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             await Task.CompletedTask;
             base.OnNavigatedTo(navigationEventArgs);
+            Debug.WriteLine("223");
         }
 
         private async void SyncBandButtonAction(object sender, RoutedEventArgs routedEventArgs)
@@ -295,6 +309,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 UpdateCommandBar();
             });
             Timer.Start();
+
+            await SocketService.Connect(OnEmpaticaE4BandMessageReceived).ConfigureAwait(false);
         }
 
         private void UpdateCommandBar()

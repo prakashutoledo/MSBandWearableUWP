@@ -74,9 +74,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 AccelerationX = accelerometerReading.AccelerationX,
                 AccelerationY = accelerometerReading.AccelerationY,
                 AccelerationZ = accelerometerReading.AccelerationZ,
-                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = accelerometerReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
+                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 SubjectId = subjectViewService.SubjectId
             };
 

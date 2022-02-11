@@ -1,11 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Globalization;
-using Newtonsoft.Json.Utilities;
-using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Application.Json
 {
@@ -20,12 +14,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Json
                 return true;
             }
 
-            if (typeof(DateTimeOffset).IsAssignableFrom(objectType))
-            {
-                return true;
-            }
-
-            return false;
+            return typeof(DateTimeOffset).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)

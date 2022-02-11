@@ -5,8 +5,8 @@
         }
     },
     "elasticsearch": {
-        "uri": "https://search-ideaslabut-7ussqh5lv3kb36zuxjlypguyty.us-east-2.es.amazonaws.com/_bulk",
-        "authenticationKey": "aWRlYXNsYWJ1dDo5ODQ1MzE1MjE2QFBr=="
+        "uri": "https://search-ideaslabut-wearable-qxzcm63ymlf5dvumvloqoxm22y.us-east-2.es.amazonaws.com/_bulk",
+        "authenticationKey": "aWRlYXNsYWJ1dDo5ODQ1MzE1MjE2QFBr"
     },
     "aws": {
         "cognitoPoolId": "",

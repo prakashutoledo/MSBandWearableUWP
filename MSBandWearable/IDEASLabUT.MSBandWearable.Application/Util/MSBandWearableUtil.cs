@@ -49,6 +49,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
 
             Debug.WriteLine(ApplicationData.Current.LocalFolder.Path);
             Debug.WriteLine(ApplicationProperties.GetValue<string>(ElasticsearchUriJsonKey));
+            Debug.WriteLine(ApplicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey));
         }
 
         public static LoggerConfiguration LoggerFactory => LoggerConfigurationInstance.Value;

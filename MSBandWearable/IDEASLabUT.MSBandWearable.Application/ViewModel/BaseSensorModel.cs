@@ -13,6 +13,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class BaseSensorModel<T> : BaseModel where T : BaseEvent
     {
         protected readonly ILogger logger;
+        private T model;
 
         public BaseSensorModel(T model, ILogger logger)
         {
@@ -26,8 +27,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
         /// <returns>A task that can be complete or can be handled later</returns>
         public delegate Task SensorValueChangedHandler(T value);
-
-        private T model;
+        
         public T Model
         {
             get => model;
