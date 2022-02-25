@@ -43,6 +43,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             var gsrReading = readingEventArgs.SensorReading;
             var gsrEvent = new GSREvent
             {
+                // Value is in kOhms which is converted into micro seimens
                 Gsr = 1000.0 / gsrReading.Resistance,
                 AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
                 ActualTime = gsrReading.Timestamp.DateTime,

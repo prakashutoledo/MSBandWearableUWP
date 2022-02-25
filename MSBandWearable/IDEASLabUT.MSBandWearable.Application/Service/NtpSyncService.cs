@@ -1,5 +1,6 @@
 ﻿using GuerrillaNtp;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Threading;
 
@@ -34,12 +35,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// Default pool is 'pool.ntp.org'
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
-        public void SyncTimestamp(string poolAddress = "pool.ntp.org")
+        public void SyncTimestamp(string poolAddress)
         {
             // Only used the first address from the given pool
             using (NtpClient ntp = new NtpClient(Dns.GetHostAddresses(poolAddress)[0]))
             {
                 Offset = ntp.GetCorrectionOffset();
+                Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({offset}).");
             }
         }
     }

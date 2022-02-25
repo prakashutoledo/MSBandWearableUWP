@@ -25,7 +25,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             this.messageWebSocket = messageWebSocket;
         }
 
-        public async Task Connect(MessageReceivedHandler onEmpaticaE4BandMessageReceived, string webSocketUrl = "wss://2wutjv5l5m.execute-api.us-east-2.amazonaws.com/production")
+        public async Task Connect(string webSocketUrl, MessageReceivedHandler onEmpaticaE4BandMessageReceived)
         {
             if(onEmpaticaE4BandMessageReceived != null)
             {
@@ -54,10 +54,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
                 var message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
-                if (OnEmpaticaE4BandMessageReceived != null)
-                {
-                    await ParseMessageAndSend(message).ConfigureAwait(false);
-                }
+                await ParseMessageAndSend(message).ConfigureAwait(false);
             }
         }
 
@@ -67,13 +64,23 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 return;
             }
-            var messageReader = JsonConvert.DeserializeObject<MessageReader>(message);
 
-            switch(messageReader.PayloadType)
+            var baseaMessage = JsonConvert.DeserializeObject<BaseMessage>(message);
+
+            if (baseaMessage == null)
+            {
+                return;
+            }
+
+            switch(baseaMessage.PayloadType)
             {
                 case PayloadType.E4Band:
                     var empaticaE4BandMessage = JsonConvert.DeserializeObject<EmpaticaE4BandMessage>(message);
-                    await OnEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload).ConfigureAwait(false);
+
+                    if (OnEmpaticaE4BandMessageReceived != null)
+                    {
+                        await OnEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload).ConfigureAwait(false);
+                    }
                     break;
             }
         }

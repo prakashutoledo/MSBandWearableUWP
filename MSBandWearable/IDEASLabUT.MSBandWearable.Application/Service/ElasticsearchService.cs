@@ -51,9 +51,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 response = await httpClient.SendAsync(postRequest).ConfigureAwait(false);
             }
 
-            Debug.WriteLine(response.StatusCode);
-            Debug.WriteLine(await response.Content.ReadAsStringAsync()); 
-            Debug.WriteLine("-------------------------------------------------------------------------------------------------");
+            Trace.WriteLine(response.StatusCode);
+            Trace.WriteLine(await response.Content.ReadAsStringAsync()); 
+            Trace.WriteLine("------------------------------------------");
             return response;
         }
 
