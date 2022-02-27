@@ -10,7 +10,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     public class WebSocketService
     {
-        private static readonly Lazy<WebSocketService> Instance = new Lazy<WebSocketService>(() => new WebSocketService(new MessageWebSocket()));
+        private static readonly Lazy<WebSocketService> Instance = new Lazy<WebSocketService>(() => new WebSocketService());
 
         // Lazy singleton pattern
         public static WebSocketService Singleton => Instance.Value;
@@ -18,15 +18,15 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public delegate Task MessageReceivedHandler(EmpaticaE4Band empaticaE4Band);
         private event MessageReceivedHandler OnEmpaticaE4BandMessageReceived;
 
-        private readonly MessageWebSocket messageWebSocket;
+        private MessageWebSocket messageWebSocket;
 
-        private WebSocketService(MessageWebSocket messageWebSocket)
+        private WebSocketService()
         {
-            this.messageWebSocket = messageWebSocket;
         }
 
         public async Task Connect(string webSocketUrl, MessageReceivedHandler onEmpaticaE4BandMessageReceived)
         {
+            messageWebSocket = new MessageWebSocket();
             if(onEmpaticaE4BandMessageReceived != null)
             {
                 OnEmpaticaE4BandMessageReceived += onEmpaticaE4BandMessageReceived;
@@ -34,7 +34,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             messageWebSocket.MessageReceived += MessageReceivedEvent;
             messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
 
-           await messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask().ConfigureAwait(false);
+            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask().ConfigureAwait(false);
         }
 
 
@@ -87,7 +87,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public void Close(string reason = "Application Closed")
         {
-            messageWebSocket.Close(1000, reason);
+            if (messageWebSocket != null)
+            {
+                messageWebSocket.Close(1000, reason);
+            }
         }
     }
 }

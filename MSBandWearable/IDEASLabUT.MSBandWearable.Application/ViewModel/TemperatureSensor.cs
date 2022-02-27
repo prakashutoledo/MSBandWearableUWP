@@ -3,7 +3,6 @@
 using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
-using System;
 using System.Threading.Tasks;
 using Serilog;
 
@@ -13,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public TemperatureSensor(ILogger logger) : base(new TemperatureEvent(), logger)
+        public TemperatureSensor(ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService) : base(new TemperatureEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -33,19 +32,18 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var temperature = MSBandService.Singleton.BandClient.SensorManager.SkinTemperature;
+            var temperature = msBandService.BandClient.SensorManager.SkinTemperature;
             temperature.ReadingChanged += TemperatueReadingChanged;
             _ = await temperature.StartReadingsAsync().ConfigureAwait(false);
         }
 
         private async void TemperatueReadingChanged(object sender, BandSensorReadingEventArgs<IBandSkinTemperatureReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
             var temperatureReading = readingEventArgs.SensorReading;
             var temperatureEvent = new TemperatureEvent
             {
                 Temperature = temperatureReading.Temperature,
-                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
+                AcquiredTime = ntpSyncService.LocalTimeNow,
                 ActualTime = temperatureReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
                 SubjectId = subjectViewService.SubjectId
@@ -58,7 +56,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 await SensorValueChanged.Invoke(temperatureEvent).ConfigureAwait(false);
             }
 
-            if (SubjectViewService.Singleton.IsSessionInProgress)
+            if (subjectViewService.IsSessionInProgress)
             {
                 logger.Information("{temperature}", temperatureEvent);
             }

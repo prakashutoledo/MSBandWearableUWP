@@ -5,7 +5,7 @@
         }
     },
     "elasticsearch": {
-        "uri": "https://search-ideaslabut-wearable-qxzcm63ymlf5dvumvloqoxm22y.us-east-2.es.amazonaws.com/_bulk",
+        "uri": "https://search-ideaslabut-wearables-di2cqfqm4yw3ppkbokmwytm26i.us-east-2.es.amazonaws.com/_bulk",
         "authenticationKey": "aWRlYXNsYWJ1dDo5ODQ1MzE1MjE2QFBr"
     },
     "webSocket": {

@@ -16,7 +16,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class AccelerometerSensor : BaseSensorModel<AccelerometerEvent>
     { 
         public event SensorValueChangedHandler SensorValueChanged;
-        public AccelerometerSensor(ILogger logger) : base(new AccelerometerEvent(), logger)
+        public AccelerometerSensor(ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService) : base(new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
             
         }
@@ -87,7 +87,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 await SensorValueChanged.Invoke(accelerometerEvent).ConfigureAwait(false);
             }
 
-            if (SubjectViewService.Singleton.IsSessionInProgress)
+            if (subjectViewService.IsSessionInProgress)
             {
                 logger.Information("{accelerometer}", accelerometerEvent);
             }

@@ -73,12 +73,12 @@
                                         </Path>
                                     </Canvas>
                                     <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                               FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=Service.HeartRate.Model.Bpm, Mode=OneWay}"></TextBlock>
+                                               FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=BandManagerService.HeartRate.Model.Bpm, Mode=OneWay}"></TextBlock>
                                 </Grid>
                                 <StackPanel Margin="20 0 0 0">
-                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=Service.HeartRate.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=Service.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
-                                    <TextBlock>RR Interval: <Run Text="{x:Bind Path=Service.RRInterval.Model.Ibi,Mode=OneWay}" /></TextBlock>
-                                    <TextBlock>Status: <Run Text="{x:Bind Path=Service.HeartRate.HeartRateStatus,Mode=OneWay}" /></TextBlock>
+                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=BandManagerService.HeartRate.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=BandManagerService.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
+                                    <TextBlock>RR Interval: <Run Text="{x:Bind Path=BandManagerService.RRInterval.Model.Ibi,Mode=OneWay}" /></TextBlock>
+                                    <TextBlock>Status: <Run Text="{x:Bind Path=BandManagerService.HeartRate.HeartRateStatus,Mode=OneWay}" /></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -92,7 +92,7 @@
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">GSR</TextBlock>
                                     </Border>
                                     <TextBlock FontSize="52" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0 0 0 18"
-                                               Text="{x:Bind Path=Service.Gsr.Model.Gsr,Mode=OneWay,Converter={StaticResource GsrConverter}}"></TextBlock>
+                                               Text="{x:Bind Path=BandManagerService.Gsr.Model.Gsr,Mode=OneWay,Converter={StaticResource GsrConverter}}"></TextBlock>
                                     <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">&#181;S</TextBlock>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal" Margin="20 0 0 0">
@@ -100,7 +100,7 @@
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">TEMP</TextBlock>
                                     </Border>
                                     <TextBlock FontSize="52" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0 0 0 18"
-                                               Text="{x:Bind Path=Service.Temperature.Model.Temperature,Mode=OneWay,Converter={StaticResource TemperatureConverter}}"></TextBlock>
+                                               Text="{x:Bind Path=BandManagerService.Temperature.Model.Temperature,Mode=OneWay,Converter={StaticResource TemperatureConverter}}"></TextBlock>
                                     <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">°C</TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -120,7 +120,7 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-                <Grid x:Name="isoDataGrid" Grid.Row="1" Grid.ColumnSpan="3">
+                <Grid x:Name="iOSDataGrid" Grid.Row="1" Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width=".25*" />
                         <ColumnDefinition Width=".18*" />

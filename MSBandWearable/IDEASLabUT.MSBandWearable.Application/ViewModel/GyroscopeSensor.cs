@@ -14,7 +14,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class GyroscopeSensor : BaseSensorModel<GyroscopeEvent>
     {
         public event SensorValueChangedHandler SensorValueChanged;
-        public GyroscopeSensor(ILogger logger) : base(new GyroscopeEvent(), logger)
+        public GyroscopeSensor(ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService) : base(new GyroscopeEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -54,7 +54,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var gyroscope = MSBandService.Singleton.BandClient.SensorManager.Gyroscope;
+            var gyroscope = msBandService.BandClient.SensorManager.Gyroscope;
             gyroscope.ReadingChanged += GyroscopeReadingChanged;
             _ = await gyroscope.StartReadingsAsync().ConfigureAwait(false);
         }
@@ -66,14 +66,13 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="readingEventArgs">An gyroscope reading event Argument</param>
         private async void GyroscopeReadingChanged(object sender, BandSensorReadingEventArgs<IBandGyroscopeReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
             var gyroscopeReading = readingEventArgs.SensorReading;
             var gyroscopeEvent = new GyroscopeEvent
             {
                 AngularX = gyroscopeReading.AccelerationX,
                 AngularY = gyroscopeReading.AccelerationY,
                 AngularZ = gyroscopeReading.AccelerationZ,
-                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
+                AcquiredTime = ntpSyncService.LocalTimeNow,
                 ActualTime = gyroscopeReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
                 SubjectId = subjectViewService.SubjectId
@@ -86,7 +85,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 await SensorValueChanged.Invoke(gyroscopeEvent).ConfigureAwait(false);
             }
 
-            if (SubjectViewService.Singleton.IsSessionInProgress)
+            if (subjectViewService.IsSessionInProgress)
             {
                 logger.Information("{gyroscope}", gyroscopeEvent);
             }

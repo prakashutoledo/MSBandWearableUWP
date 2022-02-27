@@ -16,7 +16,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public HeartRateSensor(ILogger logger) : base(new HeartRateEvent(), logger)
+        public HeartRateSensor(ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService) : base(new HeartRateEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -57,7 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var heartRate = MSBandService.Singleton.BandClient.SensorManager.HeartRate;
+            var heartRate = msBandService.BandClient.SensorManager.HeartRate;
             bool userConsent = UserConsent.Granted == heartRate.GetCurrentUserConsent() || await heartRate.RequestUserConsentAsync().ConfigureAwait(false);
             if (!userConsent)
             {
@@ -76,12 +76,11 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <see cref="BandSensorReadingEventArgs{T}"/>
         private async void HeartRateReadingChanged(object sender, BandSensorReadingEventArgs<IBandHeartRateReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
             var heartRateReading = readingEventArgs.SensorReading;
             var heartRateEvent = new HeartRateEvent
             {
                 Bpm = heartRateReading.HeartRate,
-                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
+                AcquiredTime = ntpSyncService.LocalTimeNow,
                 ActualTime = heartRateReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
                 SubjectId = subjectViewService.SubjectId
@@ -96,7 +95,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
 
 
-            if (SubjectViewService.Singleton.IsSessionInProgress)
+            if (subjectViewService.IsSessionInProgress)
             {
                 logger.Information("{heartrate}", heartRateEvent);
             }

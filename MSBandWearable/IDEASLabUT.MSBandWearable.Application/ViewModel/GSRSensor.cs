@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         public event SensorValueChangedHandler SensorValueChanged;
 
-        public GSRSensor(ILogger logger) : base(new GSREvent(), logger)
+        public GSRSensor(ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService) : base(new GSREvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -32,20 +32,19 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public override async Task Subscribe()
         {
             await base.Subscribe().ConfigureAwait(false);
-            var gsr = MSBandService.Singleton.BandClient.SensorManager.Gsr;
+            var gsr = msBandService.BandClient.SensorManager.Gsr;
             gsr.ReadingChanged += GsrReadingChanged;
             _ = await gsr.StartReadingsAsync();
         }
 
         private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)
         {
-            var subjectViewService = SubjectViewService.Singleton;
             var gsrReading = readingEventArgs.SensorReading;
             var gsrEvent = new GSREvent
             {
                 // Value is in kOhms which is converted into micro seimens
                 Gsr = 1000.0 / gsrReading.Resistance,
-                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
+                AcquiredTime = ntpSyncService.LocalTimeNow,
                 ActualTime = gsrReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
                 SubjectId = subjectViewService.SubjectId
@@ -59,7 +58,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
 
 
-            if (SubjectViewService.Singleton.IsSessionInProgress)
+            if (subjectViewService.IsSessionInProgress)
             {
                 logger.Information("{gsr}", gsrEvent);
             }

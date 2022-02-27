@@ -126,6 +126,7 @@
     <Compile Include="Model\BandStatus.cs" />
     <Compile Include="Model\BaseEvent.cs" />
     <Compile Include="Json\ZonedDateTimeOptionalNanoConverter.cs" />
+    <Compile Include="Model\DateTimeModel.cs" />
     <Compile Include="Model\Elasticsearch\ElasticsearchBatchEventFormatter.cs" />
     <Compile Include="Model\Elasticsearch\ElasticsearchEventJsonFormatter.cs" />
     <Compile Include="Model\GSREvent.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Model\Notification\PayloadType.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
     <Compile Include="Service\ElasticsearchService.cs" />
+    <Compile Include="Service\MSBandManagerService.cs" />
     <Compile Include="Service\NtpSyncService.cs" />
     <Compile Include="Service\SubjectViewService.cs" />
     <Compile Include="Service\WebSocketService.cs" />

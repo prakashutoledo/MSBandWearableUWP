@@ -1,4 +1,5 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
+using IDEASLabUT.MSBandWearable.Application.Service;
 using Serilog;
 using System.Threading.Tasks;
 
@@ -12,13 +13,19 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
     public class BaseSensorModel<T> : BaseModel where T : BaseEvent
     {
-        protected readonly ILogger logger;
         private T model;
+        protected readonly ILogger logger;
+        protected readonly SubjectViewService subjectViewService;
+        protected readonly NtpSyncService ntpSyncService;
+        protected readonly MSBandService msBandService;
 
-        public BaseSensorModel(T model, ILogger logger)
+        public BaseSensorModel(T model, ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService)
         {
             Model = model;
             this.logger = logger;
+            this.msBandService = msBandService;
+            this.subjectViewService = subjectViewService;
+            this.ntpSyncService = ntpSyncService;
         }
 
         /// <summary>
