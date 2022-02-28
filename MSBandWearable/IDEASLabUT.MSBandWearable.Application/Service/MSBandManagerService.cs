@@ -13,12 +13,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     public class MSBandManagerService
     {
-        private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(LoggerInstance.Value, MSBandService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
+        private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(LoggerInstance.Value, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
         private static readonly Lazy<ILogger> LoggerInstance = new Lazy<ILogger>(() => MSBandWearableUtil.LoggerFactory.CreateLogger());
+        private static readonly string MSBandNamePrefix = "MSFT Band 2";
+
         // Lazy singleton pattern
         public static MSBandManagerService Singleton => Instance.Value;
 
-        private readonly MSBandService msBandService;
+        private readonly IBandClientService msBandService;
 
         public BandStatus BandStatus { get; private set; } = BandStatus.UNKNOWN;
         public string BandName { get; private set; }
@@ -29,7 +31,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public TemperatureSensor Temperature { get; private set; }
         public RRIntervalSensor RRInterval { get; private set; }
 
-        private MSBandManagerService(ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService)
+        private MSBandManagerService(ILogger logger, IBandClientService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService)
         {
             // private initialization
             this.msBandService = msBandService;
@@ -51,8 +53,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 BandName = bandName;
                 bandStatus = BandStatus.Connected;
             }
-            // Catching base exception is a bad practice but it won't allow multiple exception in a single catch
-            // Thus, all exceptions will cause band status to be in error status
             catch (Exception)
             {
                 bandStatus = BandStatus.Error;
@@ -78,7 +78,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public async Task<IEnumerable<string>> GetPairedBands()
         {
             var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true)).AsTask().ConfigureAwait(false);
-            return devices.Where(device => device.Name.StartsWith("MSFT Band 2")).Select(device => device.Name);
+            return devices.Where(device => device.Name.StartsWith(MSBandNamePrefix)).Select(device => device.Name);
         }
     }
 }

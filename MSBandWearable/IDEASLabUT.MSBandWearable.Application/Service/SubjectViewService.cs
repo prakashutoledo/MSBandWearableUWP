@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
-    public class SubjectViewService
+    public class SubjectViewService : ISubjectViewService
     {
         private static readonly Lazy<SubjectViewService> Instance = new Lazy<SubjectViewService>(() => new SubjectViewService());
         private static string subjectId = "Not Available";

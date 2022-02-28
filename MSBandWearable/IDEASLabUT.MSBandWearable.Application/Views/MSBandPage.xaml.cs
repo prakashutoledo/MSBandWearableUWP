@@ -49,22 +49,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             InitializeComponent();
             AddLiveCharts();
-            BandManagerService.HeartRate.SensorValueChanged += HeartRateSensorValueChanged;
-            BandManagerService.Gsr.SensorValueChanged += GsrSensorValueChanged;
-            BandManagerService.RRInterval.SensorValueChanged += IbiSensorValueChanged;
-            Timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-
-            WebSocketTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMinutes(5)
-                //Interval = TimeSpan.FromSeconds(10)
-            };
-
-            Timer.Tick += TimerOnTick;
-            WebSocketTimer.Tick += WebSocketTimerOnTick;
+            AddTimers();
+            AddSensorValueChangedHandlers();
         }
 
         private void AddLiveCharts()
@@ -76,16 +62,37 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             Charting.For<DateTimeModel>(dateTimeModelMapper);
         }
 
+        private void AddTimers()
+        {
+            Timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+
+            WebSocketTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMinutes(5)
+            };
+
+            Timer.Tick += TimerOnTick;
+            WebSocketTimer.Tick += WebSocketTimerOnTick;
+        }
+
+        private void AddSensorValueChangedHandlers()
+        {
+            BandManagerService.HeartRate.SensorValueChanged += HeartRateSensorValueChanged;
+            BandManagerService.Gsr.SensorValueChanged += GsrSensorValueChanged;
+            BandManagerService.RRInterval.SensorValueChanged += IbiSensorValueChanged;
+        }
+
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
         {
-            Trace.WriteLine("Close");
             SocketService.Close();
             await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
         }
 
         private async void TimerOnTick(object sender, object eventArgs)
         {
-
             await RunLaterInUIThread(() =>
             {
                 GsrDataPoint.Add(new DateTimeModel
@@ -270,7 +277,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task ConnectBand(string bandName, int selectedIndex)
         {
-            var msgDlg = new MessageDialog(string.Empty);
+            var messageDialog = new MessageDialog(string.Empty);
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 
@@ -282,24 +289,24 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
             catch (BandAccessDeniedException)
             {
-                msgDlg.Content = $"Microsoft Band ({bandName}) doesn't have a permission to synchorize with this device";
-                msgDlg.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
+                messageDialog.Content = $"Microsoft Band ({bandName}) doesn't have a permission to synchorize with this device";
+                messageDialog.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
             }
             catch (BandIOException)
             {
-                msgDlg.Content = $"Failed to connect to Microsoft Band ({bandName}).";
-                msgDlg.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
+                messageDialog.Content = $"Failed to connect to Microsoft Band ({bandName}).";
+                messageDialog.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
             }
             catch (Exception ex)
             {
-                msgDlg.Content = ex.ToString();
+                messageDialog.Content = ex.ToString();
             }
             finally
             {
-                if (!string.IsNullOrEmpty(msgDlg.Content))
+                if (!string.IsNullOrEmpty(messageDialog.Content))
                 {
                     syncStackPanel.Visibility = Visibility.Collapsed;
-                    _ = await msgDlg.ShowAsync();
+                    _ = await messageDialog.ShowAsync();
                 }
                 else
                 {

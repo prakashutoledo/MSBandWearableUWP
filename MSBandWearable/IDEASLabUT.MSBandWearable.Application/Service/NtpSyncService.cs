@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
-    public class NtpSyncService
+    public class NtpSyncService : INtpSyncService
     {
         private static readonly Lazy<NtpSyncService> Instance = new Lazy<NtpSyncService>(() => new NtpSyncService());
         private static object offset = TimeSpan.Zero;
@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             // private initialization
         }
 
-        private TimeSpan Offset
+        public TimeSpan Offset
         {
             get => (TimeSpan) offset;
             set => Interlocked.Exchange(ref offset, value);
@@ -32,7 +32,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         /// <summary>
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
-        /// Default pool is 'pool.ntp.org'
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
         public void SyncTimestamp(string poolAddress)

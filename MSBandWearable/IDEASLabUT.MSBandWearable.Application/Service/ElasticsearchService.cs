@@ -39,18 +39,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
             HttpResponseMessage response;
             string jsonBody = await new StreamReader(contentStream).ReadToEndAsync().ConfigureAwait(false);
-            
             using (var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri))
             using (var postBody = new StringContent(jsonBody, Encoding.UTF8, JsonContentType))
             {
                 postBody.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
                 postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, elastisearchAuthenticationKey);
-                //postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, Convert.ToBase64String(Encoding.UTF8.GetBytes("ideaslabut:9845315216@Pk")));
-                //postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, Convert.ToBase64String(Encoding.UTF8.GetBytes("ideaslabut:9845315216@Pk")));
                 postRequest.Content = postBody;
                 response = await httpClient.SendAsync(postRequest).ConfigureAwait(false);
             }
-
             Trace.WriteLine(response.StatusCode);
             Trace.WriteLine(await response.Content.ReadAsStringAsync()); 
             Trace.WriteLine("------------------------------------------");

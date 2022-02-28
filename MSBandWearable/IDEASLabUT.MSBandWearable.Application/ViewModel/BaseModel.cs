@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
-    [DataContract]
     public class BaseModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -39,7 +38,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             target = value;
             NotifyPropertyChanged(propertyName);
-
             return true;
         }
     }

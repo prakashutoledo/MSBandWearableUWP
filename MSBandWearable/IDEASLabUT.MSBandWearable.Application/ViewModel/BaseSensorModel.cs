@@ -15,11 +15,11 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     {
         private T model;
         protected readonly ILogger logger;
-        protected readonly SubjectViewService subjectViewService;
-        protected readonly NtpSyncService ntpSyncService;
-        protected readonly MSBandService msBandService;
+        protected readonly ISubjectViewService subjectViewService;
+        protected readonly INtpSyncService ntpSyncService;
+        protected readonly IBandClientService msBandService;
 
-        public BaseSensorModel(T model, ILogger logger, MSBandService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService)
+        public BaseSensorModel(T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
             Model = model;
             this.logger = logger;
