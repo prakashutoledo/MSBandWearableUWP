@@ -4,6 +4,7 @@ using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;
 
 using IDEASLabUT.MSBandWearable.Application.Model;
+using IDEASLabUT.MSBandWearable.Application.Model.Notification;
 using IDEASLabUT.MSBandWearable.Application.Service;
 using IDEASLabUT.MSBandWearable.Application.ViewModel;
 
@@ -22,8 +23,6 @@ using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using LiveCharts;
 using LiveCharts.Configurations;
-using IDEASLabUT.MSBandWearable.Application.Model.Notification;
-using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
 {

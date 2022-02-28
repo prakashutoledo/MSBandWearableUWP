@@ -1,11 +1,15 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Util;
 using IDEASLabUT.MSBandWearable.Application.ViewModel;
+
+using Microsoft.Band.Notifications;
 using Serilog;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 
@@ -13,8 +17,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     public class MSBandManagerService : IBandManagerService
     {
-        private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(LoggerInstance.Value, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
         private static readonly Lazy<ILogger> LoggerInstance = new Lazy<ILogger>(() => MSBandWearableUtil.LoggerFactory.CreateLogger());
+        private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(LoggerInstance.Value, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
         private static readonly string MSBandNamePrefix = "MSFT Band 2";
 
         // Lazy singleton pattern
@@ -22,7 +26,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         private readonly IBandClientService msBandService;
 
-        public BandStatus BandStatus { get; set; } = BandStatus.UNKNOWN;
+        public BandStatus BandStatus { get; set; }
         public string BandName { get; set; }
         public AccelerometerSensor Accelerometer { get; set; }
         public GSRSensor Gsr { get; set; }
@@ -35,12 +39,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
             // private initialization
             this.msBandService = msBandService;
-
+            BandStatus = BandStatus.UNKNOWN;
             Accelerometer = new AccelerometerSensor(logger, msBandService, subjectViewService, ntpSyncService);
             Gsr = new GSRSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            Gyroscope  = new GyroscopeSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            HeartRate  = new HeartRateSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            Temperature  = new TemperatureSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            Gyroscope = new GyroscopeSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            HeartRate = new HeartRateSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            Temperature = new TemperatureSensor(logger, msBandService, subjectViewService, ntpSyncService);
             RRInterval = new RRIntervalSensor(logger, msBandService, subjectViewService, ntpSyncService);
         }
 
@@ -66,12 +70,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public async Task SubscribeSensors()
         {
-            await Accelerometer.Subscribe().ConfigureAwait(false);
-            await Gsr.Subscribe().ConfigureAwait(false);
-            await Gyroscope.Subscribe().ConfigureAwait(false);
-            await HeartRate.Subscribe().ConfigureAwait(false);
-            await RRInterval.Subscribe().ConfigureAwait(false);
-            await Temperature.Subscribe().ConfigureAwait(false);
+            await Accelerometer.Subscribe();
+            await Gsr.Subscribe();
+            await Gyroscope.Subscribe();
+            await HeartRate.Subscribe();
+            await RRInterval.Subscribe();
+            await Temperature.Subscribe();
+            await msBandService.BandClient.NotificationManager.VibrateAsync(VibrationType.NotificationTwoTone);
             BandStatus = BandStatus.Subscribed;
         }
 
