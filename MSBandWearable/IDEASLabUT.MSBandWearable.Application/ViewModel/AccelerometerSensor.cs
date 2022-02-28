@@ -16,9 +16,9 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class AccelerometerSensor : BaseSensorModel<AccelerometerEvent>
     { 
         public event SensorValueChangedHandler SensorValueChanged;
+
         public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
-        {
-            
+        {   
         }
 
         private double AccelerationX
@@ -75,7 +75,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 AccelerationZ = accelerometerReading.AccelerationZ,
                 ActualTime = accelerometerReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
-                AcquiredTime = NtpSyncService.Singleton.LocalTimeNow,
+                AcquiredTime = ntpSyncService.LocalTimeNow,
                 SubjectId = subjectViewService.SubjectId
             };
 

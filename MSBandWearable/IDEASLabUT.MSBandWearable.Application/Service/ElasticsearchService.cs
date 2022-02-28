@@ -14,20 +14,19 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     public class ElasticsearchService : IHttpClient
     {
-        private const string JsonContentType = "application/json";
         private const string BasicAuthorization = "Basic";
 
-        private readonly HttpClient httpClient;
+        private readonly IElasticsearchRestClient elasticsearchRestClient;
         private readonly string elastisearchAuthenticationKey;
 
-        public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, new HttpClient())
+        public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, ElasticsearchRestClient.Singleton)
         {
         }
 
-        public ElasticsearchService(IConfiguration applicationProperties, HttpClient httpClient)
+        public ElasticsearchService(IConfiguration applicationProperties, IElasticsearchRestClient elasticsearchRestClient)
         {
             elastisearchAuthenticationKey = applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey);
-            this.httpClient = httpClient;
+            this.elasticsearchRestClient = elasticsearchRestClient;
         }
 
         public virtual void Configure(IConfiguration configuration)
@@ -37,19 +36,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
-            HttpResponseMessage response;
-            string jsonBody = await new StreamReader(contentStream).ReadToEndAsync().ConfigureAwait(false);
-            using (var postRequest = new HttpRequestMessage(HttpMethod.Post, requestUri))
-            using (var postBody = new StringContent(jsonBody, Encoding.UTF8, JsonContentType))
-            {
-                postBody.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
-                postRequest.Headers.Authorization = new AuthenticationHeaderValue(BasicAuthorization, elastisearchAuthenticationKey);
-                postRequest.Content = postBody;
-                response = await httpClient.SendAsync(postRequest).ConfigureAwait(false);
-            }
-            Trace.WriteLine(response.StatusCode);
+            string jsonBody = await new StreamReader(contentStream).ReadToEndAsync();
+            HttpResponseMessage response = await elasticsearchRestClient.BulkRequestAsync(requestUri, jsonBody, new AuthenticationHeaderValue(BasicAuthorization, elastisearchAuthenticationKey));
             Trace.WriteLine(await response.Content.ReadAsStringAsync()); 
-            Trace.WriteLine("------------------------------------------");
             return response;
         }
 
@@ -63,7 +52,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
             if (disposing)
             {
-                httpClient.Dispose();
+                elasticsearchRestClient.Dispose();
             }
         }
 
