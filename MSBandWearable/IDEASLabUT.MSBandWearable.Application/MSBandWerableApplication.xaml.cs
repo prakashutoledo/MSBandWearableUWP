@@ -39,9 +39,7 @@ namespace IDEASLabUT.MSBandWearable.Application
             if (rootFrame == null)
             {
                 rootFrame = new Frame();
-
                 rootFrame.NavigationFailed += OnNavigationFailed;
-
                 Window.Current.Content = rootFrame;
             }
 

@@ -47,6 +47,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Json
                     ? offset.DateTime.ToString(DateTimeFormatter)
                     : throw new Exception("Cannot convert to datetime string");
             }
+            // this will remove hyphen character from timezone value to match elasticsearch datetime format
             writer.WriteValue(text.Remove(text.Length - 3, 1));
         }
     }

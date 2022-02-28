@@ -144,6 +144,7 @@
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
     <Compile Include="Service\ElasticsearchService.cs" />
     <Compile Include="Service\IBandClientService.cs" />
+    <Compile Include="Service\IBandManagerService.cs" />
     <Compile Include="Service\INtpSyncService.cs" />
     <Compile Include="Service\ISubjectViewService.cs" />
     <Compile Include="Service\MSBandManagerService.cs" />
@@ -235,6 +236,12 @@
     <Content Include="ApplicationProperties.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+	<Content Include="ApplicationProperties.json.local">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ApplicationProperties.json.local" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

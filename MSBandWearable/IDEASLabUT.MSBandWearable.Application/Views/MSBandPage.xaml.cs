@@ -34,7 +34,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
     /// </summary>
     public sealed partial class MSBandPage
     {
-        private MSBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
+        private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
+        private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
         private WebSocketService SocketService { get; } = WebSocketService.Singleton;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
@@ -68,13 +69,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
+            Timer.Tick += TimerOnTick;
 
             WebSocketTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMinutes(5)
             };
-
-            Timer.Tick += TimerOnTick;
             WebSocketTimer.Tick += WebSocketTimerOnTick;
         }
 
@@ -156,8 +156,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
         {
-            SubjectViewService.Singleton.CurrentView = empaticaE4Band.FromView;
-            SubjectViewService.Singleton.SubjectId = empaticaE4Band.SubjectId;
+            SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
+            SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
             
             await RunLaterInUIThread(() =>
             {
@@ -245,14 +245,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             string label = "Pause Session";
             bool sessionInProgress = true;
 
-            if (SubjectViewService.Singleton.IsSessionInProgress)
+            if (SubjectAndViewService.IsSessionInProgress)
             {
                 symbolIcon = new SymbolIcon(Symbol.Play);
                 label = "Resume Session";
                 sessionInProgress = false;
             }
 
-            SubjectViewService.Singleton.IsSessionInProgress = sessionInProgress;
+            SubjectAndViewService.IsSessionInProgress = sessionInProgress;
             await RunLaterInUIThread(() =>
             {
                 startOrStopSessionButtton.Icon = symbolIcon;

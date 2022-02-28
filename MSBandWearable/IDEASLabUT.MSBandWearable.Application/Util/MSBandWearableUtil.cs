@@ -31,6 +31,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
                 return new ConfigurationBuilder()
                     .SetBasePath(Package.Current.InstalledLocation.Path)
                     .AddJsonFile(ApplicationPropertiesFileName, optional: false, reloadOnChange: false)
+                    .AddJsonFile(ApplicationPropertiesLocalFileName, optional: true, reloadOnChange: false)
                     .Build();
             });
 

@@ -1,0 +1,5 @@
+﻿{
+    "elasticsearch": {
+        "authenticationKey": "<base64 decoded basic authorization elasticsearchUser:Password>"
+    }
+}

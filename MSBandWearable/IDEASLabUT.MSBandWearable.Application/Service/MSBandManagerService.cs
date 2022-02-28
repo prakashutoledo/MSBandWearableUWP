@@ -11,7 +11,7 @@ using Windows.Devices.Enumeration;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
-    public class MSBandManagerService
+    public class MSBandManagerService : IBandManagerService
     {
         private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(LoggerInstance.Value, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
         private static readonly Lazy<ILogger> LoggerInstance = new Lazy<ILogger>(() => MSBandWearableUtil.LoggerFactory.CreateLogger());
@@ -22,16 +22,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         private readonly IBandClientService msBandService;
 
-        public BandStatus BandStatus { get; private set; } = BandStatus.UNKNOWN;
-        public string BandName { get; private set; }
-        public AccelerometerSensor Accelerometer { get; private set; }
-        public GSRSensor Gsr { get; private set; }
-        public GyroscopeSensor Gyroscope { get; private set; }
-        public HeartRateSensor HeartRate { get; private set; }
-        public TemperatureSensor Temperature { get; private set; }
-        public RRIntervalSensor RRInterval { get; private set; }
+        public BandStatus BandStatus { get; set; } = BandStatus.UNKNOWN;
+        public string BandName { get; set; }
+        public AccelerometerSensor Accelerometer { get; set; }
+        public GSRSensor Gsr { get; set; }
+        public GyroscopeSensor Gyroscope { get; set; }
+        public HeartRateSensor HeartRate { get; set; }
+        public TemperatureSensor Temperature { get; set; }
+        public RRIntervalSensor RRInterval { get; set; }
 
-        private MSBandManagerService(ILogger logger, IBandClientService msBandService, SubjectViewService subjectViewService, NtpSyncService ntpSyncService)
+        private MSBandManagerService(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
             // private initialization
             this.msBandService = msBandService;
