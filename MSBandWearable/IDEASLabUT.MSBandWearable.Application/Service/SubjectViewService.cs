@@ -30,7 +30,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             set => Interlocked.Exchange(ref currentView, value);
         }
 
-        public bool IsSessionInProgress
+        public bool SessionInProgress
         {
             get => (bool) sessionInProgress;
             set => Interlocked.Exchange(ref sessionInProgress, value);

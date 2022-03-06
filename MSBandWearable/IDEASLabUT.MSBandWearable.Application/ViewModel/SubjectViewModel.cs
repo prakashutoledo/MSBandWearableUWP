@@ -8,27 +8,28 @@
     public class SubjectViewModel : BaseModel
     {
         private string subjectId;
+        private string currentView;
+        private string e4SerialNumber;
+        private string msBandSerialNumber;
+
         public string SubjectId
         {
             get => subjectId;
             set => UpdateAndNotify(ref subjectId, value);
         }
 
-        private string currentView;
         public string CurrentView
         {
             get => currentView;
             set => UpdateAndNotify(ref currentView, value);
         }
 
-        private string e4SerialNumber;
         public string E4SerialNumber
         {
             get => e4SerialNumber;
             set => UpdateAndNotify(ref e4SerialNumber, value);
         }
 
-        private string msBandSerialNumber;
         public string MSBandSerialNumber
         {
             get => msBandSerialNumber;

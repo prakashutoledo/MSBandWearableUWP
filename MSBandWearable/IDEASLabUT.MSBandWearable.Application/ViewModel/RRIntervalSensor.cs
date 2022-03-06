@@ -6,13 +6,12 @@ using Microsoft.Band.Sensors;
 using System.Threading.Tasks;
 using Microsoft.Band;
 using Serilog;
+using System;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
-    public class RRIntervalSensor : BaseSensorModel<RRIntervalEvent>
+    public class RRIntervalSensor : BaseSensorModel<RRIntervalEvent, IBandRRIntervalReading>
     {
-        public event SensorValueChangedHandler SensorValueChanged;
-
         public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new RRIntervalEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
@@ -32,42 +31,53 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <returns>An object used to await this task</returns>
         public override async Task Subscribe()
         {
-            await base.Subscribe().ConfigureAwait(false);
+            await base.Subscribe();
             var ibi = msBandService.BandClient.SensorManager.RRInterval;
 
-            bool userConsent = UserConsent.Granted == ibi.GetCurrentUserConsent() || await ibi.RequestUserConsentAsync().ConfigureAwait(false);
+            bool userConsent = UserConsent.Granted == ibi.GetCurrentUserConsent() || await ibi.RequestUserConsentAsync();
             if (!userConsent)
             {
                 return;
             }
 
-            ibi.ReadingChanged += RRIntervalReadingChanged;
-            _ = await ibi.StartReadingsAsync().ConfigureAwait(false);
+            UpdateSensorReadingChangedHandler(ibi, RRIntervalReadingChanged);
+            _ = await ibi.StartReadingsAsync();
         }
 
-        private async void RRIntervalReadingChanged(object sender, BandSensorReadingEventArgs<IBandRRIntervalReading> readingEventArgs)
+        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandRRIntervalReading> ibi, Action<IBandRRIntervalReading> sensorReadingChanged)
         {
-            var rrIntervalReading = readingEventArgs.SensorReading;
+            if (ibi == null)
+            {
+                return;
+            }
+
+            ibi.ReadingChanged += (sender, readingEventArgs) =>
+            {
+                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
+            };
+        }
+
+        private async void RRIntervalReadingChanged(IBandRRIntervalReading ibiReading)
+        {
             var ibiEvent = new RRIntervalEvent
             {
-                Ibi = rrIntervalReading.Interval,
+                Ibi = ibiReading.Interval,
                 AcquiredTime = ntpSyncService.LocalTimeNow,
-                ActualTime = rrIntervalReading.Timestamp.DateTime,
+                ActualTime = ibiReading.Timestamp.DateTime,
                 FromView = subjectViewService.CurrentView,
                 SubjectId = subjectViewService.SubjectId
             };
 
-            await RunLaterInUIThread(() => Ibi = ibiEvent.Ibi).ConfigureAwait(false);
+            await RunLaterInUIThread(() => Ibi = ibiEvent.Ibi);
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(ibiEvent).ConfigureAwait(false);
+                await SensorValueChanged.Invoke(ibiEvent);
             }
 
-
-            if (subjectViewService.IsSessionInProgress)
+            if (subjectViewService.SessionInProgress)
             {
-                logger.Information("{ibi}", ibiEvent.ToString());
+                logger.Information("{ibi}", ibiEvent);
             }
         }
     }

@@ -52,7 +52,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
         }
 
         public static LoggerConfiguration LoggerFactory => LoggerConfigurationInstance.Value;
-
         public static IConfiguration ApplicationProperties => ApplicationPropertiesInstance.Value;
 
         public static async Task RunLaterInUIThread(Action action, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)

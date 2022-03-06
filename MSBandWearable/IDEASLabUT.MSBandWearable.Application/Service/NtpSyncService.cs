@@ -9,7 +9,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
     public class NtpSyncService : INtpSyncService
     {
         private static readonly Lazy<NtpSyncService> Instance = new Lazy<NtpSyncService>(() => new NtpSyncService());
-        private static object offset = TimeSpan.Zero;
+        private static object correctionOffset = TimeSpan.Zero;
 
         // Lazy singleton pattern
         public static NtpSyncService Singleton => Instance.Value;
@@ -19,16 +19,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             // private initialization
         }
 
-        public TimeSpan Offset
+        public TimeSpan CorrectionOffset
         {
-            get => (TimeSpan) offset;
-            set => Interlocked.Exchange(ref offset, value);
+            get => (TimeSpan) correctionOffset;
+            set => Interlocked.Exchange(ref correctionOffset, value);
         }
 
         /// <summary>
         /// The synchronized current timestamp with correction offset added
         /// </summary>
-        public DateTime LocalTimeNow => DateTime.Now + Offset;
+        public DateTime LocalTimeNow => DateTime.Now + CorrectionOffset;
 
         /// <summary>
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
@@ -39,8 +39,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             // Only used the first address from the given pool
             using (NtpClient ntp = new NtpClient(Dns.GetHostAddresses(poolAddress)[0]))
             {
-                Offset = ntp.GetCorrectionOffset();
-                Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({offset}).");
+                CorrectionOffset = ntp.GetCorrectionOffset();
+                Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
             }
         }
     }

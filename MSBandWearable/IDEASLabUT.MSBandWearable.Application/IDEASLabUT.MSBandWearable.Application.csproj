@@ -137,7 +137,6 @@
     <Compile Include="Model\Notification\EmpaticaE4Band.cs" />
     <Compile Include="Model\Notification\EmpaticaE4BandMessage.cs" />
     <Compile Include="Model\Notification\Message.cs" />
-    <Compile Include="Model\Notification\MessageReader.cs" />
     <Compile Include="Model\Notification\Payload.cs" />
     <Compile Include="Model\Notification\PayloadAction.cs" />
     <Compile Include="Model\Notification\PayloadType.cs" />

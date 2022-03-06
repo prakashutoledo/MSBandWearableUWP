@@ -14,6 +14,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public static ElasticsearchRestClient Singleton => Instance.Value;
 
         private const string JsonContentType = "application/json";
+
         private readonly HttpClient httpClient;
 
         public ElasticsearchRestClient(HttpClient httpClient)

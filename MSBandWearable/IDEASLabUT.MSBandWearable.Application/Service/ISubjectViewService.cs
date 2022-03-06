@@ -4,6 +4,6 @@
     {
         string SubjectId { get; set; }
         string CurrentView { get; set; }
-        bool IsSessionInProgress { get; set; }
+        bool SessionInProgress { get; set; }
     }
 }

@@ -15,26 +15,24 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         // Lazy singleton pattern
         public static WebSocketService Singleton => Instance.Value;
 
-        public delegate Task MessageReceivedHandler(EmpaticaE4Band empaticaE4Band);
-
-        private event MessageReceivedHandler OnEmpaticaE4BandMessageReceived;
+        private Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived;
         private MessageWebSocket messageWebSocket;
 
         private WebSocketService()
         {
         }
 
-        public async Task Connect(string webSocketUrl, MessageReceivedHandler onEmpaticaE4BandMessageReceived)
+        public async Task Connect(string webSocketUrl, Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived)
         {
             messageWebSocket = new MessageWebSocket();
             if(onEmpaticaE4BandMessageReceived != null)
             {
-                OnEmpaticaE4BandMessageReceived += onEmpaticaE4BandMessageReceived;
+                this.onEmpaticaE4BandMessageReceived = onEmpaticaE4BandMessageReceived;
             }
             messageWebSocket.MessageReceived += MessageReceivedEvent;
             messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
 
-            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask().ConfigureAwait(false);
+            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl));
         }
 
 
@@ -42,9 +40,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
             using (var dataWriter = new DataWriter(messageWebSocket.OutputStream))
             {
-                dataWriter.WriteString(message);
-                await dataWriter.StoreAsync();
-                dataWriter.DetachStream();
+                _ = dataWriter.WriteString(message);
+                _ = await dataWriter.StoreAsync();
+                _ = dataWriter.DetachStream();
             }
         }
 
@@ -54,7 +52,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
                 var message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
-                await ParseMessageAndSend(message).ConfigureAwait(false);
+                await ParseMessageAndSend(message);
             }
         }
 
@@ -65,21 +63,21 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 return;
             }
 
-            var baseaMessage = JsonConvert.DeserializeObject<BaseMessage>(message);
+            var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(message);
 
-            if (baseaMessage == null)
+            if (baseMessage == null)
             {
                 return;
             }
 
-            switch(baseaMessage.PayloadType)
+            switch(baseMessage.PayloadType)
             {
                 case PayloadType.E4Band:
                     var empaticaE4BandMessage = JsonConvert.DeserializeObject<EmpaticaE4BandMessage>(message);
 
-                    if (OnEmpaticaE4BandMessageReceived != null)
+                    if (onEmpaticaE4BandMessageReceived != null)
                     {
-                        await OnEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload).ConfigureAwait(false);
+                        await onEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload);
                     }
                     break;
             }

@@ -134,7 +134,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task HeartRateSensorValueChanged(HeartRateEvent value)
         {
-            await RunLaterInUIThread(() => heartRatePath.Fill = new SolidColorBrush(Locked == BandManagerService.HeartRate.HeartRateStatus ? White : Transparent)).ConfigureAwait(false);
+            await RunLaterInUIThread(() => heartRatePath.Fill = new SolidColorBrush(Locked == BandManagerService.HeartRate.HeartRateStatus ? White : Transparent));
         }
 
         private async void PageLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -244,14 +244,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             string label = "Pause Session";
             bool sessionInProgress = true;
 
-            if (SubjectAndViewService.IsSessionInProgress)
+            if (SubjectAndViewService.SessionInProgress)
             {
                 symbolIcon = new SymbolIcon(Symbol.Play);
                 label = "Resume Session";
                 sessionInProgress = false;
             }
 
-            SubjectAndViewService.IsSessionInProgress = sessionInProgress;
+            SubjectAndViewService.SessionInProgress = sessionInProgress;
             await RunLaterInUIThread(() =>
             {
                 startOrStopSessionButtton.Icon = symbolIcon;

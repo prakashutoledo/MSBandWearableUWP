@@ -5,13 +5,12 @@ using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
 using System.Threading.Tasks;
 using Serilog;
+using System;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
-    public class TemperatureSensor : BaseSensorModel<TemperatureEvent>
+    public class TemperatureSensor : BaseSensorModel<TemperatureEvent, IBandSkinTemperatureReading>
     {
-        public event SensorValueChangedHandler SensorValueChanged;
-
         public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new TemperatureEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
@@ -31,15 +30,27 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <returns>An object used to await this task</returns>
         public override async Task Subscribe()
         {
-            await base.Subscribe().ConfigureAwait(false);
+            await base.Subscribe();
             var temperature = msBandService.BandClient.SensorManager.SkinTemperature;
-            temperature.ReadingChanged += TemperatueReadingChanged;
-            _ = await temperature.StartReadingsAsync().ConfigureAwait(false);
+            UpdateSensorReadingChangedHandler(temperature, TemperatueReadingChanged);
+            _ = await temperature.StartReadingsAsync();
         }
 
-        private async void TemperatueReadingChanged(object sender, BandSensorReadingEventArgs<IBandSkinTemperatureReading> readingEventArgs)
+        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandSkinTemperatureReading> temperature, Action<IBandSkinTemperatureReading> sensorReadingChanged)
         {
-            var temperatureReading = readingEventArgs.SensorReading;
+            if (temperature == null)
+            {
+                return;
+            }
+
+            temperature.ReadingChanged += (sender, readingEventArgs) =>
+            {
+                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
+            };
+        }
+
+        private async void TemperatueReadingChanged(IBandSkinTemperatureReading temperatureReading)
+        {
             var temperatureEvent = new TemperatureEvent
             {
                 Temperature = temperatureReading.Temperature,
@@ -53,10 +64,10 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(temperatureEvent).ConfigureAwait(false);
+                await SensorValueChanged.Invoke(temperatureEvent);
             }
 
-            if (subjectViewService.IsSessionInProgress)
+            if (subjectViewService.SessionInProgress)
             {
                 logger.Information("{temperature}", temperatureEvent);
             }

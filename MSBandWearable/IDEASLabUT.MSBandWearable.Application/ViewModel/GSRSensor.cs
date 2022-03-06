@@ -5,13 +5,12 @@ using IDEASLabUT.MSBandWearable.Application.Service;
 using Microsoft.Band.Sensors;
 using System.Threading.Tasks;
 using Serilog;
+using System;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel
 {
-    public class GSRSensor : BaseSensorModel<GSREvent>
+    public class GSRSensor : BaseSensorModel<GSREvent, IBandGsrReading>
     {
-        public event SensorValueChangedHandler SensorValueChanged;
-
         public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new GSREvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
@@ -31,10 +30,23 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <returns>An object used to await this task</returns>
         public override async Task Subscribe()
         {
-            await base.Subscribe().ConfigureAwait(false);
+            await base.Subscribe();
             var gsr = msBandService.BandClient.SensorManager.Gsr;
             gsr.ReadingChanged += GsrReadingChanged;
             _ = await gsr.StartReadingsAsync();
+        }
+
+        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandGsrReading> gsr, Action<IBandGsrReading> sensorReadingChanged)
+        {
+            if (gsr == null)
+            {
+                return;
+            }
+                
+            gsr.ReadingChanged += (sender, readingEventArgs) =>
+            {
+                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
+            };       
         }
 
         private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)
@@ -50,15 +62,15 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 SubjectId = subjectViewService.SubjectId
             };
 
-            await RunLaterInUIThread(() => Gsr = gsrEvent.Gsr).ConfigureAwait(false);
+            await RunLaterInUIThread(() => Gsr = gsrEvent.Gsr);
 
             if (SensorValueChanged != null)
             {
-                await SensorValueChanged.Invoke(gsrEvent).ConfigureAwait(false);
+                await SensorValueChanged.Invoke(gsrEvent);
             }
 
 
-            if (subjectViewService.IsSessionInProgress)
+            if (subjectViewService.SessionInProgress)
             {
                 logger.Information("{gsr}", gsrEvent);
             }
