@@ -24,7 +24,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public async Task<HttpResponseMessage> BulkRequestAsync(string elasticsearchURI, string requestBody, AuthenticationHeaderValue authenticationHeaderValue)
         {
             HttpResponseMessage response;
-
             using (var bulkPostRequest = new HttpRequestMessage(HttpMethod.Post, elasticsearchURI))
             using (var bulkRequestContent = new StringContent(requestBody, Encoding.UTF8, JsonContentType))
             {
@@ -33,7 +32,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 bulkPostRequest.Content = bulkRequestContent;
                 response = await httpClient.SendAsync(bulkPostRequest);
             }
-
             return response;
         }
 

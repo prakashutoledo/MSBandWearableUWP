@@ -16,8 +16,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public static WebSocketService Singleton => Instance.Value;
 
         public delegate Task MessageReceivedHandler(EmpaticaE4Band empaticaE4Band);
-        private event MessageReceivedHandler OnEmpaticaE4BandMessageReceived;
 
+        private event MessageReceivedHandler OnEmpaticaE4BandMessageReceived;
         private MessageWebSocket messageWebSocket;
 
         private WebSocketService()

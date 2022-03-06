@@ -18,7 +18,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         public event SensorValueChangedHandler SensorValueChanged;
 
         public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
-        {   
+        {
         }
 
         private double AccelerationX

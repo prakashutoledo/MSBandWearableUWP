@@ -142,9 +142,11 @@
     <Compile Include="Model\Notification\PayloadAction.cs" />
     <Compile Include="Model\Notification\PayloadType.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
+    <Compile Include="Service\ElasticsearchRestClient.cs" />
     <Compile Include="Service\ElasticsearchService.cs" />
     <Compile Include="Service\IBandClientService.cs" />
     <Compile Include="Service\IBandManagerService.cs" />
+    <Compile Include="Service\IElasticsearchRestClient.cs" />
     <Compile Include="Service\INtpSyncService.cs" />
     <Compile Include="Service\ISubjectViewService.cs" />
     <Compile Include="Service\MSBandManagerService.cs" />

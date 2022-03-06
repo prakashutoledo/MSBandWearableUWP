@@ -14,10 +14,10 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     public class GyroscopeSensor : BaseSensorModel<GyroscopeEvent>
     {
         public event SensorValueChangedHandler SensorValueChanged;
+
         public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new GyroscopeEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
-
 
         private double AngularX
         {
