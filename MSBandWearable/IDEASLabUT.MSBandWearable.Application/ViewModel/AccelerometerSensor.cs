@@ -47,33 +47,21 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         }
 
         /// <summary>
-        /// A task that can subscribe accelerometer sensor from Microsoft Band 2
-        /// </summary>
-        /// <returns>An object used to await this task</returns>
-        public override async Task Subscribe()
-        {
-            await base.Subscribe().ConfigureAwait(false);
-            var accelerometer = msBandService.BandClient.SensorManager.Accelerometer;
-            UpdateSensorReadingChangedHandler(accelerometer, AccelerometerReadingChanged);
-            _ = await accelerometer.StartReadingsAsync();
-        }
-
-        /// <summary>
         /// Updates the given accelerometer sensor to include accelerometer reading value changed handler for given action 
         /// </summary>
         /// <param name="accelerometer">A MS Band accelerometer sensor</param>
         /// <param name="sensorReadingChanged">A reading changed action for handling acceleorometer value reading</param>
         public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandAccelerometerReading> accelerometer, Action<IBandAccelerometerReading> sensorReadingChanged)
         {
-            if (accelerometer == null)
-            {
-                return;
-            }
-
             accelerometer.ReadingChanged += (sender, readingEventArgs) =>
             {
                 sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
             };
+        }
+
+        protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager)
+        {
+            return bandSensorManager.Accelerometer;
         }
 
         /// <summary>
@@ -81,7 +69,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// </summary>
         /// <param name="sender">A sender of the current changed event</param>
         /// <param name="readingEventArgs">An accelerometer reading event arguments</param>
-        private async void AccelerometerReadingChanged(IBandAccelerometerReading accelerometerReading)
+        protected override async void SensorReadingChanged(IBandAccelerometerReading accelerometerReading)
         {
             var accelerometerEvent = new AccelerometerEvent
             {

@@ -24,40 +24,21 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 NotifyPropertyChanged(nameof(Model));
             }
         }
-
-        /// <summary>
-        /// A task that can subscribe GSR sensor from Microsoft Band 2
-        /// </summary>
-        /// <returns>An object used to await this task</returns>
-        public override async Task Subscribe()
+    
+        protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager)
         {
-            await base.Subscribe();
-            var ibi = msBandService.BandClient.SensorManager.RRInterval;
-
-            bool userConsent = UserConsent.Granted == ibi.GetCurrentUserConsent() || await ibi.RequestUserConsentAsync();
-            if (!userConsent)
-            {
-                return;
-            }
-
-            UpdateSensorReadingChangedHandler(ibi, RRIntervalReadingChanged);
-            _ = await ibi.StartReadingsAsync();
+            return bandSensorManager.RRInterval;
         }
 
         public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandRRIntervalReading> ibi, Action<IBandRRIntervalReading> sensorReadingChanged)
         {
-            if (ibi == null)
-            {
-                return;
-            }
-
             ibi.ReadingChanged += (sender, readingEventArgs) =>
             {
                 sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
             };
         }
 
-        private async void RRIntervalReadingChanged(IBandRRIntervalReading ibiReading)
+        protected override async void SensorReadingChanged(IBandRRIntervalReading ibiReading)
         {
             var ibiEvent = new RRIntervalEvent
             {

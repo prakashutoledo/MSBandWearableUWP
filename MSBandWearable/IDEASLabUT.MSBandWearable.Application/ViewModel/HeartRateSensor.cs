@@ -50,35 +50,17 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
         }
 
-        /// <summary>
-        /// A task that can subscribe heart rate sensor from Microsoft Band 2
-        /// </summary>
-        /// <returns>An object used to await this task</returns>
-        public override async Task Subscribe()
-        {
-            await base.Subscribe();
-            var heartRate = msBandService.BandClient.SensorManager.HeartRate;
-            bool userConsent = UserConsent.Granted == heartRate.GetCurrentUserConsent() || await heartRate.RequestUserConsentAsync();
-            if (!userConsent)
-            {
-                return;
-            }
-
-            UpdateSensorReadingChangedHandler(heartRate, HeartRateReadingChanged);
-            _ = await heartRate.StartReadingsAsync();
-        }
-
         public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandHeartRateReading> heartRate, Action<IBandHeartRateReading> sensorReadingChanged)
         {
-            if(heartRate == null)
-            {
-                return;
-            }
-
             heartRate.ReadingChanged += (sender, readingEventArgs) =>
             {
                 sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
             };
+        }
+
+        protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager)
+        {
+            return sensorManager.HeartRate;
         }
 
         /// <summary>
@@ -87,8 +69,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">A heart rate reading event arguments</param>
         /// <see cref="BandSensorReadingEventArgs{T}"/>
-        private async void HeartRateReadingChanged(IBandHeartRateReading heartRateReading)
-        { 
+        protected override async void SensorReadingChanged(IBandHeartRateReading heartRateReading)
+        {
             var heartRateEvent = new HeartRateEvent
             {
                 Bpm = heartRateReading.HeartRate,

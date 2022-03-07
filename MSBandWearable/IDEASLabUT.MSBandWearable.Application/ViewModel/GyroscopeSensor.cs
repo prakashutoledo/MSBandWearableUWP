@@ -45,28 +45,17 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
         }
 
-        /// <summary>
-        /// A task that can subscribe gyroscope sensor from Microsoft Band 2
-        /// </summary>
-        /// <returns>A task that is already complete</returns>
-        public override async Task Subscribe()
-        {
-            await base.Subscribe().ConfigureAwait(false);
-            var gyroscope = msBandService.BandClient.SensorManager.Gyroscope;
-            UpdateSensorReadingChangedHandler(gyroscope, GyroscopeReadingChanged);
-            _ = await gyroscope.StartReadingsAsync();
-        }
-
         public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandGyroscopeReading> gyroscope, Action<IBandGyroscopeReading> sensorReadingChanged)
         {
-            if(gyroscope == null) {
-                return;
-            }
-
             gyroscope.ReadingChanged += (sender, readingEventArgs) =>
             {
                 sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
             };
+        }
+
+        protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager)
+        {
+            return bandSensorManager.Gyroscope;
         }
 
         /// <summary>
@@ -74,7 +63,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// </summary>
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">An gyroscope reading event Argument</param>
-        private async void GyroscopeReadingChanged(IBandGyroscopeReading gyroscopeReading)
+        protected override async void SensorReadingChanged(IBandGyroscopeReading gyroscopeReading)
         {
             var gyroscopeEvent = new GyroscopeEvent
             {

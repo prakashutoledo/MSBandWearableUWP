@@ -24,29 +24,17 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
         }
 
-        /// <summary>
-        /// A task that can subscribe GSR sensor from Microsoft Band 2
-        /// </summary>
-        /// <returns>An object used to await this task</returns>
-        public override async Task Subscribe()
+        protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager)
         {
-            await base.Subscribe();
-            var gsr = msBandService.BandClient.SensorManager.Gsr;
-            gsr.ReadingChanged += GsrReadingChanged;
-            _ = await gsr.StartReadingsAsync();
+            return bandSensorManager.Gsr;
         }
 
         public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandGsrReading> gsr, Action<IBandGsrReading> sensorReadingChanged)
         {
-            if (gsr == null)
-            {
-                return;
-            }
-                
             gsr.ReadingChanged += (sender, readingEventArgs) =>
             {
                 sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
-            };       
+            };
         }
 
         private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)

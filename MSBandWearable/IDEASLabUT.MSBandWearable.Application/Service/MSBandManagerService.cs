@@ -82,7 +82,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public async Task<IEnumerable<string>> GetPairedBands()
         {
-            var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true)).AsTask().ConfigureAwait(false);
+            var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true));
             return devices.Where(device => device.Name.StartsWith(MSBandNamePrefix)).Select(device => device.Name);
         }
     }

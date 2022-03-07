@@ -24,32 +24,20 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             }
         }
 
-        /// <summary>
-        /// A task that can subscribe GSR sensor from Microsoft Band 2
-        /// </summary>
-        /// <returns>An object used to await this task</returns>
-        public override async Task Subscribe()
-        {
-            await base.Subscribe();
-            var temperature = msBandService.BandClient.SensorManager.SkinTemperature;
-            UpdateSensorReadingChangedHandler(temperature, TemperatueReadingChanged);
-            _ = await temperature.StartReadingsAsync();
-        }
-
         public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandSkinTemperatureReading> temperature, Action<IBandSkinTemperatureReading> sensorReadingChanged)
         {
-            if (temperature == null)
-            {
-                return;
-            }
-
             temperature.ReadingChanged += (sender, readingEventArgs) =>
             {
                 sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
             };
         }
 
-        private async void TemperatueReadingChanged(IBandSkinTemperatureReading temperatureReading)
+        protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager)
+        {
+            return sensorManager.SkinTemperature;
+        }
+
+        protected override async void SensorReadingChanged(IBandSkinTemperatureReading temperatureReading)
         {
             var temperatureEvent = new TemperatureEvent
             {

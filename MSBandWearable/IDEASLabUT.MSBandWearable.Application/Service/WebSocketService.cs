@@ -70,7 +70,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 return;
             }
 
-            switch(baseMessage.PayloadType)
+            switch (baseMessage.PayloadType)
             {
                 case PayloadType.E4Band:
                     var empaticaE4BandMessage = JsonConvert.DeserializeObject<EmpaticaE4BandMessage>(message);
@@ -79,6 +79,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                     {
                         await onEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload);
                     }
+                    break;
+                default:
                     break;
             }
         }

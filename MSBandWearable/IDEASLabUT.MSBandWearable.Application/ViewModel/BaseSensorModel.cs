@@ -1,5 +1,6 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
+using Microsoft.Band;
 using Microsoft.Band.Sensors;
 using Serilog;
 using System;
@@ -19,7 +20,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         protected readonly ILogger logger;
         protected readonly ISubjectViewService subjectViewService;
         protected readonly INtpSyncService ntpSyncService;
-        protected readonly IBandClientService msBandService;
+        private readonly IBandClientService msBandService;
+
         /// <summary>
         /// An asynchronous task function for notifying listener that sensor value has been changed.
         /// </summary>
@@ -49,14 +51,28 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="sensorReadingChanged">A reading changed action for handling sensor value reading</param>
         public abstract void UpdateSensorReadingChangedHandler(IBandSensor<R> sensor, Action<R> sensorReadingChanged);
 
+        protected abstract IBandSensor<R> GetBandSensor(IBandSensorManager sensorManager);
+
+        protected virtual async void SensorReadingChanged(R sensorReading)
+        {
+            await Task.CompletedTask;
+        }
+
         /// <summary>
         /// A virtual task that can be subscribed by its corresponding sensor subclasses.
         /// Currently, it will just returns the task that is already completed
         /// </summary>
         /// <returns>A completed subscribing task</returns>
-        public virtual async Task Subscribe()
+        public async Task Subscribe()
         {
-            await Task.CompletedTask;
+            var sensor = GetBandSensor(msBandService.BandClient.SensorManager);
+            var userConsent = UserConsent.Granted == sensor.GetCurrentUserConsent() || await sensor.RequestUserConsentAsync();
+            if (!userConsent)
+            {
+                return;
+            }
+            UpdateSensorReadingChangedHandler(sensor, SensorReadingChanged);
+            _ = await sensor.StartReadingsAsync();
         }
     }
 }

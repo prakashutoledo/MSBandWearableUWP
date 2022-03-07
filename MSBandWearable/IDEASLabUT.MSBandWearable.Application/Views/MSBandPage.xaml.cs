@@ -79,9 +79,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private void AddSensorValueChangedHandlers()
         {
-            BandManagerService.HeartRate.SensorValueChanged += HeartRateSensorValueChanged;
-            BandManagerService.Gsr.SensorValueChanged += GsrSensorValueChanged;
-            BandManagerService.RRInterval.SensorValueChanged += IbiSensorValueChanged;
+            BandManagerService.HeartRate.SensorValueChanged = HeartRateSensorValueChanged;
+            BandManagerService.Gsr.SensorValueChanged = GsrSensorValueChanged;
+            BandManagerService.RRInterval.SensorValueChanged = IbiSensorValueChanged;
         }
 
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
