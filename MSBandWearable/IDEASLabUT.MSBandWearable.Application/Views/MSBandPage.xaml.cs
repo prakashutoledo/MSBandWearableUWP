@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Media;
 using System.Collections.Generic;
 using LiveCharts;
 using LiveCharts.Configurations;
+using Windows.System;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
 {
@@ -40,7 +41,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
         public ChartValues<DateTimeModel> GsrDataPoint { get; } = new ChartValues<DateTimeModel>();
         public ChartValues<DateTimeModel> IbiDataPoint { get; } = new ChartValues<DateTimeModel>();
-        private DispatcherTimer Timer { get; set; }
+        private DispatcherTimer GsrTimer { get; set; }
         private DispatcherTimer WebSocketTimer { get; set; }
         
         private double gsrValue;
@@ -64,11 +65,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private void AddTimers()
         {
-            Timer = new DispatcherTimer
+            GsrTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            Timer.Tick += TimerOnTick;
+            GsrTimer.Tick += TimerOnTick;
 
             WebSocketTimer = new DispatcherTimer
             {
@@ -134,7 +135,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private async Task HeartRateSensorValueChanged(HeartRateEvent value)
         {
-            await RunLaterInUIThread(() => heartRatePath.Fill = new SolidColorBrush(Locked == BandManagerService.HeartRate.HeartRateStatus ? White : Transparent));
+            await RunLaterInUIThread(() =>
+            {
+                heartRatePath.Fill = new SolidColorBrush(Locked == BandManagerService.HeartRate.HeartRateStatus ? White : Transparent);
+            });
+            
         }
 
         private async void PageLoaded(object sender, RoutedEventArgs routedEventArgs)
@@ -193,7 +198,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             {
                 await RunLaterInUIThread(() =>
                 {
-                    foreach (string device in availableBandNames)
+                    foreach (var device in availableBandNames)
                     {
                         AvailableBands.Add(device);
                     }
@@ -208,7 +213,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             switch ((int)command.Id)
             {
                 case 1:
-                    _ = await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:bluetooth"));
+                    _ = await Launcher.LaunchUriAsync(new Uri("ms-settings:bluetooth"));
                     break;
                 default:
                     break;
@@ -326,9 +331,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 UpdateCommandBar();
             });
 
-            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
             NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
-            Timer.Start();
+            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
+
+            GsrTimer.Start();
             WebSocketTimer.Start();
         }
 
