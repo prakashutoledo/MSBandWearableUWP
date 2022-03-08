@@ -26,12 +26,17 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
             if (string.IsNullOrEmpty(baseElasticsearchURI))
             {
-                throw new ArgumentNullException("Base elasticsearch uri cannot be null or empty");
+                throw new ArgumentNullException(nameof(baseElasticsearchURI));
             }
 
             if (string.IsNullOrEmpty(requestBody))
             {
-                throw new ArgumentNullException("Bulk request body cannot be null or empty");
+                throw new ArgumentNullException(nameof(requestBody));
+            }
+
+            if (authenticationHeaderValue == null)
+            {
+                throw new ArgumentNullException(nameof(authenticationHeaderValue));
             }
 
             HttpResponseMessage response;

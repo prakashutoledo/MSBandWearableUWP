@@ -20,21 +20,21 @@ namespace IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch
         /// Formats the given enumeration of log events to an Elasticsearch bulk request json request data and gets
         /// written into given output text writer. Each events are in the format of 
         /// <code>
-        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
-        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
-        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
-        /// {"index" : {"_index" : "test"}}\{"accelerometerX"}
+        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 1.9}
+        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 4.9}
+        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 0.9}
+        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 2.1}
         /// </code>
         /// This gets formatted by splitting string for character `\` to create two json strings as shown below 
         /// <code>
         /// {"index" : {"_index" : "test"}}
-        /// {"accelerometerX"}
+        /// {"accelerometerX" : 1.9}
         /// {"index" : {"_index" : "test"}}
-        /// {"accelerometerX"}
+        /// {"accelerometerX" : 4.9}
         /// {"index" : {"_index" : "test"}}
-        /// {"accelerometerX"}
+        /// {"accelerometerX" : 0.9}
         /// {"index" : {"_index" : "test"}}
-        /// {"accelerometerX"}
+        /// {"accelerometerX" : 2.1}
         /// </code>
         /// <see href="https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html"/>
         /// </summary>
