@@ -37,9 +37,8 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             };
         }
 
-        private async void GsrReadingChanged(object sender, BandSensorReadingEventArgs<IBandGsrReading> readingEventArgs)
+        protected override async void SensorReadingChanged(IBandGsrReading gsrReading)
         {
-            var gsrReading = readingEventArgs.SensorReading;
             var gsrEvent = new GSREvent
             {
                 // Value is in kOhms which is converted into micro seimens
