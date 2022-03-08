@@ -22,9 +22,20 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             this.httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> BulkRequestAsync(string elasticsearchURI, string requestBody, AuthenticationHeaderValue authenticationHeaderValue)
+        public async Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, string requestBody, AuthenticationHeaderValue authenticationHeaderValue)
         {
+            if (string.IsNullOrEmpty(baseElasticsearchURI))
+            {
+                throw new ArgumentNullException("Base elasticsearch uri cannot be null or empty");
+            }
+
+            if (string.IsNullOrEmpty(requestBody))
+            {
+                throw new ArgumentNullException("Bulk request body cannot be null or empty");
+            }
+
             HttpResponseMessage response;
+            string elasticsearchURI = $"{baseElasticsearchURI}/_bulk";
             using (var bulkPostRequest = new HttpRequestMessage(HttpMethod.Post, elasticsearchURI))
             using (var bulkRequestContent = new StringContent(requestBody, Encoding.UTF8, JsonContentType))
             {

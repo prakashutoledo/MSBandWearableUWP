@@ -4,6 +4,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     public interface INtpSyncService
     {
+        /// <summary>
+        /// A correction offset to current date time once synced to ntp pool
+        /// </summary>
         TimeSpan CorrectionOffset { get; set; }
 
         /// <summary>

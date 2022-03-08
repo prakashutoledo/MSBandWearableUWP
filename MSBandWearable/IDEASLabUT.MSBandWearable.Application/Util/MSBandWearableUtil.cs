@@ -69,13 +69,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
             }
             else
             {
-                await coreDispatcher.RunAsync(coreDispatcherPriority, new DispatchedHandler(action)).AsTask().ConfigureAwait(false);
+                await coreDispatcher.RunAsync(coreDispatcherPriority, new DispatchedHandler(action));
             }
         }
 
         public static async Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal) where T : BaseEvent
         {
-            await RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority).ConfigureAwait(false);
+            await RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority);
         }
     }
 }

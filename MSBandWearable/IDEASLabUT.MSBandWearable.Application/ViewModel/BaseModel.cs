@@ -35,7 +35,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
             {
                 return false;
             }
-
             target = value;
             NotifyPropertyChanged(propertyName);
             return true;

@@ -14,6 +14,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
     /// to all the listeners for as model value changes
     /// </summary>
     /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
+    /// <typeparam name="R">A parameter of type <see cref="IBandSensorReading"/></typeparam>
     public abstract class BaseSensorModel<T, R> : BaseModel where T : BaseEvent where R : IBandSensorReading
     {
         private T model;
@@ -26,7 +27,7 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// An asynchronous task function for notifying listener that sensor value has been changed.
         /// </summary>
         /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
-        /// <returns>A task that can be complete or can be handled later</returns>
+        /// <returns>A task that can be awaited</returns>
         public Func<T, Task> SensorValueChanged { get; set; }
 
         public BaseSensorModel(T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
@@ -51,16 +52,27 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
         /// <param name="sensorReadingChanged">A reading changed action for handling sensor value reading</param>
         public abstract void UpdateSensorReadingChangedHandler(IBandSensor<R> sensor, Action<R> sensorReadingChanged);
 
+        /// <summary>
+        /// Gets the MS band 2 sensor from given sensor manager
+        /// </summary>
+        /// <param name="sensorManager">A sensor manager to be used to get the band sensor</param>
+        /// <returns>The corresponding MS band 2 sensor</returns>
         protected abstract IBandSensor<R> GetBandSensor(IBandSensorManager sensorManager);
 
+        /// <summary>
+        /// A callback for a change in MS band 2 sensor reading
+        /// </summary>
+        /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
         protected virtual async void SensorReadingChanged(R sensorReading)
         {
             await Task.CompletedTask;
         }
 
         /// <summary>
-        /// A virtual task that can be subscribed by its corresponding sensor subclasses.
-        /// Currently, it will just returns the task that is already completed
+        /// A task that can be subscribed by its corresponding sensor subclasses to start reading values
+        /// by setting callback for reading the values. This will request the current user consent for
+        /// corresponding sensor, if such request is not granted a sensor is not suscribed and will not
+        /// start reading the changed values.
         /// </summary>
         /// <returns>A completed subscribing task</returns>
         public async Task Subscribe()
