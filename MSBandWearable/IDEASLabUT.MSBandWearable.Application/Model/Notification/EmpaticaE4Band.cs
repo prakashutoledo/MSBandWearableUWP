@@ -7,7 +7,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Model.Notification
     {
         [JsonConverter(typeof(PayloadTypeConverter))]
         [JsonProperty("payloadType")]
-        public PayloadType PayloadType { get; set; } = PayloadType.E4Band;
+        public PayloadType PayloadType { get; } = PayloadType.E4Band;
 
         [JsonProperty("subjectId")]
         public string SubjectId { get; set; }

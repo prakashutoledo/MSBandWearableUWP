@@ -2,6 +2,6 @@
 {
     public interface Payload
     {
-        PayloadType PayloadType { get; set; }
+        PayloadType PayloadType { get; }
     }
 }

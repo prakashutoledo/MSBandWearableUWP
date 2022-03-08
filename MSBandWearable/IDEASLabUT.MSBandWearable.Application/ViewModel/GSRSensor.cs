@@ -56,7 +56,6 @@ namespace IDEASLabUT.MSBandWearable.Application.ViewModel
                 await SensorValueChanged.Invoke(gsrEvent);
             }
 
-
             if (subjectViewService.SessionInProgress)
             {
                 logger.Information("{gsr}", gsrEvent);
