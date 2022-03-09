@@ -1,6 +1,6 @@
 ﻿using IDEASLabUT.MSBandWearable.Core.ViewModel;
 
-namespace IDEASLabUT.MSBandWearable.Application.ViewModel
+namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
     /// <summary>
     /// View model for subject id running IOS application,

@@ -1,6 +1,6 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
 
-using IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch;
+using IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch;
 using IDEASLabUT.MSBandWearable.Application.Service;
 
 using Microsoft.Extensions.Configuration;

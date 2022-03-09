@@ -1,6 +1,5 @@
 ﻿using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Application.Service;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
+using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band;
 using Microsoft.Band.Sensors;
@@ -10,7 +9,7 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.ViewModel
+namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
     /// <summary>
     /// Provides a sensor manager basis for all available Microsoft Band 2 sensors. If the sensor is

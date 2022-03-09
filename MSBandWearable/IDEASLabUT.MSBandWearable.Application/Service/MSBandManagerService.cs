@@ -1,6 +1,8 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Service;
+using IDEASLabUT.MSBandWearable.Application.Service;
+using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Application.Util;
-using IDEASLabUT.MSBandWearable.Application.ViewModel;
+using IDEASLabUT.MSBandWearable.Core.ViewModel;
 
 using Microsoft.Band.Notifications;
 using Serilog;

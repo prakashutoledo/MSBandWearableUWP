@@ -1,7 +1,7 @@
 ﻿using Microsoft.Band;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Core.Service
 {
     public interface IBandClientService
     {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IDEASLabUT.MSBandWearable.Core.Service;
+
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;

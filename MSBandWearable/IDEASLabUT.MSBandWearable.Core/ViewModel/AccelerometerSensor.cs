@@ -1,14 +1,14 @@
 ﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
 
 using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Application.Service;
+using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
 
 using System;
 using Serilog;
 
-namespace IDEASLabUT.MSBandWearable.Application.ViewModel
+namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
     /// <summary>
     /// A sensor manager for Microsoft Band 2 accelerometer sensor

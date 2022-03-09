@@ -120,54 +120,19 @@
     <Compile Include="Converter\HeartRateConverter.cs" />
     <Compile Include="Converter\LineGraphLabelConverter.cs" />
     <Compile Include="Converter\TemperatureConverter.cs" />
-    <Compile Include="Json\PayloadActionConverter.cs" />
-    <Compile Include="Json\PayloadTypeConverter.cs" />
-    <Compile Include="Model\AccelerometerEvent.cs" />
-    <Compile Include="Model\BandStatus.cs" />
-    <Compile Include="Model\BaseEvent.cs" />
-    <Compile Include="Json\ZonedDateTimeOptionalNanoConverter.cs" />
-    <Compile Include="Model\DateTimeModel.cs" />
-    <Compile Include="Model\Elasticsearch\ElasticsearchBatchEventFormatter.cs" />
-    <Compile Include="Model\Elasticsearch\ElasticsearchEventJsonFormatter.cs" />
-    <Compile Include="Model\GSREvent.cs" />
-    <Compile Include="Model\GyroscopeEvent.cs" />
-    <Compile Include="Model\HeartRateEvent.cs" />
-    <Compile Include="Model\Notification\BaseMessage.cs" />
-    <Compile Include="Model\Notification\Device.cs" />
-    <Compile Include="Model\Notification\EmpaticaE4Band.cs" />
-    <Compile Include="Model\Notification\EmpaticaE4BandMessage.cs" />
-    <Compile Include="Model\Notification\Message.cs" />
-    <Compile Include="Model\Notification\Payload.cs" />
-    <Compile Include="Model\Notification\PayloadAction.cs" />
-    <Compile Include="Model\Notification\PayloadType.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
     <Compile Include="Service\ElasticsearchRestClient.cs" />
     <Compile Include="Service\ElasticsearchService.cs" />
-    <Compile Include="Service\IBandClientService.cs" />
-    <Compile Include="Service\IBandManagerService.cs" />
-    <Compile Include="Service\IElasticsearchRestClient.cs" />
-    <Compile Include="Service\INtpSyncService.cs" />
-    <Compile Include="Service\ISubjectViewService.cs" />
     <Compile Include="Service\MSBandManagerService.cs" />
     <Compile Include="Service\NtpSyncService.cs" />
     <Compile Include="Service\SubjectViewService.cs" />
     <Compile Include="Service\WebSocketService.cs" />
-    <Compile Include="ViewModel\GSRSensor.cs" />
-    <Compile Include="ViewModel\HeartRateSensor.cs" />
-    <Compile Include="Model\RRIntervalEvent.cs" />
-    <Compile Include="Model\TemperatureEvent.cs" />
     <Compile Include="MSBandWerableApplication.xaml.cs">
       <DependentUpon>MSBandWerableApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\MSBandClientService.cs" />
     <Compile Include="Util\MSBandWearableUtil.cs" />
-    <Compile Include="ViewModel\AccelerometerSensor.cs" />
-    <Compile Include="ViewModel\BaseSensorModel.cs" />
-    <Compile Include="ViewModel\GyroscopeSensor.cs" />
-    <Compile Include="ViewModel\RRIntervalSensor.cs" />
-    <Compile Include="ViewModel\SubjectViewModel.cs" />
-    <Compile Include="ViewModel\TemperatureSensor.cs" />
     <Compile Include="Views\MSBandPage.xaml.cs">
       <DependentUpon>MSBandPage.xaml</DependentUpon>
     </Compile>

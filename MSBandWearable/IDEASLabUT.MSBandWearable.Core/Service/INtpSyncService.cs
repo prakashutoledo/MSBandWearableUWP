@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Core.Service
 {
     public interface INtpSyncService
     {

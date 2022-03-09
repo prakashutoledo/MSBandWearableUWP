@@ -1,9 +1,9 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Model;
-using IDEASLabUT.MSBandWearable.Application.ViewModel;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
+using IDEASLabUT.MSBandWearable.Core.ViewModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Core.Service
 {
     public interface IBandManagerService
     {

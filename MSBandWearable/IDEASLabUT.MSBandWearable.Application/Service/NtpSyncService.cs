@@ -1,4 +1,5 @@
-﻿using GuerrillaNtp;
+﻿using IDEASLabUT.MSBandWearable.Core.Service;
+using GuerrillaNtp;
 using System;
 using System.Diagnostics;
 using System.Net;

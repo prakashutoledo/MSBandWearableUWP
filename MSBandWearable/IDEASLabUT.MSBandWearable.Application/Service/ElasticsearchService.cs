@@ -4,11 +4,12 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
+using IDEASLabUT.MSBandWearable.Core.Service;
+
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Serilog.Sinks.Http;
+using System.Net.Http.Headers;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {

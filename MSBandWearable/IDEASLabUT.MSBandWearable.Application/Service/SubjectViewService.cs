@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IDEASLabUT.MSBandWearable.Core.Service;
+
+using System;
 using System.Threading;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service

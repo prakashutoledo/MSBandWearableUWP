@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Core.Service
 {
     public interface IElasticsearchRestClient
     {

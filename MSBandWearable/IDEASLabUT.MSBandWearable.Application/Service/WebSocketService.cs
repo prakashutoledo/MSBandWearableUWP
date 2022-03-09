@@ -1,8 +1,10 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Model.Notification;
+﻿using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+
 using Newtonsoft.Json;
+
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
+
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 

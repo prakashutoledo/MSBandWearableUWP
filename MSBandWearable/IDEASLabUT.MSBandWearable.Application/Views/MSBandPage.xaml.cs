@@ -4,10 +4,11 @@ using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlob
 using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;
 
-using IDEASLabUT.MSBandWearable.Application.Model;
-using IDEASLabUT.MSBandWearable.Application.Model.Notification;
+using IDEASLabUT.MSBandWearable.Core.Model;
+using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+using IDEASLabUT.MSBandWearable.Core.Service;
 using IDEASLabUT.MSBandWearable.Application.Service;
-using IDEASLabUT.MSBandWearable.Application.ViewModel;
+using IDEASLabUT.MSBandWearable.Core.ViewModel;
 
 using Microsoft.Extensions.Configuration;
 
@@ -333,7 +334,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
 
             NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
-            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
+            //await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
 
             GsrTimer.Start();
             WebSocketTimer.Start();
