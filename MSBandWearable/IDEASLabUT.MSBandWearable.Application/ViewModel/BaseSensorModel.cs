@@ -1,4 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
 using IDEASLabUT.MSBandWearable.Core.ViewModel;
 

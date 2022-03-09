@@ -1,6 +1,5 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
 
-using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Model.Elasticsearch;
 using IDEASLabUT.MSBandWearable.Application.Service;
 
@@ -8,13 +7,10 @@ using Microsoft.Extensions.Configuration;
 
 using Serilog;
 using System;
-using System.Threading.Tasks;
 using System.IO;
 
-using Windows.UI.Core;
 using Windows.Storage;
 using Windows.ApplicationModel;
-using Windows.ApplicationModel.Core;
 using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Application.Util
@@ -53,29 +49,5 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
 
         public static LoggerConfiguration LoggerFactory => LoggerConfigurationInstance.Value;
         public static IConfiguration ApplicationProperties => ApplicationPropertiesInstance.Value;
-
-        public static async Task RunLaterInUIThread(Action action, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
-        {
-            if (action == null)
-            {
-                return;
-            }
-
-            var coreDispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-
-            if (coreDispatcher.HasThreadAccess)
-            {
-                action.Invoke();
-            }
-            else
-            {
-                await coreDispatcher.RunAsync(coreDispatcherPriority, new DispatchedHandler(action));
-            }
-        }
-
-        public static async Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal) where T : BaseEvent
-        {
-            await RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority);
-        }
     }
 }

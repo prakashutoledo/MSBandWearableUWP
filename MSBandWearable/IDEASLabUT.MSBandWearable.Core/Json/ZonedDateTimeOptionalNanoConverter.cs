@@ -19,19 +19,22 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+           /*
             if (reader.TokenType == JsonToken.Null)
             {
                 return null;
             }
 
-
-            var dateTime = reader.Value.ToString();
+            var dateTime = reader.Value;
             if (objectType == typeof(DateTimeOffset))
             {
                 return DateTimeOffset.Parse(dateTime);
             }
 
             return DateTime.Parse(dateTime);
+            */
+            
+            throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

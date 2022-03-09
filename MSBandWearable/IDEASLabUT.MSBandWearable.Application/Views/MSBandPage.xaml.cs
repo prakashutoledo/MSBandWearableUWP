@@ -1,4 +1,5 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
 using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
 using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;

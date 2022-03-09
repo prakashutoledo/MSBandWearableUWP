@@ -1,9 +1,10 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
 
-using IDEASLabUT.MSBandWearable.Application.Model;
+using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
+
 using Microsoft.Band.Sensors;
-using System.Threading.Tasks;
+
 using Serilog;
 using System;
 
