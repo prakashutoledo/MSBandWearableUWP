@@ -1,8 +1,12 @@
 ﻿using IDEASLabUT.MSBandWearable.Application.Model;
 using IDEASLabUT.MSBandWearable.Application.Service;
+using IDEASLabUT.MSBandWearable.Core.ViewModel;
+
 using Microsoft.Band;
 using Microsoft.Band.Sensors;
+
 using Serilog;
+
 using System;
 using System.Threading.Tasks;
 

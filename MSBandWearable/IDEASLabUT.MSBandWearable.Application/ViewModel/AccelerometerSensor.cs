@@ -1,11 +1,11 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
 
 using IDEASLabUT.MSBandWearable.Application.Model;
-using Microsoft.Band.Sensors;
-using System.Threading.Tasks;
 using IDEASLabUT.MSBandWearable.Application.Service;
+
+using Microsoft.Band.Sensors;
+
 using System;
-using Serilog.Core;
 using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Application.ViewModel

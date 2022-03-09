@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 
-namespace IDEASLabUT.MSBandWearable.Application.ViewModel
+namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
     public class BaseModel : INotifyPropertyChanged
     {
