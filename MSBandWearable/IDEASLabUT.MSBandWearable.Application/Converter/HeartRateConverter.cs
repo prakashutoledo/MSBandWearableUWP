@@ -5,21 +5,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Converter
 {
     class HeartRateConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType,
-                object parameter, string language)
+        public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (parameter.ToString() == "min")
-            {
-                return ((double)value >= 250) ? "--" : value.ToString();
-            }
-            else
-            {
-                return ((double)value <= 0) ? "--" : value.ToString();
-            }
+            return parameter.ToString() == "min"
+                ? ((double)value >= 250) ? "--" : value.ToString()
+                : ((double)value <= 0) ? "--" : value.ToString();
         }
 
-        public object ConvertBack(object value, Type targetType,
-            object parameter, string language)
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();
         }
