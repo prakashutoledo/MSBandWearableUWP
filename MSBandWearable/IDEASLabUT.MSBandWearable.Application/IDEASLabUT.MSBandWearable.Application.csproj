@@ -118,7 +118,6 @@
   <ItemGroup>
     <Compile Include="Converter\GsrConverter.cs" />
     <Compile Include="Converter\HeartRateConverter.cs" />
-    <Compile Include="Converter\LineGraphLabelConverter.cs" />
     <Compile Include="Converter\TemperatureConverter.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
     <Compile Include="Service\ElasticsearchRestClient.cs" />
