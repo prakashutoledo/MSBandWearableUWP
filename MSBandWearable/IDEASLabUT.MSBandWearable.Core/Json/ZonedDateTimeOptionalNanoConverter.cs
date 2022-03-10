@@ -19,39 +19,18 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-           /*
-            if (reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
-
-            var dateTime = reader.Value;
-            if (objectType == typeof(DateTimeOffset))
-            {
-                return DateTimeOffset.Parse(dateTime);
-            }
-
-            return DateTime.Parse(dateTime);
-            */
-            
             throw new NotImplementedException();
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            string text;
-            if (value is DateTime time)
-            {
-                text = time.ToString(DateTimeFormatter);
-            }
-            else
-            {
-                text = value is DateTimeOffset offset
+            string dateTimeString = value is DateTime time
+                ? time.ToString(DateTimeFormatter)
+                : value is DateTimeOffset offset
                     ? offset.DateTime.ToString(DateTimeFormatter)
                     : throw new Exception("Cannot convert to datetime string");
-            }
             // this will remove hyphen character from timezone value to match elasticsearch datetime format
-            writer.WriteValue(text.Remove(text.Length - 3, 1));
+            writer.WriteValue(dateTimeString.Remove(dateTimeString.Length - 3, 1));
         }
     }
 }
