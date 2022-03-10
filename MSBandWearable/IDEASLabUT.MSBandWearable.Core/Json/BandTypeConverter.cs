@@ -18,9 +18,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
                 return null;
             }
 
-            string payloadTypeDescription = reader.Value.ToString();
-
-            var payloadType = BandTypeExtension.FromDescription(payloadTypeDescription);
+            var payloadType = BandTypeExtension.FromDescription(reader.Value.ToString());
             if (payloadType.HasValue)
             {
                 return payloadType.Value;

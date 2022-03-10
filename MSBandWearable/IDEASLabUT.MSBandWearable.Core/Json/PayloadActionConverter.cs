@@ -18,15 +18,11 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
                 return null;
             }
 
-            string payloadActionDescription = reader.Value.ToString();
-
-            var payloadAction = PayloadActionExtension.FromDescription(payloadActionDescription);
-
+            var payloadAction = PayloadActionExtension.FromDescription(reader.Value.ToString());
             if (payloadAction.HasValue)
             {
                 return payloadAction.Value;
             }
-
             return null;
         }
 
