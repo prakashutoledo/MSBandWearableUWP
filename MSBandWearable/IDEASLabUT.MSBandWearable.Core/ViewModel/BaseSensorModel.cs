@@ -26,13 +26,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         protected readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
 
-        /// <summary>
-        /// An asynchronous task function for notifying listener that sensor value has been changed.
-        /// </summary>
-        /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
-        /// <returns>A task that can be awaited</returns>
-        public Func<T, Task> SensorValueChanged { get; set; }
-
         public BaseSensorModel(T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
             Model = model;
@@ -42,6 +35,16 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             this.ntpSyncService = ntpSyncService;
         }
 
+        /// <summary>
+        /// An asynchronous task function for notifying listener that sensor value has been changed.
+        /// </summary>
+        /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
+        /// <returns>A task that can be awaited</returns>
+        public Func<T, Task> SensorValueChanged { get; set; }
+
+        /// <summary>
+        /// A current sensor model holding data for MS Band 2 sensor
+        /// </summary>
         public T Model
         {
             get => model;

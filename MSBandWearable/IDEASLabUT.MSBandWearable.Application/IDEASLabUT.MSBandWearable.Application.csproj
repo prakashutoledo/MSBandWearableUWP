@@ -116,7 +116,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Converter\GsrConverter.cs" />
+    <Compile Include="Converter\GSRConverter.cs" />
     <Compile Include="Converter\HeartRateConverter.cs" />
     <Compile Include="Converter\TemperatureConverter.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
