@@ -38,9 +38,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public void SyncTimestamp(string poolAddress)
         {
             // Only used the first address from the given pool
-            using (NtpClient ntp = new NtpClient(Dns.GetHostAddresses(poolAddress)[0]))
+            using (var ntpClient = new NtpClient(Dns.GetHostAddresses(poolAddress)[0]))
             {
-                CorrectionOffset = ntp.GetCorrectionOffset();
+                CorrectionOffset = ntpClient.GetCorrectionOffset();
                 Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
             }
         }
