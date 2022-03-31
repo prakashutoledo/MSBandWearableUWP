@@ -50,10 +50,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager)
-        {
-            return sensorManager.HeartRate;
-        }
+        protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.HeartRate;
 
         /// <summary>
         /// A callback for subscribing heart rate senser reading event changes

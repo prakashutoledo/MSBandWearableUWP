@@ -46,10 +46,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager)
-        {
-            return bandSensorManager.Accelerometer;
-        }
+        protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Accelerometer;
 
         /// <summary>
         /// A callback for subscribing accelerometer senser reading event changes

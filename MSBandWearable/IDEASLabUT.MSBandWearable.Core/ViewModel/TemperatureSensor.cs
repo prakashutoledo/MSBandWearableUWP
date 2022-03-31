@@ -25,10 +25,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager)
-        {
-            return sensorManager.SkinTemperature;
-        }
+        protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.SkinTemperature;
 
         protected override async void SensorReadingChanged(IBandSkinTemperatureReading temperatureReading)
         {

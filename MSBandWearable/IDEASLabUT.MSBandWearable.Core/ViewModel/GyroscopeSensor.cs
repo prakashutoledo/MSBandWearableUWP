@@ -46,10 +46,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager)
-        {
-            return bandSensorManager.Gyroscope;
-        }
+        protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gyroscope;
 
         /// <summary>
         /// A callback for subscribing gyroscope senser reading event changes

@@ -25,10 +25,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
     
-        protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager)
-        {
-            return bandSensorManager.RRInterval;
-        }
+        protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.RRInterval;
 
         protected override async void SensorReadingChanged(IBandRRIntervalReading ibiReading)
         {

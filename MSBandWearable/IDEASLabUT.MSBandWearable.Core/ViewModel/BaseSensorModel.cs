@@ -82,11 +82,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             {
                 return;
             }
-
-            sensor.ReadingChanged += (sender, readingEventArgs) =>
-            {
-                SensorReadingChanged(readingEventArgs.SensorReading);
-            };
+            sensor.ReadingChanged += (sender, readingEventArgs) => SensorReadingChanged(readingEventArgs.SensorReading);
             _ = await sensor.StartReadingsAsync();
         }
     }
