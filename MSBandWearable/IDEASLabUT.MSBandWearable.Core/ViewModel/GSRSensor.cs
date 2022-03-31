@@ -30,14 +30,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             return bandSensorManager.Gsr;
         }
 
-        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandGsrReading> gsr, Action<IBandGsrReading> sensorReadingChanged)
-        {
-            gsr.ReadingChanged += (sender, readingEventArgs) =>
-            {
-                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
-            };
-        }
-
         protected override async void SensorReadingChanged(IBandGsrReading gsrReading)
         {
             var gsrEvent = new GSREvent

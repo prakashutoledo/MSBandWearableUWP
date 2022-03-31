@@ -50,14 +50,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandHeartRateReading> heartRate, Action<IBandHeartRateReading> sensorReadingChanged)
-        {
-            heartRate.ReadingChanged += (sender, readingEventArgs) =>
-            {
-                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
-            };
-        }
-
         protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager)
         {
             return sensorManager.HeartRate;

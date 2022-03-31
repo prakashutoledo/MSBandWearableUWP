@@ -25,14 +25,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandSkinTemperatureReading> temperature, Action<IBandSkinTemperatureReading> sensorReadingChanged)
-        {
-            temperature.ReadingChanged += (sender, readingEventArgs) =>
-            {
-                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
-            };
-        }
-
         protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager)
         {
             return sensorManager.SkinTemperature;

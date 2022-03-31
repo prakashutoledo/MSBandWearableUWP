@@ -46,19 +46,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        /// <summary>
-        /// Updates the given accelerometer sensor to include accelerometer reading value changed handler for given action 
-        /// </summary>
-        /// <param name="accelerometer">A MS Band accelerometer sensor</param>
-        /// <param name="sensorReadingChanged">A reading changed action for handling acceleorometer value reading</param>
-        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandAccelerometerReading> accelerometer, Action<IBandAccelerometerReading> sensorReadingChanged)
-        {
-            accelerometer.ReadingChanged += (sender, readingEventArgs) =>
-            {
-                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
-            };
-        }
-
         protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager)
         {
             return bandSensorManager.Accelerometer;

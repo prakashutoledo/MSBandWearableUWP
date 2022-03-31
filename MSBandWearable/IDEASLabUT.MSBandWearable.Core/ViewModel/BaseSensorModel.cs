@@ -52,13 +52,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         }
 
         /// <summary>
-        /// Updates the given sensor to include sensor reading value changed handler for given action 
-        /// </summary>
-        /// <param name="sensor">A MS Band sensor to handle the given action</param>
-        /// <param name="sensorReadingChanged">A reading changed action for handling sensor value reading</param>
-        public abstract void UpdateSensorReadingChangedHandler(IBandSensor<R> sensor, Action<R> sensorReadingChanged);
-
-        /// <summary>
         /// Gets the MS band 2 sensor from given sensor manager
         /// </summary>
         /// <param name="sensorManager">A sensor manager to be used to get the band sensor</param>
@@ -89,7 +82,11 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             {
                 return;
             }
-            UpdateSensorReadingChangedHandler(sensor, SensorReadingChanged);
+
+            sensor.ReadingChanged += (sender, readingEventArgs) =>
+            {
+                SensorReadingChanged(readingEventArgs.SensorReading);
+            };
             _ = await sensor.StartReadingsAsync();
         }
     }

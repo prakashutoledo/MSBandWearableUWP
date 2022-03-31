@@ -30,14 +30,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             return bandSensorManager.RRInterval;
         }
 
-        public override void UpdateSensorReadingChangedHandler(IBandSensor<IBandRRIntervalReading> ibi, Action<IBandRRIntervalReading> sensorReadingChanged)
-        {
-            ibi.ReadingChanged += (sender, readingEventArgs) =>
-            {
-                sensorReadingChanged.Invoke(readingEventArgs.SensorReading);
-            };
-        }
-
         protected override async void SensorReadingChanged(IBandRRIntervalReading ibiReading)
         {
             var ibiEvent = new RRIntervalEvent
