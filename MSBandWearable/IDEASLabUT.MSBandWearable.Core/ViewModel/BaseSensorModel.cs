@@ -76,13 +76,24 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <returns>A completed subscribing task</returns>
         public async Task Subscribe()
         {
-            var sensor = GetBandSensor(msBandService.BandClient.SensorManager);
+            var sensorManager = msBandService.BandClient.SensorManager;
+            if (null == sensorManager)
+            {
+                return;
+            }
+            var sensor = GetBandSensor(sensorManager);
             var userConsent = UserConsent.Granted == sensor.GetCurrentUserConsent() || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
                 return;
             }
-            sensor.ReadingChanged += (sender, readingEventArgs) => SensorReadingChanged(readingEventArgs.SensorReading);
+            sensor.ReadingChanged += (sender, readingEventArgs) =>
+            {
+                if (null != readingEventArgs.SensorReading)
+                {
+                    SensorReadingChanged(readingEventArgs.SensorReading);
+                }
+            };
             _ = await sensor.StartReadingsAsync();
         }
     }

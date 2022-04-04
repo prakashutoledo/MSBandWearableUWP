@@ -6,10 +6,5 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
     {
         [JsonProperty("ibi")]
         public double Ibi { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band;
+
 using System;
 using System.Threading.Tasks;
 

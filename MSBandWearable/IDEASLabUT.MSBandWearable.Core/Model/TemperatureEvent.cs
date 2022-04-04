@@ -6,10 +6,5 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
     {
         [JsonProperty("temperature")]
         public double Temperature { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

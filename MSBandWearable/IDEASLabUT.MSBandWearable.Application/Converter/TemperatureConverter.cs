@@ -1,7 +1,6 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-
 namespace IDEASLabUT.MSBandWearable.Application.Converter
 {
     /// <summary>

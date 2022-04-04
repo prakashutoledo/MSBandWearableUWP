@@ -6,7 +6,6 @@ using IDEASLabUT.MSBandWearable.Core.Service;
 using Microsoft.Band.Sensors;
 
 using Serilog;
-using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
@@ -25,10 +24,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
-        protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager)
-        {
-            return bandSensorManager.Gsr;
-        }
+        protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gsr;
 
         protected override async void SensorReadingChanged(IBandGsrReading gsrReading)
         {
@@ -42,7 +38,10 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
                 SubjectId = subjectViewService.SubjectId
             };
 
-            await RunLaterInUIThread(() => Gsr = gsrEvent.Gsr);
+            await RunLaterInUIThread(() =>
+            {
+                Gsr = gsrEvent.Gsr;
+            });
 
             if (SensorValueChanged != null)
             {

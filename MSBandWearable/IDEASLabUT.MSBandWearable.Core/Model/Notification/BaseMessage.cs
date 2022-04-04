@@ -12,5 +12,10 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
         [JsonConverter(typeof(PayloadTypeConverter))]
         [JsonProperty("payloadType")]
         public PayloadType PayloadType { get; set; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

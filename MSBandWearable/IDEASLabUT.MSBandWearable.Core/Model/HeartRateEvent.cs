@@ -6,10 +6,5 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
     {
         [JsonProperty("bpm")]
         public double Bpm { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

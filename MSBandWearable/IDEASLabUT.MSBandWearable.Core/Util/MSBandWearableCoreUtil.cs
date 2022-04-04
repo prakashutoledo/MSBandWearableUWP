@@ -24,6 +24,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Util
             }
 
             var coreDispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
+
             if (coreDispatcher.HasThreadAccess)
             {
                 action.Invoke();

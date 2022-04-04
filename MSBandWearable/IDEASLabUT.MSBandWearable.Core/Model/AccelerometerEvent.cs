@@ -12,10 +12,5 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
 
         [JsonProperty("accelerationZ")]
         public double AccelerationZ { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

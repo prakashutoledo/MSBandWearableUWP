@@ -12,10 +12,5 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
 
         [JsonProperty("angularZ")]
         public double AngularZ { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

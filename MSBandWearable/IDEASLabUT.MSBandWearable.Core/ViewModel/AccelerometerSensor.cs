@@ -5,7 +5,6 @@ using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
 
-using System;
 using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Core.ViewModel

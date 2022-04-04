@@ -6,7 +6,6 @@ using IDEASLabUT.MSBandWearable.Core.Service;
 using Microsoft.Band.Sensors;
 
 using Serilog;
-using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
@@ -38,7 +37,10 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
                 SubjectId = subjectViewService.SubjectId
             };
 
-            await RunLaterInUIThread(() => Ibi = ibiEvent.Ibi);
+            await RunLaterInUIThread(() =>
+            {
+                Ibi = ibiEvent.Ibi;
+            });
 
             if (SensorValueChanged != null)
             {

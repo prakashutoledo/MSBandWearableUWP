@@ -6,10 +6,5 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
     {
         [JsonProperty("gsr")]
         public double Gsr { get; set; }
-
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
     }
 }

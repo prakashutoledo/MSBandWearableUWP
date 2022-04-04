@@ -42,12 +42,12 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
         /// <param name="output"></param>
         public override void Format(IEnumerable<string> logEvents, TextWriter output)
         {
-            if (logEvents == null)
+            if (null == logEvents)
             {
                 throw new ArgumentNullException(nameof(logEvents));
             }
 
-            if (output == null)
+            if (null == output)
             {
                 throw new ArgumentNullException(nameof(output));
             }

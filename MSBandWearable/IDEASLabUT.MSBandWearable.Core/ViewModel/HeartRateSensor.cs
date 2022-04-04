@@ -6,7 +6,6 @@ using IDEASLabUT.MSBandWearable.Core.Service;
 using Microsoft.Band.Sensors;
 
 using Serilog;
-using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
@@ -70,7 +69,10 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             };
 
             await RunLaterInUIThread(UpdateHeartRateValue, heartRateEvent);
-            await RunLaterInUIThread(() => HeartRateStatus = heartRateReading.Quality);
+            await RunLaterInUIThread(() =>
+            {
+                HeartRateStatus = heartRateReading.Quality;
+            });
 
             if (SensorValueChanged != null)
             {

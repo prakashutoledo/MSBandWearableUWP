@@ -2,7 +2,6 @@
 using System.IO;
 using Serilog.Events;
 using Serilog.Formatting;
-using System.Collections.Generic;
 
 namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
 {

@@ -1,10 +1,11 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
 
+using IDEASLabUT.MSBandWearable.Core.Service;
+
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
-using IDEASLabUT.MSBandWearable.Core.Service;
 
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private const string BasicAuthorization = "Basic";
 
         private readonly IElasticsearchRestClient elasticsearchRestClient;
-        private readonly string elastisearchAuthenticationKey;
+        private readonly IConfiguration applicationProperties;
 
         public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, ElasticsearchRestClient.Singleton)
         {
@@ -26,7 +27,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public ElasticsearchService(IConfiguration applicationProperties, IElasticsearchRestClient elasticsearchRestClient)
         {
-            elastisearchAuthenticationKey = applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey);
+            this.applicationProperties = applicationProperties;
             this.elasticsearchRestClient = elasticsearchRestClient;
         }
 
@@ -37,8 +38,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
-            string jsonBody = await new StreamReader(contentStream).ReadToEndAsync();
-            HttpResponseMessage response = await elasticsearchRestClient.BulkRequestAsync(requestUri, jsonBody, new AuthenticationHeaderValue(BasicAuthorization, elastisearchAuthenticationKey));
+            var jsonBody = await new StreamReader(contentStream).ReadToEndAsync();
+            var authenticationHeaderValue = new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey));
+            var response = await elasticsearchRestClient.BulkRequestAsync(requestUri, jsonBody, authenticationHeaderValue);
             Trace.WriteLine(await response.Content.ReadAsStringAsync()); 
             return response;
         }
