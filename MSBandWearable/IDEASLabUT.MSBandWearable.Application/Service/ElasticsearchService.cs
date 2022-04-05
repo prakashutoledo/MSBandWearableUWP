@@ -31,11 +31,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             this.elasticsearchRestClient = elasticsearchRestClient;
         }
 
+        /// <inheritdoc />
         public virtual void Configure(IConfiguration configuration)
         {
             // not needed at this point
         }
 
+        /// <inheritdoc />
         public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
             var jsonBody = await new StreamReader(contentStream).ReadToEndAsync();
@@ -45,12 +47,17 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             return response;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Dispose the inclosed elasticsearch rest client if given paramater is set to true otherwise ignored
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -59,6 +66,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
         }
 
+        /// <summary>
+        /// Destructor for elasticsearch rest service instance
+        /// </summary>
         ~ElasticsearchService()
         {
             Dispose(false);
