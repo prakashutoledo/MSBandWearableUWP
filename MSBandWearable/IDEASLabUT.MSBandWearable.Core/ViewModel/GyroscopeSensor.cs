@@ -1,6 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-
-using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
@@ -47,40 +45,19 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gyroscope;
 
+        protected override string GetSensorName() => "gyroscope";
+
         /// <summary>
         /// A callback for subscribing gyroscope senser reading event changes
         /// </summary>
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">An gyroscope reading event Argument</param>
-        protected override async void SensorReadingChanged(IBandGyroscopeReading gyroscopeReading)
+        /// <returns>A task that can be awaited</returns>
+        protected override void UpdateSensorModel(IBandGyroscopeReading gyroscopeReading)
         {
-            var gyroscopeEvent = new GyroscopeEvent
-            {
-                AngularX = gyroscopeReading.AccelerationX,
-                AngularY = gyroscopeReading.AccelerationY,
-                AngularZ = gyroscopeReading.AccelerationZ,
-                AcquiredTime = ntpSyncService.LocalTimeNow,
-                ActualTime = gyroscopeReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView,
-                SubjectId = subjectViewService.SubjectId
-            };
-
-            await RunLaterInUIThread(() =>
-            {
-                AngularX = gyroscopeEvent.AngularX;
-                AngularY = gyroscopeEvent.AngularY;
-                AngularZ = gyroscopeEvent.AngularZ;
-            });
-
-            if (SensorValueChanged != null)
-            {
-                await SensorValueChanged.Invoke(gyroscopeEvent);
-            }
-
-            if (subjectViewService.SessionInProgress)
-            {
-                logger.Information("{gyroscope}", gyroscopeEvent);
-            }
+            AngularX = gyroscopeReading.AngularVelocityX;
+            AngularY = gyroscopeReading.AngularVelocityY;
+            AngularZ = gyroscopeReading.AngularVelocityZ;
         }
     }
 }

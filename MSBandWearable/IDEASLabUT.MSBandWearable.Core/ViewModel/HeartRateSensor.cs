@@ -1,6 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-
-using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
@@ -51,53 +49,28 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.HeartRate;
 
+        protected override string GetSensorName() => "gyroscope";
+
         /// <summary>
         /// A callback for subscribing heart rate senser reading event changes
         /// </summary>
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">A heart rate reading event arguments</param>
         /// <see cref="BandSensorReadingEventArgs{T}"/>
-        protected override async void SensorReadingChanged(IBandHeartRateReading heartRateReading)
+        protected override void UpdateSensorModel(IBandHeartRateReading heartRateReading)
         {
-            var heartRateEvent = new HeartRateEvent
-            {
-                Bpm = heartRateReading.HeartRate,
-                AcquiredTime = ntpSyncService.LocalTimeNow,
-                ActualTime = heartRateReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView,
-                SubjectId = subjectViewService.SubjectId
-            };
+            Bpm = heartRateReading.HeartRate;
+            HeartRateStatus = heartRateReading.Quality;
 
-            await RunLaterInUIThread(UpdateHeartRateValue, heartRateEvent);
-            await RunLaterInUIThread(() =>
+            if (Model.Bpm > MaxBpm)
             {
-                HeartRateStatus = heartRateReading.Quality;
-            });
-
-            if (SensorValueChanged != null)
-            {
-                await SensorValueChanged.Invoke(heartRateEvent);
-            }
-
-            if (subjectViewService.SessionInProgress)
-            {
-                logger.Information("{heartrate}", heartRateEvent);
-            }
-        }
-
-        private void UpdateHeartRateValue(HeartRateEvent heartRateEvent)
-        {
-            Bpm = heartRateEvent.Bpm;
-
-            if (heartRateEvent.Bpm > MaxBpm)
-            {
-                MaxBpm = heartRateEvent.Bpm;
+                MaxBpm = Model.Bpm;
                 return;
             }
 
-            if (heartRateEvent.Bpm < MinBpm)
+            if (Model.Bpm < MinBpm)
             {
-                MinBpm = heartRateEvent.Bpm;
+                MinBpm = Model.Bpm;
             }
         }
     }

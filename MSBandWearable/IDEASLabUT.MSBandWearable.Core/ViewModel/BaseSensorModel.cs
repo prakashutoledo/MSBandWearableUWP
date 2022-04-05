@@ -1,4 +1,6 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+
+using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band;
@@ -28,11 +30,11 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         public BaseSensorModel(T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
-            Model = model;
-            this.logger = logger;
-            this.msBandService = msBandService;
-            this.subjectViewService = subjectViewService;
-            this.ntpSyncService = ntpSyncService;
+            Model = model ?? throw new ArgumentNullException(nameof(model));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
+            this.subjectViewService = subjectViewService ?? throw new ArgumentNullException(nameof(subjectViewService));
+            this.ntpSyncService = ntpSyncService ?? throw new ArgumentNullException(nameof(ntpSyncService));
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// </summary>
         /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
         /// <returns>A task that can be awaited</returns>
-        public Func<T, Task> SensorValueChanged { get; set; }
+        public Func<T, Task> SensorModelChanged { get; set; }
 
         /// <summary>
         /// A current sensor model holding data for MS Band 2 sensor
@@ -62,10 +64,13 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// A callback for a change in MS band 2 sensor reading
         /// </summary>
         /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
-        protected virtual async void SensorReadingChanged(R sensorReading)
-        {
-            await Task.CompletedTask;
-        }
+        protected abstract void UpdateSensorModel(R sensorReading);
+
+        /// <summary>
+        /// Gets the name of the current sensor using this model
+        /// </summary>
+        /// <returns>A string value name of the sensor</returns>
+        protected abstract string GetSensorName();
 
         /// <summary>
         /// A task that can be subscribed by its corresponding sensor subclasses to start reading values
@@ -81,20 +86,44 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             {
                 return;
             }
+
             var sensor = GetBandSensor(sensorManager);
             var userConsent = UserConsent.Granted == sensor.GetCurrentUserConsent() || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
                 return;
             }
-            sensor.ReadingChanged += (sender, readingEventArgs) =>
+
+            sensor.ReadingChanged += OnBandSensorReadingChanged;
+        }
+
+        private async void OnBandSensorReadingChanged(object sendor, BandSensorReadingEventArgs<R> readingEventArgs)
+        {
+            var sensorReading = readingEventArgs.SensorReading;
+            if (null == sensorReading)
             {
-                if (null != readingEventArgs.SensorReading)
-                {
-                    SensorReadingChanged(readingEventArgs.SensorReading);
-                }
-            };
-            _ = await sensor.StartReadingsAsync();
+                return;
+            }
+
+            Model.FromView = subjectViewService.CurrentView;
+            Model.AcquiredTime = ntpSyncService.LocalTimeNow;
+            Model.ActualTime = sensorReading.Timestamp.DateTime;
+            Model.SubjectId = subjectViewService.SubjectId;
+
+            await RunLaterInUIThread(() => 
+            {
+                UpdateSensorModel(readingEventArgs.SensorReading);
+            });
+
+            if (subjectViewService.SessionInProgress)
+            {
+                logger.Information($"{{{GetSensorName()}}}", Model);
+            }
+
+            if (null != SensorModelChanged)
+            {
+                await SensorModelChanged.Invoke(Model);
+            }
         }
     }
 }

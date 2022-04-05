@@ -1,6 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-
-using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
@@ -25,32 +23,12 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         }
 
         protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.SkinTemperature;
+        
+        protected override string GetSensorName() => "temperature";
 
-        protected override async void SensorReadingChanged(IBandSkinTemperatureReading temperatureReading)
+        protected override void UpdateSensorModel(IBandSkinTemperatureReading temperatureReading)
         {
-            var temperatureEvent = new TemperatureEvent
-            {
-                Temperature = temperatureReading.Temperature,
-                AcquiredTime = ntpSyncService.LocalTimeNow,
-                ActualTime = temperatureReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView,
-                SubjectId = subjectViewService.SubjectId
-            };
-
-            await RunLaterInUIThread(() => 
-            {
-                Temperature = temperatureEvent.Temperature;
-            });
-
-            if (SensorValueChanged != null)
-            {
-                await SensorValueChanged.Invoke(temperatureEvent);
-            }
-
-            if (subjectViewService.SessionInProgress)
-            {
-                logger.Information("{temperature}", temperatureEvent);
-            }
+            Temperature = temperatureReading.Temperature;
         }
     }
 }

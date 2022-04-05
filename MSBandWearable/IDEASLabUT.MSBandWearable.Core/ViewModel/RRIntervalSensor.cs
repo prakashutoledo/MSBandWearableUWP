@@ -1,6 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-
-using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
@@ -26,31 +24,11 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     
         protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.RRInterval;
 
-        protected override async void SensorReadingChanged(IBandRRIntervalReading ibiReading)
+        protected override string GetSensorName() => "ibi";
+
+        protected override void UpdateSensorModel(IBandRRIntervalReading ibiReading)
         {
-            var ibiEvent = new RRIntervalEvent
-            {
-                Ibi = ibiReading.Interval,
-                AcquiredTime = ntpSyncService.LocalTimeNow,
-                ActualTime = ibiReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView,
-                SubjectId = subjectViewService.SubjectId
-            };
-
-            await RunLaterInUIThread(() =>
-            {
-                Ibi = ibiEvent.Ibi;
-            });
-
-            if (SensorValueChanged != null)
-            {
-                await SensorValueChanged.Invoke(ibiEvent);
-            }
-
-            if (subjectViewService.SessionInProgress)
-            {
-                logger.Information("{ibi}", ibiEvent);
-            }
+            Ibi = ibiReading.Interval;
         }
     }
 }

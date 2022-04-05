@@ -1,6 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-
-using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using Microsoft.Band.Sensors;
@@ -26,32 +24,11 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gsr;
 
-        protected override async void SensorReadingChanged(IBandGsrReading gsrReading)
+        protected override string GetSensorName() => "gsr";
+
+        protected override void UpdateSensorModel(IBandGsrReading gsrReading)
         {
-            var gsrEvent = new GSREvent
-            {
-                // Value is in kOhms which is converted into micro seimens
-                Gsr = 1000.0 / gsrReading.Resistance,
-                AcquiredTime = ntpSyncService.LocalTimeNow,
-                ActualTime = gsrReading.Timestamp.DateTime,
-                FromView = subjectViewService.CurrentView,
-                SubjectId = subjectViewService.SubjectId
-            };
-
-            await RunLaterInUIThread(() =>
-            {
-                Gsr = gsrEvent.Gsr;
-            });
-
-            if (SensorValueChanged != null)
-            {
-                await SensorValueChanged.Invoke(gsrEvent);
-            }
-
-            if (subjectViewService.SessionInProgress)
-            {
-                logger.Information("{gsr}", gsrEvent);
-            }
+            Gsr = 1000.0 / gsrReading.Resistance;
         }
     }
 }
