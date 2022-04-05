@@ -351,3 +351,4 @@ MigrationBackup/
 
 *.json.local
 *.bak
+*.local.json

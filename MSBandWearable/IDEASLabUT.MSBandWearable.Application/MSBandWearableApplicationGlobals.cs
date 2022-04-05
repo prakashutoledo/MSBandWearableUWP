@@ -3,7 +3,7 @@
     public static class MSBandWearableApplicationGlobals
     {
         public const string ApplicationPropertiesFileName = "ApplicationProperties.json";
-        public const string ApplicationPropertiesLocalFileName = "ApplicationProperties.json.local";
+        public const string ApplicationPropertiesLocalFileName = "ApplicationProperties.local.json";
         public const string ElasticsearchUriJsonKey = "elasticsearch:uri";
         public const string ElasticsearchAuthenticationJsonKey = "elasticsearch:authenticationKey";
         public const string WebSocketConnectionUriJsonKey = "webSocket:connection:uri";

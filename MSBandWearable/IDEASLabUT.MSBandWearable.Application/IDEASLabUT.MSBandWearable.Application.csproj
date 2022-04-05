@@ -200,7 +200,7 @@
     <Content Include="ApplicationProperties.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ApplicationProperties.json.local">
+    <Content Include="ApplicationProperties.local.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

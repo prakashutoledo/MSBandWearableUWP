@@ -11,7 +11,6 @@ using System.IO;
 
 using Windows.Storage;
 using Windows.ApplicationModel;
-using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Application.Util
 {
@@ -43,8 +42,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
                     period: TimeSpan.FromSeconds(5)
                 );
             });
-
-            Trace.WriteLine(ApplicationData.Current.LocalFolder.Path);
         }
 
         public static LoggerConfiguration LoggerFactory => LoggerConfigurationInstance.Value;
