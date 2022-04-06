@@ -4,7 +4,7 @@ using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.Model
 {
-    public class BaseEvent
+    public abstract class BaseEvent
     {
         [JsonConverter(typeof(ZonedDateTimeOptionalNanoConverter))]
         [JsonProperty("acquiredTime")]

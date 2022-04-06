@@ -27,7 +27,6 @@ using LiveCharts;
 using LiveCharts.Configurations;
 using Windows.System;
 using Serilog;
-using System.Diagnostics;
 using Windows.UI.Core.Preview;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
@@ -93,7 +92,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         }
 
         /// <summary>
-        /// Add sensor model changed handlers for MS Band wearable sensors
+        /// Add sensor model changed callback handlers for MS Band wearable sensors
         /// </summary>
         private void AddSensorValueChangedHandlers()
         {
@@ -111,7 +110,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         }
 
         /// <summary>
-        /// An on tick callback for webSocket dispatch timer for closing the current connection and creating new one
+        /// An on tick callback for webSocket dispatch timer for closing the current webSocket connection and creating new one
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
@@ -145,7 +144,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         }
 
         /// <summary>
-        /// An async callback for MSBand rr interval sensor to run in ui dispatch thread
+        /// An async callback for MSBand rr interval sensor value change to run in ui dispatch thread
         /// </summary>
         /// <param name="value">A new rrinterval event value</param>
         /// <returns>A task that can be awaited</returns>
@@ -167,7 +166,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         }
 
         /// <summary>
-        /// An async callback for MSBand GSR sensor to run in ui dispatch thread
+        /// An async callback for MSBand GSR sensor value change event to run in ui dispatch thread
         /// </summary>
         /// <param name="value">A new GSR event value</param>
         /// <returns>A task that can be awaited</returns>
@@ -180,7 +179,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         }
 
         /// <summary>
-        /// An async callback for MSBand heart rate sensor to run in a ui dispatch thread
+        /// An async callback for MSBand heart rate sensor value change event to run in a ui dispatch thread
         /// </summary>
         /// <param name="value">A new heart rate event value</param>
         /// <returns>A task that can be awaited</returns>
@@ -190,7 +189,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             {
                 heartRatePath.Fill = new SolidColorBrush(Locked == BandManagerService.HeartRate.HeartRateStatus ? White : Transparent);
             });
-            
         }
 
         /// <summary>
