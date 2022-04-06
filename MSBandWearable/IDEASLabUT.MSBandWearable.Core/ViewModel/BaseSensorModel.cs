@@ -22,8 +22,8 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <typeparam name="R">A parameter of type <see cref="IBandSensorReading"/></typeparam>
     public abstract class BaseSensorModel<T, R> : BaseModel where T : BaseEvent where R : IBandSensorReading
     {
-        private readonly SensorType sensorType;
         private T model;
+        private readonly SensorType sensorType;
         private readonly ILogger logger;
         private readonly ISubjectViewService subjectViewService;
         private readonly INtpSyncService ntpSyncService;
@@ -108,6 +108,8 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
                 return;
             }
 
+            // These next 4 lines for Model are not used in UI. So, they don't need to run in UI
+            // Thread to update their values. They are only used for logger
             Model.FromView = subjectViewService.CurrentView;
             Model.AcquiredTime = ntpSyncService.LocalTimeNow;
             Model.ActualTime = sensorReading.Timestamp.DateTime;

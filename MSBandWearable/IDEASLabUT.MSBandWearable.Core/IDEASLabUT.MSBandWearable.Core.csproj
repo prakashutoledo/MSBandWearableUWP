@@ -143,6 +143,7 @@
     <Compile Include="Model\Notification\PayloadAction.cs" />
     <Compile Include="Model\Notification\PayloadType.cs" />
     <Compile Include="Model\RRIntervalEvent.cs" />
+    <Compile Include="Model\SensorType.cs" />
     <Compile Include="Model\TemperatureEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\MSBandWearableCoreUtil.cs" />
