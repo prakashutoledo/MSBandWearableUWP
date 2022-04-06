@@ -51,7 +51,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.HeartRate;
 
         /// <inheritdoc />
-        protected override string GetSensorName() => "gyroscope";
+        protected override string GetSensorName() => "heartrate";
 
         /// <summary>
         /// A callback for subscribing heart rate senser reading event changes

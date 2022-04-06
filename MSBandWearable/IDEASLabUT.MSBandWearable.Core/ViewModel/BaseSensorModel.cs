@@ -124,6 +124,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
             if (subjectViewService.SessionInProgress)
             {
+
                 logger.Information($"{{{GetSensorName()}}}", Model);
             }
 
