@@ -27,8 +27,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         public ElasticsearchService(IConfiguration applicationProperties, IElasticsearchRestClient elasticsearchRestClient)
         {
-            this.applicationProperties = applicationProperties;
-            this.elasticsearchRestClient = elasticsearchRestClient;
+            this.applicationProperties = applicationProperties ?? throw new ArgumentNullException(nameof(applicationProperties));
+            this.elasticsearchRestClient = elasticsearchRestClient ?? throw new ArgumentNullException(nameof(elasticsearchRestClient));
         }
 
         /// <inheritdoc />

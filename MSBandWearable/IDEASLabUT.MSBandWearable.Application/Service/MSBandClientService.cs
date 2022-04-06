@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private MSBandClientService(IBandClientManager bandClientManager)
         {
             // private initialization
-            this.bandClientManager = bandClientManager;
+            this.bandClientManager = bandClientManager ?? throw new ArgumentNullException(nameof(bandClientManager));
         }
 
         public IBandClient BandClient { get; set; }

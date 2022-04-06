@@ -39,7 +39,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private MSBandManagerService(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
             // private initialization
-            this.msBandService = msBandService;
+            this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
             BandStatus = BandStatus.UNKNOWN;
             Accelerometer = new AccelerometerSensor(logger, msBandService, subjectViewService, ntpSyncService);
             Gsr = new GSRSensor(logger, msBandService, subjectViewService, ntpSyncService);
@@ -55,7 +55,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             try
             {
                 await msBandService.ConnectBand(selectedIndex);
-                BandName = bandName;
+                BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
                 bandStatus = BandStatus.Connected;
             }
             catch (Exception)

@@ -95,6 +95,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
 
             sensor.ReadingChanged += OnBandSensorReadingChanged;
+            _ = await sensor.StartReadingsAsync();
         }
 
         private async void OnBandSensorReadingChanged(object sendor, BandSensorReadingEventArgs<R> readingEventArgs)
