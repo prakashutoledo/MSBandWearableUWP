@@ -3,6 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
+    /// <summary>
+    /// Base class for all view model which listens property changed for all changed properties
+    /// </summary>
     public class BaseModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -17,7 +20,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
         /// <summary>
         /// Update the given target value (replacing the refrence) if the value has really changed.
         /// This will also notify property changed event for the given property name. There is no need
@@ -27,7 +29,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="target">A target reference value of the property being changed</param>
         /// <param name="value">A new value of the property being changed</param>
         /// <param name="propertyName">An optional property name that is going to be changed</param>
-        /// <returns></returns>
+        /// <returns><code>true</code> if updated otherwise <code>false</code></returns>
         protected virtual bool UpdateAndNotify<T>(ref T target, T value, [CallerMemberName] string propertyName = null)
         {
             if (Equals(target, value))

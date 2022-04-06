@@ -98,6 +98,12 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             _ = await sensor.StartReadingsAsync();
         }
 
+        /// <summary>
+        /// A callback for subscribing MS Band 2 senser reading event changes
+        /// </summary>
+        /// <param name="sender">The sender of the current changed event</param>
+        /// <param name="readingEventArgs">A band sensor reading event arguments</param>
+        /// <see cref="BandSensorReadingEventArgs{R}"/>
         private async void OnBandSensorReadingChanged(object sendor, BandSensorReadingEventArgs<R> readingEventArgs)
         {
             var sensorReading = readingEventArgs.SensorReading;

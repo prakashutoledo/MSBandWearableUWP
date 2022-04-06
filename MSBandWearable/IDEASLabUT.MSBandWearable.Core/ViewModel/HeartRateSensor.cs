@@ -47,8 +47,10 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
+        /// <inheritdoc />
         protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.HeartRate;
 
+        /// <inheritdoc />
         protected override string GetSensorName() => "gyroscope";
 
         /// <summary>
@@ -56,7 +58,11 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// </summary>
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">A heart rate reading event arguments</param>
-        /// <see cref="BandSensorReadingEventArgs{T}"/>
+
+        /// <summary>
+        /// Updates the underlying model value
+        /// </summary>
+        /// <param name="heartRateReading">An updated heartRate reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandHeartRateReading heartRateReading)
         {
             Bpm = heartRateReading.HeartRate;

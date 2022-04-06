@@ -43,16 +43,16 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
+        /// <inheritdoc />
         protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Accelerometer;
 
+        /// <inheritdoc />
         protected override string GetSensorName() => "accelerometer";
-        
 
         /// <summary>
-        /// A callback for subscribing accelerometer senser reading event changes
+        /// Updates the underlying model value
         /// </summary>
-        /// <param name="sender">A sender of the current changed event</param>
-        /// <param name="readingEventArgs">An accelerometer reading event arguments</param>
+        /// <param name="accelerometerReading">An updated accelorometer reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandAccelerometerReading accelerometerReading)
         {
             AccelerationX = accelerometerReading.AccelerationX;

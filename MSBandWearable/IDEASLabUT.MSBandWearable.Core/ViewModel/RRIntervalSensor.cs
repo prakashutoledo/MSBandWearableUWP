@@ -7,6 +7,9 @@ using Serilog;
 
 namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 {
+    /// <summary>
+    /// A sensor manager for Microsoft Band 2 RR Interval sensor
+    /// </summary>
     public class RRIntervalSensor : BaseSensorModel<RRIntervalEvent, IBandRRIntervalReading>
     {
         public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new RRIntervalEvent(), logger, msBandService, subjectViewService, ntpSyncService)
@@ -21,11 +24,17 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
                 NotifyPropertyChanged(nameof(Model));
             }
         }
-    
+
+        /// <inheritdoc />
         protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.RRInterval;
 
+        /// <inheritdoc />
         protected override string GetSensorName() => "ibi";
 
+        /// <summary>
+        /// Updates the underlying model value
+        /// </summary>
+        /// <param name="ibiReading">An updated RR interval reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandRRIntervalReading ibiReading)
         {
             Ibi = ibiReading.Interval;

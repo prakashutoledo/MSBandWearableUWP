@@ -43,16 +43,16 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
+        /// <inheritdoc />
         protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gyroscope;
 
+        /// <inheritdoc />
         protected override string GetSensorName() => "gyroscope";
 
         /// <summary>
-        /// A callback for subscribing gyroscope senser reading event changes
+        /// Updates the underlying model value
         /// </summary>
-        /// <param name="sender">The sender of the current changed event</param>
-        /// <param name="readingEventArgs">An gyroscope reading event Argument</param>
-        /// <returns>A task that can be awaited</returns>
+        /// <param name="gyroscopeReading">An updated gyroscope reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandGyroscopeReading gyroscopeReading)
         {
             AngularX = gyroscopeReading.AngularVelocityX;
