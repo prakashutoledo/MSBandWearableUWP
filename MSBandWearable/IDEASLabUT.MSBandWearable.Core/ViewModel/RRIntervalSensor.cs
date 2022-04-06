@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// </summary>
     public class RRIntervalSensor : BaseSensorModel<RRIntervalEvent, IBandRRIntervalReading>
     {
-        public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new RRIntervalEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.RRInterval, new RRIntervalEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -27,9 +27,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         /// <inheritdoc />
         protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.RRInterval;
-
-        /// <inheritdoc />
-        protected override string GetSensorName() => "ibi";
 
         /// <summary>
         /// Updates the underlying model value

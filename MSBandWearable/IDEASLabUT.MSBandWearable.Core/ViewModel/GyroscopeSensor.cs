@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// </summary>
     public class GyroscopeSensor : BaseSensorModel<GyroscopeEvent, IBandGyroscopeReading>
     {
-        public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new GyroscopeEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Gyroscope, new GyroscopeEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -45,9 +45,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         /// <inheritdoc />
         protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gyroscope;
-
-        /// <inheritdoc />
-        protected override string GetSensorName() => "gyroscope";
 
         /// <summary>
         /// Updates the underlying model value

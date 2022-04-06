@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// </summary>
     public class GSRSensor : BaseSensorModel<GSREvent, IBandGsrReading>
     {
-        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new GSREvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, new GSREvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -27,9 +27,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         /// <inheritdoc />
         protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gsr;
-
-        /// <inheritdoc />
-        protected override string GetSensorName() => "gsr";
 
         /// <summary>
         /// Updates the underlying model value

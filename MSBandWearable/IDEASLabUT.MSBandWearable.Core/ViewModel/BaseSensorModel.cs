@@ -22,14 +22,16 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <typeparam name="R">A parameter of type <see cref="IBandSensorReading"/></typeparam>
     public abstract class BaseSensorModel<T, R> : BaseModel where T : BaseEvent where R : IBandSensorReading
     {
+        private readonly SensorType sensorType;
         private T model;
-        protected readonly ILogger logger;
-        protected readonly ISubjectViewService subjectViewService;
-        protected readonly INtpSyncService ntpSyncService;
+        private readonly ILogger logger;
+        private readonly ISubjectViewService subjectViewService;
+        private readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
 
-        public BaseSensorModel(T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
+        public BaseSensorModel(SensorType sensorType, T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
+            this.sensorType = sensorType;
             Model = model ?? throw new ArgumentNullException(nameof(model));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
@@ -65,12 +67,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// </summary>
         /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
         protected abstract void UpdateSensorModel(R sensorReading);
-
-        /// <summary>
-        /// Gets the name of the current sensor using this model
-        /// </summary>
-        /// <returns>A string value name of the sensor</returns>
-        protected abstract string GetSensorName();
 
         /// <summary>
         /// A task that can be subscribed by its corresponding sensor subclasses to start reading values
@@ -125,7 +121,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             if (subjectViewService.SessionInProgress)
             {
 
-                logger.Information($"{{{GetSensorName()}}}", Model);
+                logger.Information($"{{{sensorType.GetName()}}}", Model);
             }
 
             if (null != SensorModelChanged)

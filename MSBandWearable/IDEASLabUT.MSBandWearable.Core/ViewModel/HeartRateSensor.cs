@@ -16,7 +16,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         private double minBpm = 220;
         private HeartRateQuality heartRateStatus;
 
-        public HeartRateSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new HeartRateEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public HeartRateSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.HeartRate, new HeartRateEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -49,15 +49,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         /// <inheritdoc />
         protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.HeartRate;
-
-        /// <inheritdoc />
-        protected override string GetSensorName() => "heartrate";
-
-        /// <summary>
-        /// A callback for subscribing heart rate senser reading event changes
-        /// </summary>
-        /// <param name="sender">The sender of the current changed event</param>
-        /// <param name="readingEventArgs">A heart rate reading event arguments</param>
 
         /// <summary>
         /// Updates the underlying model value

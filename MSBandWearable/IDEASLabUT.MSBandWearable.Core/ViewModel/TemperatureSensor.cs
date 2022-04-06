@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// </summary>
     public class TemperatureSensor : BaseSensorModel<TemperatureEvent, IBandSkinTemperatureReading>
     {
-        public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new TemperatureEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Temperature, new TemperatureEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -27,9 +27,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         /// <inheritdoc />
         protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.SkinTemperature;
-
-        /// <inheritdoc />
-        protected override string GetSensorName() => "temperature";
 
         /// <summary>
         /// Updates the underlying model value

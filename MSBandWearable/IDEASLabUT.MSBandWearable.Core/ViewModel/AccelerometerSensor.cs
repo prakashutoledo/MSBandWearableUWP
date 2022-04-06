@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// </summary>
     public class AccelerometerSensor : BaseSensorModel<AccelerometerEvent, IBandAccelerometerReading>
     {
-        public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Accelerometer, new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
@@ -45,9 +45,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
         /// <inheritdoc />
         protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Accelerometer;
-
-        /// <inheritdoc />
-        protected override string GetSensorName() => "accelerometer";
 
         /// <summary>
         /// Updates the underlying model value
