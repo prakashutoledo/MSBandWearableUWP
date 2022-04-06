@@ -150,12 +150,12 @@
                             <VisualStateGroup x:Name="DropDownStates">
                                 <VisualState x:Name="Opened">
                                     <Storyboard>
-                                        <SplitOpenThemeAnimation ClosedTargetName="ContentPresenter" OffsetFromCenter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}" OpenedLength="{Binding TemplateSettings.DropDownOpenedHeight, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                        <SplitOpenThemeAnimation ClosedTargetName="ContentPresenter" OpenedLength="{Binding TemplateSettings.DropDownOpenedHeight, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Closed">
                                     <Storyboard>
-                                        <SplitCloseThemeAnimation ClosedTargetName="ContentPresenter" OffsetFromCenter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}" OpenedLength="{Binding TemplateSettings.DropDownOpenedHeight, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                        <SplitCloseThemeAnimation ClosedTargetName="ContentPresenter" OpenedLength="{Binding TemplateSettings.DropDownOpenedHeight, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
                                     </Storyboard>
                                 </VisualState>
                             </VisualStateGroup>

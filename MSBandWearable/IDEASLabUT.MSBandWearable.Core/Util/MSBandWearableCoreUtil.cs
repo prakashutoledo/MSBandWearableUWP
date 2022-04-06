@@ -8,6 +8,9 @@ using Windows.ApplicationModel.Core;
 
 namespace IDEASLabUT.MSBandWearable.Core.Util
 {
+    /// <summary>
+    /// Core utility class for runnining action in core dispatcher main thread for UI components changed values
+    /// </summary>
     public static class MSBandWearableCoreUtil
     {
         /// <summary>

@@ -26,6 +26,9 @@ using System.Collections.Generic;
 using LiveCharts;
 using LiveCharts.Configurations;
 using Windows.System;
+using Serilog;
+using System.Diagnostics;
+using Windows.UI.Core.Preview;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
 {
@@ -41,11 +44,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private WebSocketService SocketService { get; } = WebSocketService.Singleton;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
-        public ChartValues<DateTimeModel> GsrDataPoint { get; } = new ChartValues<DateTimeModel>();
-        public ChartValues<DateTimeModel> IbiDataPoint { get; } = new ChartValues<DateTimeModel>();
         private DispatcherTimer GsrTimer { get; set; }
         private DispatcherTimer WebSocketTimer { get; set; }
-        
+
+        // These chart values properties should be public for data binding line series chart
+        public ChartValues<DateTimeModel> GsrDataPoint { get; } = new ChartValues<DateTimeModel>();
+        public ChartValues<DateTimeModel> IbiDataPoint { get; } = new ChartValues<DateTimeModel>();
+
         private double gsrValue;
 
         public MSBandPage()
@@ -54,8 +59,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             AddLiveCharts();
             AddTimers();
             AddSensorValueChangedHandlers();
+            AddApplicationCloseRequestHandler();
         }
 
+        /// <summary>
+        /// Add line charts with model mapper for data binding
+        /// </summary>
         private void AddLiveCharts()
         {
             var dateTimeModelMapper = Mappers.Xy<DateTimeModel>()
@@ -65,13 +74,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             Charting.For<DateTimeModel>(dateTimeModelMapper);
         }
 
+        /// <summary>
+        /// Creates a dispatch timer and its corresponding call back action for GSR and webSocket connection
+        /// </summary>
         private void AddTimers()
         {
             GsrTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            GsrTimer.Tick += TimerOnTick;
+            GsrTimer.Tick += GsrTimerOnTick;
 
             WebSocketTimer = new DispatcherTimer
             {
@@ -80,6 +92,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             WebSocketTimer.Tick += WebSocketTimerOnTick;
         }
 
+        /// <summary>
+        /// Add sensor model changed handlers for MS Band wearable sensors
+        /// </summary>
         private void AddSensorValueChangedHandlers()
         {
             BandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
@@ -87,13 +102,32 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             BandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
         }
 
+        /// <summary>
+        /// Add callback handler for current page close request event
+        /// </summary>
+        private void AddApplicationCloseRequestHandler()
+        {
+            SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += OnApplicationCloseRequest;
+        }
+
+        /// <summary>
+        /// An on tick callback for webSocket dispatch timer for closing the current connection and creating new one
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
         {
             SocketService.Close();
             await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
         }
 
-        private async void TimerOnTick(object sender, object eventArgs)
+        /// <summary>
+        /// An on tick callback for gsr dispatch timer for binding current gsr value to gsr data point line series in a ui
+        /// dispatch thread
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private async void GsrTimerOnTick(object sender, object eventArgs)
         {
             await RunLaterInUIThread(() =>
             {
@@ -110,6 +144,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
+        /// <summary>
+        /// An async callback for MSBand rr interval sensor to run in ui dispatch thread
+        /// </summary>
+        /// <param name="value">A new rrinterval event value</param>
+        /// <returns>A task that can be awaited</returns>
         private async Task IbiSensorValueChanged(RRIntervalEvent value)
         {
             await RunLaterInUIThread(() =>
@@ -127,6 +166,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
+        /// <summary>
+        /// An async callback for MSBand GSR sensor to run in ui dispatch thread
+        /// </summary>
+        /// <param name="value">A new GSR event value</param>
+        /// <returns>A task that can be awaited</returns>
         private async Task GsrSensorValueChanged(GSREvent value)
         {
             await RunLaterInUIThread(() =>
@@ -135,6 +179,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
+        /// <summary>
+        /// An async callback for MSBand heart rate sensor to run in a ui dispatch thread
+        /// </summary>
+        /// <param name="value">A new heart rate event value</param>
+        /// <returns>A task that can be awaited</returns>
         private async Task HeartRateSensorValueChanged(HeartRateEvent value)
         {
             await RunLaterInUIThread(() =>
@@ -144,22 +193,42 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             
         }
 
+        /// <summary>
+        /// A callback when current page is loaded to user
+        /// </summary>
+        /// <param name="sender">The sender of the current page loaded event</param>
+        /// <param name="routedEventArgs">A routed event arguments</param>
         private async void PageLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             await SearchBands();
         }
 
-        private async void PageUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        /// <summary>
+        /// A callback when user close the currently loaded page from UI
+        /// </summary>
+        /// <param name="sender">The sender of the current page close event</param>
+        /// <param name="closeRequestEventArgs">A system navigation close request preview event arguments</param>
+        private void OnApplicationCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs closeRequestEventArgs)
         {
-            await Task.CompletedTask;
+            Log.Logger = Logger;
+            Log.CloseAndFlush();
         }
 
-        private async void SearchBandButtonAction(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// An action callback when search band button is clicked
+        /// </summary>
+        /// <param name="sender">The sender of the search band button clicked event</param>
+        /// <param name="routedEventArgs">A routed event arguments</param>
+        private async void SearchBandButtonAction(object sender, RoutedEventArgs routedEventArgs)
         {
             await LoadBands();
         }
 
-
+        /// <summary>
+        /// A callback for Empatica E4 Band webSocket message received
+        /// </summary>
+        /// <param name="empaticaE4Band">A webSocket message containing Empatica E4 Band details</param>
+        /// <returns>A task that can be awaited</returns>
         private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
         {
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
@@ -177,7 +246,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
-
+        /// <summary>
+        /// Loads the currently paired MS Band wearables to this page
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
         private async Task LoadBands()
         {
             commandBar.Visibility = Visibility.Collapsed;
@@ -210,6 +282,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
         }
 
+        /// <summary>
+        /// A callback for command invoked action
+        /// </summary>
+        /// <param name="command">A ui command that has been inkoked</param>
         private async void CommandInvokedHandler(IUICommand command)
         {
             switch ((int)command.Id)
@@ -222,6 +298,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
         }
 
+        /// <summary>
+        /// Hides all available grids (search band and available band grid) from this page to show progress ring with given message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="isProgress"></param>
+        /// <returns></returns>
         private async Task HideAllGrids(string message, bool isProgress = true)
         {
             await RunLaterInUIThread(() =>
@@ -234,17 +316,31 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
+        /// <summary>
+        /// A callback when current page is navigated from other page
+        /// </summary>
+        /// <param name="navigationEventArgs">A navigation event arguments</param>
         protected override async void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             await Task.CompletedTask;
             base.OnNavigatedTo(navigationEventArgs);
         }
 
+        /// <summary>
+        /// An action callback when sync band button is clicked
+        /// </summary>
+        /// <param name="sender">The sender of current button clicked event</param>
+        /// <param name="routedEventArgs">A routed event arguments</param>
         private async void SyncBandButtonAction(object sender, RoutedEventArgs routedEventArgs)
         {
             await Task.CompletedTask;
         }
 
+        /// <summary>
+        /// An action callback when start or stop session button is clicked
+        /// </summary>
+        /// <param name="sender">The sender of current button clicked event</param>
+        /// <param name="routedEventArgs">A routed event arguments</param>
         private async void StartOrStopSessionButttonAction(object sender, RoutedEventArgs routedEventArgs)
         {
             var symbolIcon = new SymbolIcon(Symbol.Pause);
@@ -266,6 +362,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
+        /// <summary>
+        /// Sets the visibility of search band grid to true and hides available band grid
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
         private async Task SearchBands()
         {
             await RunLaterInUIThread(() =>
@@ -276,11 +376,22 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
         }
 
+        /// <summary>
+        /// An action callback when paired MS band is selected from the available bands combo box
+        /// </summary>
+        /// <param name="sender">The sender of current combo box selected event</param>
+        /// <param name="changedEventArgs">A selected changed event arguments</param>
         private async void BandSelectionChanged(object sender, SelectionChangedEventArgs changedEventArgs)
         {
             await ConnectBand(availableBandComboBox.SelectedValue.ToString(), availableBandComboBox.SelectedIndex);
         }
 
+        /// <summary>
+        /// Connects the band with given index and name
+        /// </summary>
+        /// <param name="bandName">A name of selected band to connect</param>
+        /// <param name="selectedIndex">An index of selected band to connect</param>
+        /// <returns>A task that can be awaited</returns>
         private async Task ConnectBand(string bandName, int selectedIndex)
         {
             var messageDialog = new MessageDialog(string.Empty);
@@ -321,6 +432,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             }
         }
 
+        /// <summary>
+        /// Starts the dashboard for currently loaded page in UI.
+        /// This will hides all the grids, sets the visibility of command bar to true, subscribe available
+        /// MS Band sensors which is selected, sync timestamp to 'ntp.pool.org', connect to webSocket and start
+        /// the gsr and webSocket timers
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
         private async Task StartDashboard()
         {
             await HideAllGrids($"Preparing Dashboard for Microsoft Band ({BandManagerService.BandName})...");
@@ -334,12 +452,15 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             });
 
             NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
-            //await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
+            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
 
             GsrTimer.Start();
             WebSocketTimer.Start();
         }
 
+        /// <summary>
+        /// Updates the command bar for MS Band page based of band status of selected band
+        /// </summary>
         private void UpdateCommandBar()
         {
             switch (BandManagerService.BandStatus)
