@@ -16,6 +16,9 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         {
         }
 
+        /// <summary>
+        /// Angular Velocity in X direction
+        /// </summary>
         private double AngularX
         {
             set
@@ -25,20 +28,26 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
+        /// <summary>
+        /// Angular Velocity in Y direction
+        /// </summary>
         private double AngularY
         {
             set
             {
-                Model.AngularX = value;
+                Model.AngularY = value;
                 NotifyPropertyChanged(nameof(Model));
             }
         }
 
+        /// <summary>
+        /// Angular velocity in Z direction
+        /// </summary>
         private double AngularZ
         {
             set
             {
-                Model.AngularX = value;
+                Model.AngularZ = value;
                 NotifyPropertyChanged(nameof(Model));
             }
         }
