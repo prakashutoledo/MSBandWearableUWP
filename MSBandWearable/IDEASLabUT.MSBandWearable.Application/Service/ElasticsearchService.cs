@@ -14,6 +14,9 @@ using System.Net.Http.Headers;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
+    /// <summary>
+    /// An Elasticserach service which performs bulk api request
+    /// </summary>
     public class ElasticsearchService : IHttpClient
     {
         private const string BasicAuthorization = "Basic";
@@ -57,7 +60,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// <summary>
         /// Dispose the inclosed elasticsearch rest client if given paramater is set to true otherwise ignored
         /// </summary>
-        /// <param name="disposing"></param>
+        /// <param name="disposing">a boolean parameter for disposing elasticsearch rest client</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

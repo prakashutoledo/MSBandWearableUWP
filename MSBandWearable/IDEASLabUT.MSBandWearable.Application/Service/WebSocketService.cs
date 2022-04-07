@@ -10,6 +10,9 @@ using Windows.Storage.Streams;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
+    /// <summary>
+    /// A service class for managing webSocket connection details using <see cref="MessageWebSocket"/>
+    /// </summary>
     public class WebSocketService
     {
         private static readonly Lazy<WebSocketService> Instance = new Lazy<WebSocketService>(() => new WebSocketService());
@@ -24,6 +27,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         {
         }
 
+        /// <summary>
+        /// Connect to given webSocket url by setting given webSocket message received callback function
+        /// </summary>
+        /// <param name="webSocketUrl">A webSocket URL to connect</param>
+        /// <param name="onEmpaticaE4BandMessageReceived">An asynchronous webSocket message received callback function</param>
+        /// <returns>A task that can be awaited</returns>
         public async Task Connect(string webSocketUrl, Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived)
         {
             messageWebSocket = new MessageWebSocket();
@@ -37,7 +46,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             await messageWebSocket.ConnectAsync(new Uri(webSocketUrl));
         }
 
-
+        /// <summary>
+        /// Sends the given string message as webSocket message
+        /// </summary>
+        /// <param name="message">A message to be sent</param>
+        /// <returns>A task that can be awaited</returns>
         public async Task SendMessage(string message)
         {
             using (var dataWriter = new DataWriter(messageWebSocket.OutputStream))
@@ -48,7 +61,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
         }
 
-        public async void MessageReceivedEvent(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs receivedEventArgs)
+        /// <summary>
+        /// A callback function for receiving webSocket message
+        /// </summary>
+        /// <param name="sender">The sender of current message received event</param>
+        /// <param name="receivedEventArgs">A message websocket message received event arguments</param>
+        private async void MessageReceivedEvent(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs receivedEventArgs)
         {
             using (var dataReader = receivedEventArgs.GetDataReader())
             {
@@ -58,7 +76,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
         }
 
-        public async Task ParseMessageAndSend(string message)
+        /// <summary>
+        /// Serialize given webSocket json message and call the message received function
+        /// </summary>
+        /// <param name="message">A webSocket json message to be serialized</param>
+        /// <returns>A task that can be awaited</returns>
+        private async Task ParseMessageAndSend(string message)
         {
             if (message == null)
             {
@@ -87,6 +110,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
         }
 
+        /// <summary>
+        /// Close the given message WebSocket instance with given reason
+        /// </summary>
+        /// <param name="reason"></param>
         public void Close(string reason = "Application Closed")
         {
             if (messageWebSocket != null)

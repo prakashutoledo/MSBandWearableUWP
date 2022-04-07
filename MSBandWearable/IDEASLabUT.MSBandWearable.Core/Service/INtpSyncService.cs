@@ -2,6 +2,9 @@
 
 namespace IDEASLabUT.MSBandWearable.Core.Service
 {
+    /// <summary>
+    /// An interface for providing timestamp synchronization service using ntp client
+    /// </summary>
     public interface INtpSyncService
     {
         /// <summary>

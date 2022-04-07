@@ -26,8 +26,6 @@
     
     <Page.BottomAppBar>
         <CommandBar x:Name="commandBar" IsEnabled="False">
-            <AppBarButton x:Name="syncBandButton" Icon="Sync" Label="Sync Band" Click="SyncBandButtonAction" />
-            <AppBarSeparator />
             <AppBarButton x:Name="startOrStopSessionButtton" Icon="Play" Label="Start Session" Click="StartOrStopSessionButttonAction" />
         </CommandBar>
     </Page.BottomAppBar>

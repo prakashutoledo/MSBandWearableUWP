@@ -270,11 +270,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             {
                 await RunLaterInUIThread(() =>
                 {
+                    AvailableBands.Clear();
                     foreach (var device in availableBandNames)
                     {
                         AvailableBands.Add(device);
                     }
-                    
                     availableBandGrid.Visibility = Visibility.Visible;
                 });
             }
@@ -322,16 +322,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             await Task.CompletedTask;
             base.OnNavigatedTo(navigationEventArgs);
-        }
-
-        /// <summary>
-        /// An action callback when sync band button is clicked
-        /// </summary>
-        /// <param name="sender">The sender of current button clicked event</param>
-        /// <param name="routedEventArgs">A routed event arguments</param>
-        private async void SyncBandButtonAction(object sender, RoutedEventArgs routedEventArgs)
-        {
-            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -422,6 +412,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 {
                     syncStackPanel.Visibility = Visibility.Collapsed;
                     _ = await messageDialog.ShowAsync();
+                    availableBandGrid.Visibility = Visibility.Visible;
                 }
                 else
                 {
@@ -466,19 +457,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 case BandStatus.Connected:
                     return;
                 case BandStatus.Subscribed:
-                    syncBandButton.Icon = new SymbolIcon(Symbol.DisableUpdates);
-                    syncBandButton.Label = "Unsync Band";
-
                     syncGrid.Visibility = Visibility.Collapsed;
                     startOrStopSessionButtton.IsEnabled = true;
-
                     commandBar.IsEnabled = true;
                     commandBar.IsOpen = true;
                     break;
 
                 case BandStatus.UnSubscribed:
-                    syncBandButton.Icon = new SymbolIcon(Symbol.Sync);
-                    syncBandButton.Label = "sync band";
                     startOrStopSessionButtton.IsEnabled = false;
                     break;
 

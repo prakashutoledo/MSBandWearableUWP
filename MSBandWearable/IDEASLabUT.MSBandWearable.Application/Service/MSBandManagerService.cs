@@ -16,6 +16,9 @@ using Windows.Devices.Enumeration;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
+    /// <summary>
+    /// A service class for managing supported sensors, see the status of conneted MS Band 2 client using  <see cref="MSBandClientService"/>
+    /// </summary>
     public class MSBandManagerService : IBandManagerService
     {
         private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(MSBandWearableUtil.Logger, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
@@ -26,13 +29,44 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         private readonly IBandClientService msBandService;
 
+        /// <summary>
+        /// The current status of the connected MS Band 2
+        /// </summary>
         public BandStatus BandStatus { get; set; }
+
+        /// <summary>
+        /// The unique name of the connected MS Band 2
+        /// </summary>
         public string BandName { get; set; }
+
+        /// <summary>
+        /// An accelerometer sensor of the connected MS Band 2
+        /// </summary>
         public AccelerometerSensor Accelerometer { get; set; }
+
+        /// <summary>
+        /// A gsr sensor of the connected MS Band 2
+        /// </summary>
         public GSRSensor Gsr { get; set; }
+
+        /// <summary>
+        /// A gyroscope sensor of the connected MS Band 2
+        /// </summary>
         public GyroscopeSensor Gyroscope { get; set; }
+
+        /// <summary>
+        /// A heart rate sensor of the connected MS Band 2
+        /// </summary>
         public HeartRateSensor HeartRate { get; set; }
+
+        /// <summary>
+        /// A temperature sensor of the connected MS Band 2
+        /// </summary>
         public TemperatureSensor Temperature { get; set; }
+
+        /// <summary>
+        /// A rr interval sensor of the connected MS Band 2
+        /// </summary>
         public RRIntervalSensor RRInterval { get; set; }
 
         private MSBandManagerService(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
@@ -48,6 +82,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             RRInterval = new RRIntervalSensor(logger, msBandService, subjectViewService, ntpSyncService);
         }
 
+        /// Connects the given selected index from the available paired MS bands with given name
+        /// </summary>
+        /// <param name="selectedIndex">A selected index of a paired bands</param>
+        /// <param name="bandName">A name of the band to connect</param>
+        /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(int selectedIndex, string bandName)
         {
             var bandStatus = BandStatus.UNKNOWN;
@@ -68,6 +107,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
         }
 
+        /// <summary>
+        /// Subscribe all available sensors of connected MS Band 2 client
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
         public async Task SubscribeSensors()
         {
             await Accelerometer.Subscribe();
@@ -80,6 +123,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             BandStatus = BandStatus.Subscribed;
         }
 
+        /// <summary>
+        /// Find all the MS Band 2 clients which are paired using bluetooth
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
         public async Task<IEnumerable<string>> GetPairedBands()
         {
             var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true));

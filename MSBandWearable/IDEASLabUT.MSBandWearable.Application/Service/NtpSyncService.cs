@@ -9,6 +9,9 @@ using System.Threading;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
+    /// <summary>
+    /// A service class for performing timestamp synchronization using Guerrilla <see cref="NtpClient"/>
+    /// </summary>
     public class NtpSyncService : INtpSyncService
     {
         private static readonly Lazy<NtpSyncService> Instance = new Lazy<NtpSyncService>(() => new NtpSyncService());

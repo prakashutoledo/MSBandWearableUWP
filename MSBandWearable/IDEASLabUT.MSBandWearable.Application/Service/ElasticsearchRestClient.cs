@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
+    /// <summary>
+    /// Elasticsearch rest client for providing bulk request api using <see cref="HttpClient"/>
+    /// </summary>
     public class ElasticsearchRestClient : IElasticsearchRestClient
     {
         private static readonly Lazy<ElasticsearchRestClient> Instance = new Lazy<ElasticsearchRestClient>(() => new ElasticsearchRestClient(new HttpClient()));
@@ -24,6 +27,13 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
+        /// <summary>
+        /// Performs bulk POST request for given bulk request body with given authentication header to given base elasticsearch url
+        /// </summary>
+        /// <param name="baseElasticsearchURI">A base elasticsearch uri to perform bulk request</param>
+        /// <param name="bulkRequestBody">A bulk POST request body</param>
+        /// <param name="authenticationHeaderValue">A header value with authentication details</param>
+        /// <returns>A http response message task that can be awaited</returns>
         public async Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, string requestBody, AuthenticationHeaderValue authenticationHeaderValue)
         {
             if (string.IsNullOrEmpty(baseElasticsearchURI))
@@ -54,6 +64,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             return response;
         }
 
+        /// <summary>
+        /// Dispose the underlying <see cref="HttpClient"/>
+        /// </summary>
         public void Dispose()
         {
             httpClient.Dispose();

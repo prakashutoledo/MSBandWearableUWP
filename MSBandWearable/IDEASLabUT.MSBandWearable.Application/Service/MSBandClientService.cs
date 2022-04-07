@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
+    /// <summary>
+    /// A MS Band 2 client service to connect to band and subscribe available supported sensors using <see cref="IBandClientManager"/>
+    /// </summary>
     public class MSBandClientService : IBandClientService
     {
         private static readonly Lazy<MSBandClientService> Instance = new Lazy<MSBandClientService>(() => new MSBandClientService(BandClientManager.Instance));
@@ -22,8 +25,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             this.bandClientManager = bandClientManager ?? throw new ArgumentNullException(nameof(bandClientManager));
         }
 
+        /// <summary>
+        /// A connected MS Band 2 client
+        /// </summary>
         public IBandClient BandClient { get; set; }
 
+        /// <summary>
+        /// Connects the given selected index from the available paired MS bands
+        /// </summary>
+        /// <param name="selectedIndex">A selected index of a paired bands</param>
+        /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(int selectedIndex)
         {
             var pairedBands = await bandClientManager.GetBandsAsync();
