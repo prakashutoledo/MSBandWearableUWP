@@ -22,8 +22,14 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         private readonly HttpClient httpClient;
 
-        public ElasticsearchRestClient(HttpClient httpClient)
+        /// <summary>
+        /// Initializes a new instance of <see cref="ElasticsearchRestClient"/>
+        /// </summary>
+        /// <param name="httpClient">A http client to set</param>
+        /// <exception cref="ArgumentNullException">If httpClient is null</exception>
+        private ElasticsearchRestClient(HttpClient httpClient)
         {
+            // private instantiation
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
@@ -34,6 +40,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// <param name="bulkRequestBody">A bulk POST request body</param>
         /// <param name="authenticationHeaderValue">A header value with authentication details</param>
         /// <returns>A http response message task that can be awaited</returns>
+        /// <exception cref="ArgumentNullException">If baseElasticsearchURI, requestBody or authenticationHeaderValue is null or empty</exception>
         public async Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, string requestBody, AuthenticationHeaderValue authenticationHeaderValue)
         {
             if (string.IsNullOrEmpty(baseElasticsearchURI))

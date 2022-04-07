@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace IDEASLabUT.MSBandWearable.Core.Service
 {
     /// <summary>
-    /// Interface for MS Band 2 client service to connect to band and subscribe available supported sensors
+    /// An interface for MS Band 2 client service to connect to band and subscribe available supported sensors
     /// </summary>
     public interface IBandClientService
     {

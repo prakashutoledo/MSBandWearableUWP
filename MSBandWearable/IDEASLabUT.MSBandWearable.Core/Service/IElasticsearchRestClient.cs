@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace IDEASLabUT.MSBandWearable.Core.Service
 {
     /// <summary>
-    /// Elasticsearch rest client interface
+    /// An interface for providing Elasticsearch rest client
     /// </summary>
     public interface IElasticsearchRestClient
     {

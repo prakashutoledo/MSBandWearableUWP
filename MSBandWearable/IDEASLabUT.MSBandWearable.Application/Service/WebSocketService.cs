@@ -23,6 +23,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived;
         private MessageWebSocket messageWebSocket;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="WebSocketService"/>
+        /// </summary>
         private WebSocketService()
         {
         }
@@ -89,7 +92,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
 
             var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(message);
-
             if (baseMessage == null)
             {
                 return;
@@ -99,7 +101,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 case PayloadType.E4Band:
                     var empaticaE4BandMessage = JsonConvert.DeserializeObject<EmpaticaE4BandMessage>(message);
-
                     if (onEmpaticaE4BandMessageReceived != null)
                     {
                         await onEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload);

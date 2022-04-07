@@ -115,7 +115,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             Model.ActualTime = sensorReading.Timestamp.DateTime;
             Model.SubjectId = subjectViewService.SubjectId;
 
-            await RunLaterInUIThread(() => 
+            await RunLaterInUIThread(() =>
             {
                 UpdateSensorModel(readingEventArgs.SensorReading);
             });

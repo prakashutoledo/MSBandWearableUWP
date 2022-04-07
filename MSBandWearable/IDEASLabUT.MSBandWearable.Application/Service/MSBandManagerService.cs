@@ -30,6 +30,26 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private readonly IBandClientService msBandService;
 
         /// <summary>
+        /// Initializes a new instance of <see cref="MSBandManagerService"/>
+        /// </summary>
+        /// <param name="logger">A logger to set</param>
+        /// <param name="msBandService">A MS band service to set</param>
+        /// <param name="subjectViewService">A subject view service to set</param>
+        /// <param name="ntpSyncService">A ntp sync service to set</param>
+        private MSBandManagerService(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
+        {
+            // private initialization
+            this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
+            BandStatus = BandStatus.UNKNOWN;
+            Accelerometer = new AccelerometerSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            Gsr = new GSRSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            Gyroscope = new GyroscopeSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            HeartRate = new HeartRateSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            Temperature = new TemperatureSensor(logger, msBandService, subjectViewService, ntpSyncService);
+            RRInterval = new RRIntervalSensor(logger, msBandService, subjectViewService, ntpSyncService);
+        }
+
+        /// <summary>
         /// The current status of the connected MS Band 2
         /// </summary>
         public BandStatus BandStatus { get; set; }
@@ -68,19 +88,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// A rr interval sensor of the connected MS Band 2
         /// </summary>
         public RRIntervalSensor RRInterval { get; set; }
-
-        private MSBandManagerService(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
-        {
-            // private initialization
-            this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
-            BandStatus = BandStatus.UNKNOWN;
-            Accelerometer = new AccelerometerSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            Gsr = new GSRSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            Gyroscope = new GyroscopeSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            HeartRate = new HeartRateSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            Temperature = new TemperatureSensor(logger, msBandService, subjectViewService, ntpSyncService);
-            RRInterval = new RRIntervalSensor(logger, msBandService, subjectViewService, ntpSyncService);
-        }
 
         /// Connects the given selected index from the available paired MS bands with given name
         /// </summary>

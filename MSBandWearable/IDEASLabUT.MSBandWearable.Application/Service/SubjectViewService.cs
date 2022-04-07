@@ -18,13 +18,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         // Lazy singleton pattern
         public static SubjectViewService Singleton => Instance.Value;
 
+        /// <summary>
+        /// Initializes new instance of <see cref="SubjectViewService"/>
+        /// </summary>
         private SubjectViewService()
         {
             // private initialization
         }
 
         /// <summary>
-        /// The unique id for current subject performing experiment
+        /// The unique identifier for current subject performing experiment
         /// </summary>
         public string SubjectId 
         {

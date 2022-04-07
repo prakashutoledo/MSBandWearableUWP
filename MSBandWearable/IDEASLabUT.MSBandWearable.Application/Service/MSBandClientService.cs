@@ -19,6 +19,10 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
         private readonly IBandClientManager bandClientManager;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="MSBandClientService"/>
+        /// </summary>
+        /// <param name="bandClientManager">A band client manager to set</param>
         private MSBandClientService(IBandClientManager bandClientManager)
         {
             // private initialization

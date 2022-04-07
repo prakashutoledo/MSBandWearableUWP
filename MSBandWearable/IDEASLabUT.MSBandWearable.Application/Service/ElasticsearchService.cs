@@ -15,7 +15,7 @@ using System.Net.Http.Headers;
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
     /// <summary>
-    /// An Elasticserach service which performs bulk api request
+    /// An Elasticserach service which performs bulk api request using <see cref="IElasticsearchRestClient"/>
     /// </summary>
     public class ElasticsearchService : IHttpClient
     {
@@ -24,10 +24,20 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         private readonly IElasticsearchRestClient elasticsearchRestClient;
         private readonly IConfiguration applicationProperties;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="ElasticsearchService"/>
+        /// </summary>
+        /// <param name="applicationProperties">An application properties to set</param>
         public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, ElasticsearchRestClient.Singleton)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="ElasticsearchService"/>
+        /// </summary>
+        /// <param name="applicationProperties">An application properties to set</param>
+        /// <param name="elasticsearchRestClient">An elasticsearch rest client to set</param>
+        /// <exception cref="ArgumentNullException">If any of the parameters applicationProperties or elasticsearchRestClient is null</exception>
         public ElasticsearchService(IConfiguration applicationProperties, IElasticsearchRestClient elasticsearchRestClient)
         {
             this.applicationProperties = applicationProperties ?? throw new ArgumentNullException(nameof(applicationProperties));

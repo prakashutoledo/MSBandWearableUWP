@@ -23,6 +23,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
         private static readonly Lazy<LoggerConfiguration> LoggerConfigurationInstance;
         private static readonly Lazy<ILogger> LoggerInstance;
 
+        /// <summary>
+        /// Static constructor for <see cref="MSBandWearableUtil"/>
+        /// </summary>
         static MSBandWearableUtil()
         {
             // Add passwords, api keys, and secret keys in ApplicationProperties.local.json (local application properties) so that 

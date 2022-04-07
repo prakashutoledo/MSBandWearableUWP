@@ -20,11 +20,17 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         // Lazy singleton pattern
         public static NtpSyncService Singleton => Instance.Value;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="NtpSyncService"/>
+        /// </summary>
         private NtpSyncService()
         {
             // private initialization
         }
 
+        /// <summary>
+        /// A correction offset to current date time once synced to ntp pool
+        /// </summary>
         public TimeSpan CorrectionOffset
         {
             get => (TimeSpan) correctionOffset;

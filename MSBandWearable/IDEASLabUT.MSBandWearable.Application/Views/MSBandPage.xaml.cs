@@ -52,6 +52,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
 
         private double gsrValue;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="MSBandPage"/>
+        /// </summary>
         public MSBandPage()
         {
             InitializeComponent();
@@ -208,6 +211,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <param name="closeRequestEventArgs">A system navigation close request preview event arguments</param>
         private void OnApplicationCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs closeRequestEventArgs)
         {
+            // Sets the global logger
             Log.Logger = Logger;
             Log.CloseAndFlush();
         }
@@ -251,7 +255,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private async Task LoadBands()
         {
             commandBar.Visibility = Visibility.Collapsed;
-            await HideAllGrids("Loading Paired Bands", true);
+            await HideAllGridsWithMessage("Loading Paired Bands", true);
             await Task.Delay(200);
             IEnumerable<string> availableBandNames = await BandManagerService.GetPairedBands();
             if (!availableBandNames.Any())
@@ -302,7 +306,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <param name="message"></param>
         /// <param name="isProgress"></param>
         /// <returns></returns>
-        private async Task HideAllGrids(string message, bool isProgress = true)
+        private async Task HideAllGridsWithMessage(string message, bool isProgress = true)
         {
             await RunLaterInUIThread(() =>
             {
@@ -386,7 +390,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 
-            await HideAllGrids($"Connecting to band ({bandName})...");
+            await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
 
             try
             {
@@ -430,7 +434,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <returns>A task that can be awaited</returns>
         private async Task StartDashboard()
         {
-            await HideAllGrids($"Preparing Dashboard for Microsoft Band ({BandManagerService.BandName})...");
+            await HideAllGridsWithMessage($"Preparing Dashboard for Microsoft Band ({BandManagerService.BandName})...");
             await BandManagerService.SubscribeSensors();
 
             await RunLaterInUIThread(() =>

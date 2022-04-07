@@ -2,6 +2,7 @@
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -18,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Application
     public sealed partial class MSBandWearableApplication : Windows.UI.Xaml.Application
     {
         /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
+        /// Initializes the singleton application object. This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public MSBandWearableApplication()
@@ -34,8 +35,7 @@ namespace IDEASLabUT.MSBandWearable.Application
         /// <param name="eventArgs">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs eventArgs)
         {
-            Frame rootFrame = Window.Current.Content as Frame;
-
+            var rootFrame = Window.Current.Content as Frame;
             if (rootFrame == null)
             {
                 rootFrame = new Frame();
@@ -58,9 +58,11 @@ namespace IDEASLabUT.MSBandWearable.Application
         /// </summary>
         /// <param name="sender">The Frame which failed navigation</param>
         /// <param name="failedEventArgs">Details about the navigation failure</param>
-        private void OnNavigationFailed(object sender, NavigationFailedEventArgs failedEventArgs)
+        private async void OnNavigationFailed(object sender, NavigationFailedEventArgs failedEventArgs)
         {
-            throw new Exception("Failed to load Page " + failedEventArgs.SourcePageType.FullName);
+            var messageDialog = new MessageDialog($"Failed to load Page {failedEventArgs.SourcePageType.FullName}", "Navigation Failed");
+            messageDialog.Commands.Add(new UICommand("Close"));
+            _ = await messageDialog.ShowAsync();
         }
 
         /// <summary>
@@ -72,7 +74,7 @@ namespace IDEASLabUT.MSBandWearable.Application
         /// <param name="e">Details about the suspend request</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            SuspendingDeferral deferral = e.SuspendingOperation.GetDeferral();
+            var deferral = e.SuspendingOperation.GetDeferral();
             deferral.Complete();
         }
     }
