@@ -29,6 +29,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Converter
         /// <param name="parameter">a parameter for given conversion</param>
         /// <param name="language">a supported language to convert the given value</param>
         /// <returns>A formatted and converted back to original GSR value</returns>
+        /// <exception cref="NotImplementedException">Not implemented yet</exception>
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             throw new NotImplementedException();

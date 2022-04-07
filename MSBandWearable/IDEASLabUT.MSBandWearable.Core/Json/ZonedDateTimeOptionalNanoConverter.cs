@@ -3,10 +3,14 @@ using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.Json
 {
-    class ZonedDateTimeOptionalNanoConverter : JsonConverter
+    /// <summary>
+    /// A custom json nano seconds <see cref="DateTime"/> converter
+    /// </summary>
+    internal class ZonedDateTimeOptionalNanoConverter : JsonConverter
     {
         private static readonly string DateTimeFormatter = "yyyy-MM-dd'T'HH:mm:ss.ffffffzzz";
 
+        /// <inheritdoc />
         public override bool CanConvert(Type objectType)
         {
             if (typeof(DateTime).IsAssignableFrom(objectType))
@@ -17,11 +21,14 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
             return typeof(DateTimeOffset).IsAssignableFrom(objectType);
         }
 
+        /// <inheritdoc />
+        /// <exception cref="NotImplementedException">Not implemented yet</exception>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             string dateTimeString = value is DateTime time

@@ -4,13 +4,18 @@ using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.Json
 {
-    class PayloadActionConverter : JsonConverter
+    /// <summary>
+    /// A custom json enum converter for <see cref="PayloadAction"/>
+    /// </summary>
+    internal class PayloadActionConverter : JsonConverter
     {
+        /// <inheritdoc />
         public override bool CanConvert(Type objectType)
         {
             return typeof(PayloadAction).IsAssignableFrom(objectType);
         }
 
+        /// <inheritdoc />
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             if (reader.TokenType == JsonToken.Null)
@@ -26,6 +31,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
             return null;
         }
 
+        /// <inheritdoc />
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             string text = null;

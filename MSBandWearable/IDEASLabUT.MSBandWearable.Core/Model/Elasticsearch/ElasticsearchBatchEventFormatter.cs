@@ -12,6 +12,10 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
     {
         private const char StringSplitChar = '\\';
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="ElasticsearchBatchEventFormatter"/>
+        /// </summary>
+        /// <param name="eventBodyLimitBytes">An event body limit bytes to set</param>
         public ElasticsearchBatchEventFormatter(long? eventBodyLimitBytes = 256 * KB) : base(eventBodyLimitBytes)
         {
         }
@@ -40,6 +44,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
         /// </summary>
         /// <param name="logEvents"></param>
         /// <param name="output"></param>
+        /// <exception cref="ArgumentNullException">If logEvents or output is null</exception>
         public override void Format(IEnumerable<string> logEvents, TextWriter output)
         {
             if (null == logEvents)

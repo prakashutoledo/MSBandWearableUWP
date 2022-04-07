@@ -2,6 +2,7 @@
 using System.IO;
 using Serilog.Events;
 using Serilog.Formatting;
+using System;
 
 namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
 {
@@ -31,9 +32,20 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
         /// </summary>
         /// <param name="logEvent">A log event which is going to be formatted into elasticsearch bulk api post json body</param>
         /// <param name="output">An output text writer to write the formatted log event</param>
+        /// <exception cref="ArgumentNullException">If logEvent or output is null</exception>
         /// <seealso cref="ElasticsearchBatchEventFormatter"/>
         public void Format(LogEvent logEvent, TextWriter output)
         {
+            if (logEvent == null)
+            {
+                throw new ArgumentNullException(nameof(logEvent));
+            }
+
+            if (output == null)
+            {
+                throw new ArgumentNullException(nameof(output));
+            }
+
             var eventPair = logEvent.Properties.Select(property => property).First();
             output.Write($"{{\"index\":{{\"_index\": \"{eventPair.Key}\"}}}}");
             output.Write(StringSplitChar);

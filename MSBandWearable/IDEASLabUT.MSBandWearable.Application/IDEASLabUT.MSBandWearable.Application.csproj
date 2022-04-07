@@ -126,8 +126,8 @@
     <Compile Include="Service\NtpSyncService.cs" />
     <Compile Include="Service\SubjectViewService.cs" />
     <Compile Include="Service\WebSocketService.cs" />
-    <Compile Include="MSBandWerableApplication.xaml.cs">
-      <DependentUpon>MSBandWerableApplication.xaml</DependentUpon>
+    <Compile Include="MSBandWearableApplication.xaml.cs">
+      <DependentUpon>MSBandWearableApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\MSBandClientService.cs" />
@@ -157,7 +157,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="MSBandWerableApplication.xaml">
+    <ApplicationDefinition Include="MSBandWearableApplication.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
