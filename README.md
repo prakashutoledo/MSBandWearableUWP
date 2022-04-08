@@ -16,10 +16,12 @@ and [ideaslabut-aws-lambda](https://github.com/prakashutoledo/ideaslabut-aws-lam
 * Create, build and deploy [WebSocket API](https//us-east-1.console.aws.amazon.com/apigateway/main/create-ws?region=us-east-1 "ApiGateway WebSocket API") with http proxy to the Lambda ARN created from first step.
 * Make sure to give IAM role permission to Lambda function to invoke ApiGatewayManagementExecute api so that lambda can create connection and send message.
 * Create [Elasticsearch Domain](https://us-east-1.console.aws.amazon.com/esv3/home?region=us-east-1#opensearch/domains/create-domain) with master user fine grained access control
-* Upload the jar file containing handler function that is build using ideaslabut-aws-lambda](https://github.com/prakashutoledo/ideaslabut-aws-lambda "AWS Lambda Proxy using AWS ApiGateway with WebSocket"). Make sure to follow readme document
+* Upload the jar file containing handler function that is build using [ideaslabut-aws-lambda](https://github.com/prakashutoledo/ideaslabut-aws-lambda "AWS Lambda Proxy using AWS ApiGateway with WebSocket"). Make sure to follow readme document
 * Once all the previous step is completed update the resource names defined in requirements.
 
-Create a new file `ApplicationProperties.local.json` in `MSBandWearable/IDEASLabUT.MSBandWearable.Application` with the sample provided in `ApplicationProperties.local.json.sample. Changes made in this file will be 
+If you don't want to manually create all the resources you can use cloudformation template or terraform to create programatically.
+
+Create a new file `ApplicationProperties.local.json` in `MSBandWearable/IDEASLabUT.MSBandWearable.Application` with the sample provided in `ApplicationProperties.local.json.sample`. Changes made in this file will be 
 ignored by git while commiting your changes.
 
 Open the solution file in Visual Studio and run it.
