@@ -115,8 +115,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <summary>
         /// An on tick callback for webSocket dispatch timer for closing the current webSocket connection and creating new one
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
+        /// <param name="sender">The sender of current timer on tick event</param>
+        /// <param name="eventArgs">An event arguments</param>
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
         {
             SocketService.Close();
@@ -127,8 +127,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// An on tick callback for gsr dispatch timer for binding current gsr value to gsr data point line series in a ui
         /// dispatch thread
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
+        /// <param name="sender">The sender of current timer on tick event</param>
+        /// <param name="eventArgs">An event arguments</param>
         private async void GsrTimerOnTick(object sender, object eventArgs)
         {
             await RunLaterInUIThread(() =>
@@ -336,7 +336,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private async void StartOrStopSessionButttonAction(object sender, RoutedEventArgs routedEventArgs)
         {
             var symbolIcon = new SymbolIcon(Symbol.Pause);
-            string label = "Pause Session";
+            var label = "Pause Session";
             bool sessionInProgress = true;
 
             if (SubjectAndViewService.SessionInProgress)
