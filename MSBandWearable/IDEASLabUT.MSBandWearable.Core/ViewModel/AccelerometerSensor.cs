@@ -10,12 +10,22 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <summary>
     /// A sensor manager for Microsoft Band 2 accelerometer sensor
     /// </summary>
-    public class AccelerometerSensor : BaseSensorModel<AccelerometerEvent, IBandAccelerometerReading>
+    public class AccelerometerSensor : BaseSensorViewModel<AccelerometerEvent, IBandAccelerometerReading>
     {
+        /// <summary>
+        /// Initializes a new instance of <see cref="AccelerometerSensor"/>
+        /// </summary>
+        /// <param name="logger">A logger to set</param>
+        /// <param name="msBandService">A MS band service to set</param>
+        /// <param name="subjectViewService">A subject view service to set</param>
+        /// <param name="ntpSyncService">A ntp synchronization to set</param>
         public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Accelerometer, new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
+        /// <summary>
+        /// Sets the acceleration X value and raise property change event
+        /// </summary>
         private double AccelerationX
         {
             set
@@ -25,6 +35,9 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
+        /// <summary>
+        /// Sets the acceleration Y value and raise property change event
+        /// </summary>
         private double AccelerationY
         {
             set
@@ -34,6 +47,9 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             }
         }
 
+        /// <summary>
+        /// Sets the acceleration Z value and raise property change event
+        /// </summary>
         private double AccelerationZ
         {
             set

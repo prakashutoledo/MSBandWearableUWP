@@ -59,7 +59,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             }
 
             HttpResponseMessage response;
-            string elasticsearchURI = $"{baseElasticsearchURI}/_bulk";
+            var elasticsearchURI = $"{baseElasticsearchURI}/_bulk";
             using (var bulkPostRequest = new HttpRequestMessage(HttpMethod.Post, elasticsearchURI))
             using (var bulkRequestContent = new StringContent(requestBody, Encoding.UTF8, JsonContentType))
             {

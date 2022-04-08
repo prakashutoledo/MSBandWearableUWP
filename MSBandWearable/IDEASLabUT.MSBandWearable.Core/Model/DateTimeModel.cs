@@ -1,5 +1,8 @@
 ﻿namespace IDEASLabUT.MSBandWearable.Core.Model
 {
+    /// <summary>
+    /// POCO holding date time model mapper value used in line charts
+    /// </summary>
     public class DateTimeModel
     {
         public long DateTime { get; set; }

@@ -10,14 +10,21 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <summary>
     /// A sensor manager for Microsoft Band 2 gyroscope sensor
     /// </summary>
-    public class GyroscopeSensor : BaseSensorModel<GyroscopeEvent, IBandGyroscopeReading>
+    public class GyroscopeSensor : BaseSensorViewModel<GyroscopeEvent, IBandGyroscopeReading>
     {
+        /// <summary>
+        /// Initializes a new instance of <see cref="GyroscopeSensor"/>
+        /// </summary>
+        /// <param name="logger">A logger to set</param>
+        /// <param name="msBandService">A MS band service to set</param>
+        /// <param name="subjectViewService">A subject view service to set</param>
+        /// <param name="ntpSyncService">A ntp synchronization to set</param>
         public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Gyroscope, new GyroscopeEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
         /// <summary>
-        /// Angular Velocity in X direction
+        /// Sets the angular velocity in X direction and raise property changed event
         /// </summary>
         private double AngularX
         {
@@ -29,7 +36,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         }
 
         /// <summary>
-        /// Angular Velocity in Y direction
+        /// Sets the angular velocity in Y direction and raise property changed event
         /// </summary>
         private double AngularY
         {
@@ -41,7 +48,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         }
 
         /// <summary>
-        /// Angular velocity in Z direction
+        /// Sets the angular velocity in Z direction and raise property changed event
         /// </summary>
         private double AngularZ
         {

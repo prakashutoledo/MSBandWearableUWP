@@ -10,12 +10,22 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <summary>
     /// A sensor manager for Microsoft Band 2 RR Interval sensor
     /// </summary>
-    public class RRIntervalSensor : BaseSensorModel<RRIntervalEvent, IBandRRIntervalReading>
+    public class RRIntervalSensor : BaseSensorViewModel<RRIntervalEvent, IBandRRIntervalReading>
     {
+        /// <summary>
+        /// Initializes a new instance of <see cref="RRIntervalSensor"/>
+        /// </summary>
+        /// <param name="logger">A logger to set</param>
+        /// <param name="msBandService">A MS band service to set</param>
+        /// <param name="subjectViewService">A subject view service to set</param>
+        /// <param name="ntpSyncService">A ntp synchronization to set</param>
         public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.RRInterval, new RRIntervalEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
+        /// <summary>
+        /// Sets the inter beat interval value for this event and also raise property changed event
+        /// </summary>
         private double Ibi
         {
             set

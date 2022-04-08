@@ -10,12 +10,22 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <summary>
     /// A sensor manager for Microsoft Band 2 temperature sensor
     /// </summary>
-    public class TemperatureSensor : BaseSensorModel<TemperatureEvent, IBandSkinTemperatureReading>
+    public class TemperatureSensor : BaseSensorViewModel<TemperatureEvent, IBandSkinTemperatureReading>
     {
+        /// <summary>
+        /// Initializes a new instance of <see cref="TemperatureSensor"/>
+        /// </summary>
+        /// <param name="logger">A logger to set</param>
+        /// <param name="msBandService">A MS band service to set</param>
+        /// <param name="subjectViewService">A subject view service to set</param>
+        /// <param name="ntpSyncService">A ntp synchronization to set</param>
         public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Temperature, new TemperatureEvent(), logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
+        /// <summary>
+        /// Sets the temperature and raise property changed event
+        /// </summary>
         private double Temperature
         {
             set

@@ -16,11 +16,12 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <summary>
     /// Provides a sensor manager basis for all available Microsoft Band 2 sensors. If the sensor is
     /// subscribed, this will provides a handler base of sensor value changed. This will also notifies 
-    /// to all the listeners for as model value changes
+    /// to all the listeners for as model value changes. Model is initialized only during construction and 
+    /// values are updated to existing model instead of creating new instance of model when value is changed
     /// </summary>
     /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
     /// <typeparam name="R">A parameter of type <see cref="IBandSensorReading"/></typeparam>
-    public abstract class BaseSensorModel<T, R> : BaseModel where T : BaseEvent where R : IBandSensorReading
+    public abstract class BaseSensorViewModel<T, R> : BaseViewModel where T : BaseEvent where R : IBandSensorReading
     {
         private T model;
         private readonly SensorType sensorType;
@@ -29,7 +30,17 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         private readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
 
-        public BaseSensorModel(SensorType sensorType, T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
+        /// <summary>
+        /// Initializes a new instance of <see cref="BaseSensorViewModel{T, R}"/>
+        /// </summary>
+        /// <param name="sensorType">A type of this sensor to set</param>
+        /// <param name="model">A model for this sensor to set</param>
+        /// <param name="logger">A logger to set</param>
+        /// <param name="msBandService">A MS band service to set</param>
+        /// <param name="subjectViewService">A subject view service to set</param>
+        /// <param name="ntpSyncService">A ntp synchronization to set</param>
+        /// <exception cref="ArgumentNullException">If any of the parameters model, logger, msBandService, subjectViewService or ntpSyncService is null</exception>
+        protected BaseSensorViewModel(SensorType sensorType, T model, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
             this.sensorType = sensorType;
             Model = model ?? throw new ArgumentNullException(nameof(model));
@@ -56,7 +67,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         }
 
         /// <summary>
-        /// Gets the MS band 2 sensor from given sensor manager
+        /// Gets the MS band 2 sensor from given band sensor manager
         /// </summary>
         /// <param name="sensorManager">A sensor manager to be used to get the band sensor</param>
         /// <returns>The corresponding MS band 2 sensor</returns>
@@ -69,22 +80,21 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         protected abstract void UpdateSensorModel(R sensorReading);
 
         /// <summary>
-        /// A task that can be subscribed by its corresponding sensor subclasses to start reading values
-        /// by setting callback for reading the values. This will request the current user consent for
-        /// corresponding sensor, if such request is not granted a sensor is not suscribed and will not
-        /// start reading the changed values.
+        /// A task that can be subscribe sensor to start reading values by setting callback. This will 
+        /// request the current user consent for subscribing corresponding sensor, if such request is not
+        /// granted a sensor is not suscribed and will not start reading the changed values.
         /// </summary>
-        /// <returns>A completed subscribing task</returns>
+        /// <returns>A task that can be awaited</returns>
         public async Task Subscribe()
         {
             var sensorManager = msBandService.BandClient.SensorManager;
-            if (null == sensorManager)
+            if (sensorManager == null)
             {
                 return;
             }
 
             var sensor = GetBandSensor(sensorManager);
-            var userConsent = UserConsent.Granted == sensor.GetCurrentUserConsent() || await sensor.RequestUserConsentAsync();
+            var userConsent = sensor.GetCurrentUserConsent() == UserConsent.Granted || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
                 return;
@@ -103,18 +113,19 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         private async void OnBandSensorReadingChanged(object sendor, BandSensorReadingEventArgs<R> readingEventArgs)
         {
             var sensorReading = readingEventArgs.SensorReading;
-            if (null == sensorReading)
+            if (sensorReading == null)
             {
                 return;
             }
 
-            // These next 4 lines for Model are not used in UI. So, they don't need to run in UI
+            // These next 4 lines for Model are not used in UI. So, they don't need to run in core dispatcher UI
             // Thread to update their values. They are only used for logger
             Model.FromView = subjectViewService.CurrentView;
             Model.AcquiredTime = ntpSyncService.LocalTimeNow;
             Model.ActualTime = sensorReading.Timestamp.DateTime;
             Model.SubjectId = subjectViewService.SubjectId;
 
+            // This update sensor model should reflect change in UI. Thus, it should update model in core dispatcher UI thread
             await RunLaterInUIThread(() =>
             {
                 UpdateSensorModel(readingEventArgs.SensorReading);
@@ -122,11 +133,10 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
             if (subjectViewService.SessionInProgress)
             {
-
                 logger.Information($"{{{sensorType.GetName()}}}", Model);
             }
 
-            if (null != SensorModelChanged)
+            if (SensorModelChanged != null)
             {
                 await SensorModelChanged.Invoke(Model);
             }

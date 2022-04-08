@@ -14,9 +14,9 @@
     public static class PayloadActionExtension
     {
         /// <summary>
-        /// Gets the description of representation payload action
+        /// Gets the description of represented payload action
         /// </summary>
-        /// <param name="payloadAction">A payload action enum</param>
+        /// <param name="payloadAction">A payload type enum value</param>
         /// <returns>A string representation of this payload action</returns>
         public static string GetDescription(this PayloadAction payloadAction)
         {
@@ -30,7 +30,7 @@
         }
 
         /// <summary>
-        /// Gets the matching enum value for the given description
+        /// Gets the matching payload action enum value for the given description
         /// </summary>
         /// <param name="description">A description of enum value to match</param>
         /// <returns>A matching nullable <see cref="PayloadAction?"/></returns>

@@ -47,12 +47,12 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
         /// <exception cref="ArgumentNullException">If logEvents or output is null</exception>
         public override void Format(IEnumerable<string> logEvents, TextWriter output)
         {
-            if (null == logEvents)
+            if (logEvents == null)
             {
                 throw new ArgumentNullException(nameof(logEvents));
             }
 
-            if (null == output)
+            if (output == null)
             {
                 throw new ArgumentNullException(nameof(output));
             }
@@ -62,7 +62,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
                 return;
             }
 
-            foreach (string logEvent in logEvents)
+            foreach (var logEvent in logEvents)
             {
                 if (string.IsNullOrWhiteSpace(logEvent))
                 {

@@ -19,10 +19,10 @@
     public static class SensorTypeExtension
     {
         /// <summary>
-        /// Get name of given sensor type
+        /// Get name of given sensor type enum value
         /// </summary>
-        /// <param name="sensorType">A sensor type to return name for</param>
-        /// <returns>The mane of given sensor type</returns>
+        /// <param name="sensorType">A sensor type enum value to return name for</param>
+        /// <returns>The name of given sensor type</returns>
         public static string GetName(this SensorType sensorType)
         {
             switch (sensorType)

@@ -34,6 +34,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
         /// <param name="output">An output text writer to write the formatted log event</param>
         /// <exception cref="ArgumentNullException">If logEvent or output is null</exception>
         /// <seealso cref="ElasticsearchBatchEventFormatter"/>
+        /// <exception cref="ArgumentNullException">If logEvent or output is null</exception>
         public void Format(LogEvent logEvent, TextWriter output)
         {
             if (logEvent == null)
