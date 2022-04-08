@@ -1,4 +1,5 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
+﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
 
 using IDEASLabUT.MSBandWearable.Core.Service;
 
@@ -19,6 +20,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
     /// </summary>
     public class ElasticsearchService : IHttpClient
     {
+        private static readonly Lazy<ElasticsearchService> Instance = new Lazy<ElasticsearchService>(() => new ElasticsearchService(ApplicationProperties, ElasticsearchRestClient.Singleton));
+
+        // Lazy singleton pattern
+        public static ElasticsearchService Singleton => Instance.Value;
+
         private const string BasicAuthorization = "Basic";
 
         private readonly IElasticsearchRestClient elasticsearchRestClient;
@@ -28,18 +34,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// Initializes a new instance of <see cref="ElasticsearchService"/>
         /// </summary>
         /// <param name="applicationProperties">An application properties to set</param>
-        public ElasticsearchService(IConfiguration applicationProperties) : this(applicationProperties, ElasticsearchRestClient.Singleton)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="ElasticsearchService"/>
-        /// </summary>
-        /// <param name="applicationProperties">An application properties to set</param>
         /// <param name="elasticsearchRestClient">An elasticsearch rest client to set</param>
         /// <exception cref="ArgumentNullException">If any of the parameters applicationProperties or elasticsearchRestClient is null</exception>
-        public ElasticsearchService(IConfiguration applicationProperties, IElasticsearchRestClient elasticsearchRestClient)
+        private ElasticsearchService(IConfiguration applicationProperties, IElasticsearchRestClient elasticsearchRestClient)
         {
+            // private initialization
             this.applicationProperties = applicationProperties ?? throw new ArgumentNullException(nameof(applicationProperties));
             this.elasticsearchRestClient = elasticsearchRestClient ?? throw new ArgumentNullException(nameof(elasticsearchRestClient));
         }

@@ -52,7 +52,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Util
                     batchPostingLimit: 30,
                     textFormatter: new ElasticsearchEventJsonFormatter(),
                     batchFormatter: new ElasticsearchBatchEventFormatter(null),
-                    httpClient: new ElasticsearchService(ApplicationProperties),
+                    httpClient: ElasticsearchService.Singleton,
                     period: TimeSpan.FromSeconds(8)
                 );
             });
