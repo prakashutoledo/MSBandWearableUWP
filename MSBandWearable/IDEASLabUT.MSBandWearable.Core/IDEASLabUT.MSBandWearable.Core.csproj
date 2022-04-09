@@ -139,7 +139,7 @@
     <Compile Include="Model\Notification\EmpaticaE4Band.cs" />
     <Compile Include="Model\Notification\EmpaticaE4BandMessage.cs" />
     <Compile Include="Model\Notification\Message.cs" />
-    <Compile Include="Model\Notification\Payload.cs" />
+    <Compile Include="Model\Notification\IPayload.cs" />
     <Compile Include="Model\Notification\PayloadAction.cs" />
     <Compile Include="Model\Notification\PayloadType.cs" />
     <Compile Include="Model\RRIntervalEvent.cs" />
@@ -147,11 +147,11 @@
     <Compile Include="Model\TemperatureEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\MSBandWearableCoreUtil.cs" />
-    <Compile Include="ViewModel\BaseModel.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\GSRSensor.cs" />
     <Compile Include="ViewModel\HeartRateSensor.cs" />
     <Compile Include="ViewModel\AccelerometerSensor.cs" />
-    <Compile Include="ViewModel\BaseSensorModel.cs" />
+    <Compile Include="ViewModel\BaseSensorViewModel.cs" />
     <Compile Include="ViewModel\GyroscopeSensor.cs" />
     <Compile Include="ViewModel\RRIntervalSensor.cs" />
     <Compile Include="ViewModel\SubjectViewModel.cs" />
