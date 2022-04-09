@@ -1,4 +1,6 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model
+﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+
+namespace IDEASLabUT.MSBandWearable.Core.Model
 {
     /// <summary>
     /// An enum representing wearable band types
@@ -24,9 +26,9 @@
             switch (payloadType)
             {
                 case BandType.E4Band:
-                    return "E4BAND";
+                    return E4BandDescription;
                 case BandType.MSBand:
-                    return "MSBAND";
+                    return MSBandDescription;
                 default:
                     return null;
             }
@@ -46,9 +48,9 @@
 
             switch (description)
             {
-                case "E4BAND":
+                case E4BandDescription:
                     return BandType.E4Band;
-                case "MSBAND":
+                case MSBandDescription:
                     return BandType.MSBand;
                 default:
                     return null;

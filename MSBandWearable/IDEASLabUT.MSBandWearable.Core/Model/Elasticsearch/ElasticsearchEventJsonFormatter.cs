@@ -57,8 +57,15 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
             {
                 return;
             }
+            var sensorType = SensorTypeExtension.FromName(eventPair.Key);
 
-            output.Write($"{{\"index\":{{\"_index\": \"{eventPair.Key}\"}}}}");
+            if (!sensorType.HasValue)
+            {
+                // Unsupported elasticsearch index
+                return;
+            }
+
+            output.Write($"{{\"index\":{{\"_index\": \"{sensorType.Value.GetName()}\"}}}}");
             output.Write(StringSplitChar);
 
             // Serilog wierdly adds extra double quotes to the string data. So, we are trimming double quote character from start and end

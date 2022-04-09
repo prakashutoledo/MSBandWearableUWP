@@ -1,4 +1,6 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
+﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+
+namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
 {
     /// <summary>
     /// An enum representing websocket message payload type
@@ -23,7 +25,7 @@
             switch (payloadType)
             {
                 case PayloadType.E4Band:
-                    return "E4Band";
+                    return E4BandPayloadTypeDescription;
                 default:
                     return null;
             }
@@ -43,7 +45,7 @@
 
             switch (description)
             {
-                case "E4Band":
+                case E4BandPayloadTypeDescription:
                     return PayloadType.E4Band;
                 default:
                     return null;

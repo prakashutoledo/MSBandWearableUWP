@@ -1,4 +1,6 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model
+﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+
+namespace IDEASLabUT.MSBandWearable.Core.Model
 {
     /// <summary>
     /// Currently supported available MS Band 2 sensor types
@@ -28,17 +30,48 @@
             switch (sensorType)
             {
                 case SensorType.Accelerometer:
-                    return "accelerometer";
+                    return Accelerometer;
                 case SensorType.GSR:
-                    return "gsr";
+                    return GSR;
                 case SensorType.Gyroscope:
-                    return "gyroscope";
+                    return Gyroscope;
                 case SensorType.HeartRate:
-                    return "heartrate";
+                    return HeartRate;
                 case SensorType.RRInterval:
-                    return "ibi";
+                    return RRInterval;
                 case SensorType.Temperature:
-                    return "temperature";
+                    return Temperature;
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the matching sensor type enum value for the given name
+        /// </summary>
+        /// <param name="name">A name of enum value to match</param>
+        /// <returns>A matching nullable <see cref="SensorType?"/></returns>
+        public static SensorType? FromName(string name)
+        {
+            if (name == null)
+            {
+                return null;
+            }
+
+            switch (name)
+            {
+                case Accelerometer:
+                    return SensorType.Accelerometer;
+                case GSR:
+                    return SensorType.GSR;
+                case Gyroscope:
+                    return SensorType.Gyroscope;
+                case HeartRate:
+                    return SensorType.HeartRate;
+                case RRInterval:
+                    return SensorType.RRInterval;
+                case Temperature:
+                    return SensorType.Temperature;
                 default:
                     return null;
             }
