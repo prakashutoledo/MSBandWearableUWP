@@ -212,6 +212,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private void OnApplicationCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs closeRequestEventArgs)
         {
             // Sets the global logger
+            // On application close request, flush the logger and close it
             Log.Logger = Logger;
             Log.CloseAndFlush();
         }

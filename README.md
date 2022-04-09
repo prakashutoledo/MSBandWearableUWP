@@ -20,8 +20,18 @@ and [ideaslabut-aws-lambda](https://github.com/prakashutoledo/ideaslabut-aws-lam
 * Once all the previous step is completed update the resource names defined in requirements.
 
 If you don't want to manually create all the resources you can use cloudformation template or terraform to create programatically.
+In order to avoid updating ApplicationProperties, try to create AWS resources with same name once you delete it, it will create output required endpoint with same value. If not, you are responsible
+for updating created endpoint values.
 
 Create a new file `ApplicationProperties.local.json` in `MSBandWearable/IDEASLabUT.MSBandWearable.Application` with the sample provided in `ApplicationProperties.local.json.sample`. Changes made in this file will be 
 ignored by git while commiting your changes.
 
 Open the solution file in Visual Studio and run it.
+
+Use case of this application.
+* Once you run the application it will show all bluetooh paired Microsoft Band 2. Choose the band you want to connect.
+* This application also depends on webSocket message sent for iOS application running in iPad used by subject to get serial number of Empatica E4 Band which iOS application used to paired with. It will also need which experiment task  currently subject is performing wheather it is NASA TLX task or reading or watching zyBOOKS animation.
+* This application will also request consent to start reading sensor data which is stored in file using Serilog blocking queue. And http sink will call Elasticsearch bulk api call every 8 seconds. So, data are persited into file then pushed into Elasticsearch.
+* Inorder to start pushing data into Serilog queue, you need to start the session. If not http sink will try to push log events which are not pushed into Elasticsearch based on file byte marker previously saved.
+* Use stop session button to stop logging sensor data to flush into file. 
+* Even if you didn't start the session, you will sensor data in UI along with live line charts for GSR and ibi

@@ -3,6 +3,7 @@ using System.IO;
 using Serilog.Events;
 using Serilog.Formatting;
 using System;
+using System.Collections.Generic;
 
 namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
 {
@@ -47,7 +48,16 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
                 throw new ArgumentNullException(nameof(output));
             }
 
-            var eventPair = logEvent.Properties.Select(property => property).First();
+            KeyValuePair<string, LogEventPropertyValue> eventPair = default;
+            try
+            {
+                eventPair = logEvent.Properties.Select(property => property).First();
+            } 
+            catch(InvalidOperationException)
+            {
+                return;
+            }
+
             output.Write($"{{\"index\":{{\"_index\": \"{eventPair.Key}\"}}}}");
             output.Write(StringSplitChar);
 
