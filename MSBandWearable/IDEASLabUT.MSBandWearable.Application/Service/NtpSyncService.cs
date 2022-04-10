@@ -47,6 +47,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
+        /// <returns>A task that can be awaited</returns>
         public async Task SyncTimestamp(string poolAddress)
         {
             // Only used the first address from the given pool

@@ -22,6 +22,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Service
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
+        /// <returns>A task that can be awaited</returns>
         Task SyncTimestamp(string poolAddress);
     }
 }
