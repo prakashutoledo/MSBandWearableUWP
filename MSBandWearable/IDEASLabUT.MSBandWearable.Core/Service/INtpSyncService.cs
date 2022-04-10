@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Core.Service
 {
@@ -21,6 +22,6 @@ namespace IDEASLabUT.MSBandWearable.Core.Service
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
-        void SyncTimestamp(string poolAddress);
+        Task SyncTimestamp(string poolAddress);
     }
 }

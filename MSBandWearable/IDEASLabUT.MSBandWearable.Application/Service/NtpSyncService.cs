@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
 {
@@ -46,10 +47,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
-        public void SyncTimestamp(string poolAddress)
+        public async Task SyncTimestamp(string poolAddress)
         {
             // Only used the first address from the given pool
-            using (var ntpClient = new NtpClient(Dns.GetHostAddresses(poolAddress)[0]))
+            var ipAddresses = await Dns.GetHostAddressesAsync(poolAddress).ConfigureAwait(false);
+            using (var ntpClient = new NtpClient(ipAddresses[0]))
             {
                 CorrectionOffset = ntpClient.GetCorrectionOffset();
                 Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");

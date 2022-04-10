@@ -224,6 +224,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <param name="routedEventArgs">A routed event arguments</param>
         private async void SearchBandButtonAction(object sender, RoutedEventArgs routedEventArgs)
         {
+            // Load available paired bands
             await LoadBands();
         }
 
@@ -236,7 +237,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
             SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
-            
+
             await RunLaterInUIThread(() =>
             {
                 SubjectAndView.CurrentView = empaticaE4Band.FromView;
@@ -258,7 +259,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             commandBar.Visibility = Visibility.Collapsed;
             await HideAllGridsWithMessage("Loading Paired Bands", true);
             await Task.Delay(200);
-            IEnumerable<string> availableBandNames = await BandManagerService.GetPairedBands();
+            var availableBandNames = await BandManagerService.GetPairedBands();
             if (!availableBandNames.Any())
             {
                 var messageDialog = new MessageDialog("No Paired Bands Available!");
@@ -300,8 +301,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <summary>
         /// Hides all available grids (search band and available band grid) from this page to show progress ring with given message
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="isProgress"></param>
+        /// <param name="message">A message to set</param>
+        /// <param name="isProgress">A flag which sets the progress ring</param>
         /// <returns></returns>
         private async Task HideAllGridsWithMessage(string message, bool isProgress = true)
         {
@@ -334,7 +335,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             var symbolIcon = new SymbolIcon(Symbol.Pause);
             var label = "Pause Session";
-            bool sessionInProgress = true;
+            var sessionInProgress = true;
 
             if (SubjectAndViewService.SessionInProgress)
             {
@@ -441,7 +442,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
                 UpdateCommandBar();
             });
 
-            NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
+            await NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
             await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
 
             GsrTimer.Start();
