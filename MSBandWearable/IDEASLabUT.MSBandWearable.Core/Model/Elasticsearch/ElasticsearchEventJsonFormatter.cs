@@ -57,8 +57,8 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
             {
                 return;
             }
-            var sensorType = SensorTypeExtension.FromName(eventPair.Key);
 
+            var sensorType = SensorTypeExtension.FromName(eventPair.Key);
             if (!sensorType.HasValue)
             {
                 // Unsupported elasticsearch index
