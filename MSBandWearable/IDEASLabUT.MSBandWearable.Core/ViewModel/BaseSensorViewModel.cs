@@ -77,6 +77,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// A callback for a change in MS band 2 sensor reading
         /// </summary>
         /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
+        /// <remarks>This function is guaranteed to run in Core Dispatcher thread. Thus implementing sub class doesn't need to un in Dispatcher thread </remarks>
         protected abstract void UpdateSensorModel(R sensorReading);
 
         /// <summary>
