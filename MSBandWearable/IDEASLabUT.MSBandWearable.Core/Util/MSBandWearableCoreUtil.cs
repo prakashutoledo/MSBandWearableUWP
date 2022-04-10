@@ -86,5 +86,21 @@ namespace IDEASLabUT.MSBandWearable.Core.Util
         {
             return JsonConvert.SerializeObject(value);
         }
+
+        /// <summary>
+        /// Remove nth character from given index from last
+        /// </summary>
+        /// <param name="value">A string value to remove character from</param>
+        /// <param name="indexFromLast">An index value from last</param>
+        /// <returns>A string with removed nth character from last if valid otherwise returns itself</returns>
+        /// <remarks>Index from last is 1 based not zero based</remarks>
+        public static string RemoveNthCharacterFromLast(this string value, int indexFromLast)
+        {
+            if (value.Length  >= indexFromLast)
+            {
+                return value.Remove(value.Length - indexFromLast, 1);
+            }
+            return value;
+        }
     }
 }
