@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
+﻿namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
 {
     /// <summary>
     /// An webSocket message details POCO
@@ -11,7 +9,6 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
         /// <summary>
         /// A message payload hold by this webSocket message
         /// </summary>
-        [JsonProperty("payload")]
         public T Payload { get; set; }
     }
 }

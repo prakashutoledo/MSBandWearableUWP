@@ -59,7 +59,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         {
             InitializeComponent();
             AddLiveCharts();
-            AddTimers();
+            AddDispatchTimers();
             AddSensorValueChangedHandlers();
             AddApplicationCloseRequestHandler();
         }
@@ -79,7 +79,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         /// <summary>
         /// Creates a dispatch timer and its corresponding call back action for GSR and webSocket connection
         /// </summary>
-        private void AddTimers()
+        private void AddDispatchTimers()
         {
             GsrTimer = new DispatcherTimer
             {
@@ -261,11 +261,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             IEnumerable<string> availableBandNames = await BandManagerService.GetPairedBands();
             if (!availableBandNames.Any())
             {
-                var messageDialog = new MessageDialog("")
-                {
-                    Content = "No Paired Bands Available!"
-                };
-
+                var messageDialog = new MessageDialog("No Paired Bands Available!");
                 messageDialog.Commands.Add(new UICommand("Pair Your Band Now! Make Sure Your Band Is Paired In Bluetooth Mode", new UICommandInvokedHandler(CommandInvokedHandler), 1));
                 messageDialog.Commands.Add(new UICommand("Not Now", new UICommandInvokedHandler(CommandInvokedHandler), -1));
                 _ = await messageDialog.ShowAsync();

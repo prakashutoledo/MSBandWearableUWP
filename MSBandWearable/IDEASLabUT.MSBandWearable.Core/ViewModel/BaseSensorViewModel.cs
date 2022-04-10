@@ -53,7 +53,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <summary>
         /// An asynchronous task function for notifying listener that sensor value has been changed.
         /// </summary>
-        /// <param name="value">An underlying value of type <code>BaseEvent</code>that has been changed</param>
+        /// <param name="value">A value to set</param>
         /// <returns>A task that can be awaited</returns>
         public Func<T, Task> SensorModelChanged { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Core.Json
 {
@@ -22,10 +23,15 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
         }
 
         /// <inheritdoc />
-        /// <exception cref="NotImplementedException">Not implemented yet</exception>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            if (reader.TokenType == JsonToken.Null)
+            {
+                return null;
+            }
+
+            reader.DateFormatString = DateTimeFormatter;
+            return reader.Value;
         }
 
         /// <inheritdoc />
@@ -36,7 +42,10 @@ namespace IDEASLabUT.MSBandWearable.Core.Json
                 : value is DateTimeOffset offset
                     ? offset.DateTime.ToString(DateTimeFormatter)
                     : throw new Exception("Cannot convert to datetime string");
-            // this will remove hyphen character from timezone value to match elasticsearch datetime format
+
+            // this will remove colon (:) character from timezone value to match elasticsearch datetime format and writes the formatted string
+            // Actual String   : 2022-04-10T11:23:37.009619-04:00
+            // Formated String : 2022-04-10T11:23:37.009619-0400
             writer.WriteValue(dateTimeString.Remove(dateTimeString.Length - 3, 1));
         }
     }

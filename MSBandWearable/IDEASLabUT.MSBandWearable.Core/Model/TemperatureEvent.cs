@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace IDEASLabUT.MSBandWearable.Core.Model
+﻿namespace IDEASLabUT.MSBandWearable.Core.Model
 {
     /// <summary>
     /// POCO holding MS Band 2 temperature sensor event details
@@ -10,7 +8,6 @@ namespace IDEASLabUT.MSBandWearable.Core.Model
         /// <summary>
         /// A temperature value in degree celsius (°C)
         /// </summary>
-        [JsonProperty("temperature")]
         public double Temperature { get; set; }
     }
 }

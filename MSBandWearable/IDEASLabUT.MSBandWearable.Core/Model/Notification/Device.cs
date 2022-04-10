@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+
+using Newtonsoft.Json;
 
 namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
 {
@@ -11,7 +13,6 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
         /// <summary>
         /// A unique serial number of the device
         /// </summary>
-        [JsonProperty("serialNumber")]
         public string SerialNumber { get; set; }
 
         /// <summary>
@@ -19,7 +20,6 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
         /// <code>true</code> represents connected
         /// <code>false</code> represents not connected
         /// </summary>
-        [JsonProperty("connected")]
         public bool Connected { get; set; } = false;
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
         /// <returns>A serialized json string</returns>
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return this.ToJson();
         }
     }
 }

@@ -3,13 +3,16 @@
 using System;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 using Windows.UI.Core;
 using Windows.ApplicationModel.Core;
+using Newtonsoft.Json.Serialization;
 
 namespace IDEASLabUT.MSBandWearable.Core.Util
 {
     /// <summary>
-    /// Core utility class for runnining action in core dispatcher main thread for UI components changed values
+    /// Core utility class
     /// </summary>
     public static class MSBandWearableCoreUtil
     {
@@ -27,6 +30,17 @@ namespace IDEASLabUT.MSBandWearable.Core.Util
 
         public const string SendMessageDescription = "sendMessage";
 
+        static MSBandWearableCoreUtil()
+        {
+            // Default json converter settings to ignore null value, unknown properties resolving members in camel case
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+        }
+
         /// <summary>
         /// Runs the given priority action in main core dispatcher thread asynchronously. Null action will not be invoked in core dispatcher thread
         /// </summary>
@@ -41,12 +55,12 @@ namespace IDEASLabUT.MSBandWearable.Core.Util
             }
 
             var coreDispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-
             if (coreDispatcher.HasThreadAccess)
             {
                 action.Invoke();
                 return;
             }
+
             await coreDispatcher.RunAsync(coreDispatcherPriority, new DispatchedHandler(action));
         }
 
@@ -61,6 +75,16 @@ namespace IDEASLabUT.MSBandWearable.Core.Util
         public static async Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal) where T : BaseEvent
         {
             await RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority);
+        }
+
+        /// <summary>
+        /// An extension which serizes object to json representation
+        /// </summary>
+        /// <param name="value">A value of object to be serilized</param>
+        /// <returns>A serilized json string representation</returns>
+        public static string ToJson(this object value)
+        {
+            return JsonConvert.SerializeObject(value);
         }
     }
 }
