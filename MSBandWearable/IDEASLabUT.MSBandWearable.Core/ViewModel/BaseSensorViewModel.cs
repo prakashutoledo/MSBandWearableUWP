@@ -129,7 +129,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             // This update sensor model should reflect change in UI. Thus, it should update model in core dispatcher UI thread
             await RunLaterInUIThread(() =>
             {
-                UpdateSensorModel(readingEventArgs.SensorReading);
+                UpdateSensorModel(sensorReading);
             });
 
             if (subjectViewService.SessionInProgress)
