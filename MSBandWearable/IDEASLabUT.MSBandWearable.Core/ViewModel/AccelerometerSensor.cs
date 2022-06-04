@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Accelerometer, new AccelerometerEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public AccelerometerSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Accelerometer, logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 

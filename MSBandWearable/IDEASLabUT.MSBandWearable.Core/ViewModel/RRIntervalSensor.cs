@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.RRInterval, new RRIntervalEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.RRInterval, logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 

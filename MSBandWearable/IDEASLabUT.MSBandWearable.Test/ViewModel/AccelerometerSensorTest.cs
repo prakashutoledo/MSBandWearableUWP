@@ -2,25 +2,27 @@
 using static Microsoft.Band.UserConsent;
 
 using IDEASLabUT.MSBandWearable.Core.ViewModel;
+using IDEASLabUT.MSBandWearable.Core.Model;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Band.Sensors;
 using System.Threading.Tasks;
-using System.Linq.Expressions;
 using System;
-using IDEASLabUT.MSBandWearable.Core.Model;
+using HyperMock;
 
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
     [TestClass]
-    public class AccelerometerSensorTest : BaseSensorTest<IBandAccelerometerReading>
+    public class AccelerometerSensorTest : BaseSensorTest<AccelerometerEvent, IBandAccelerometerReading>
     {
-        private AccelerometerSensor accelerometer = null;
+        public AccelerometerSensorTest() : base(sensorManager => sensorManager.Accelerometer)
+        {
+        }
 
         [TestInitialize]
         public void InitializeAccelerometer()
         {
-            sensorManager.SetupGet(sensorManager => sensorManager.Accelerometer).Returns(sensor.Object);
-            accelerometer = new AccelerometerSensor(logger.Object, bandClientService.Object, subjectViewService.Object, ntpSyncService.Object);
+            viewModel = new AccelerometerSensor(logger.Object, bandClientService.Object, subjectViewService.Object, ntpSyncService.Object);
         }
         
         [TestMethod]
@@ -29,7 +31,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             sensor.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(Granted);
             sensor.Setup(sensor => sensor.StartReadingsAsync()).Returns(Task.FromResult(true));
 
-            var status = await accelerometer.Subscribe();
+            var status = await viewModel.Subscribe();
 
             Assert.IsTrue(status);
             bandClientService.VerifyGet(bandClientService => bandClientService.BandClient, Once());
@@ -46,7 +48,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             sensor.Setup(sensor => sensor.RequestUserConsentAsync()).Returns(Task.FromResult(true));
             sensor.Setup(sensor => sensor.StartReadingsAsync()).Returns(Task.FromResult(true));
 
-            var status = await accelerometer.Subscribe();
+            var status = await viewModel.Subscribe();
 
             Assert.IsTrue(status);
             bandClientService.VerifyGet(bandClientService => bandClientService.BandClient, Once());
@@ -61,7 +63,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         {
             sensor.Setup(sensor => sensor.RequestUserConsentAsync()).Returns(Task.FromResult(false));
 
-            var status = await accelerometer.Subscribe();
+            var status = await viewModel.Subscribe();
 
             Assert.IsFalse(status);
             bandClientService.VerifyGet(bandClientService => bandClientService.BandClient, Once());
@@ -77,7 +79,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             sensor.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(Granted);
             sensor.Setup(sensor => sensor.StartReadingsAsync()).Returns(Task.FromResult(false));
 
-            var status = await accelerometer.Subscribe();
+            var status = await viewModel.Subscribe();
 
             Assert.IsFalse(status);
             bandClientService.VerifyGet(bandClientService => bandClientService.BandClient, Once());
@@ -93,7 +95,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             sensor.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(Declined);
             sensor.Setup(sensor => sensor.RequestUserConsentAsync()).Returns(Task.FromResult(false));
 
-            var status = await accelerometer.Subscribe();
+            var status = await viewModel.Subscribe();
 
             Assert.IsFalse(status);
             bandClientService.VerifyGet(bandClientService => bandClientService.BandClient, Once());
@@ -109,21 +111,22 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             sensor.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(Granted);
             sensor.Setup(sensor => sensor.StartReadingsAsync()).Returns(Task.FromResult(true));
 
-            _ = await accelerometer.Subscribe();
-            MockSensorReadingChanged(false, When(reading => reading.AccelerationX, 1.0), When(reading => reading.AccelerationY, 2.0), When(reading => reading.AccelerationZ, 3.0));
+            await MockSensorReadingChanged(When(r => r.AccelerationX, 1.0), When(r => r.AccelerationY, 2.0), When(r => r.AccelerationZ, 3.0));
 
-            
-            var model = accelerometer.Model;
+            var actualModel = viewModel.Model;
+            var expectedModel = NewModel(value =>
+            {
+                value.AccelerationX = 1.0;
+                value.AccelerationY = 2.0;
+                value.AccelerationZ = 3.0;
+            });
 
-            Assert.IsNotNull(model);
-            Assert.AreEqual(1.0, model.AccelerationX);
-            Assert.AreEqual(2.0, model.AccelerationY);
-            Assert.AreEqual(3.0, model.AccelerationZ);
-            Assert.IsNotNull(model.AcquiredTime);
-            Assert.IsNotNull(model.ActualTime);
-            Assert.AreEqual(BandType.MSBand, model.BandType);
-            Assert.AreEqual("Any View", model.FromView);
-            Assert.AreEqual("Fake Id", model.SubjectId);
+            Assert.AreEqual(expectedModel.ToString(), actualModel.ToString());
+            subjectViewService.VerifyGet(subjectViewService => subjectViewService.CurrentView, Once());
+            subjectViewService.VerifyGet(subjectViewService => subjectViewService.SubjectId, Once());
+            ntpSyncService.VerifyGet(ntpSyncService => ntpSyncService.LocalTimeNow, Once());
+            subjectViewService.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, Once());
+            logger.Verify(logger => logger.Information("{accelerometer}", Param.IsAny<AccelerometerEvent>()), Once());
         }
     }
 }

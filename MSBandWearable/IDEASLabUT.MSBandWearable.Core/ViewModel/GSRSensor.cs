@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// </summary>
     public class GSRSensor : BaseSensorViewModel<GSREvent, IBandGsrReading>
     {
-        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, new GSREvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 

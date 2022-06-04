@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Temperature, new TemperatureEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Temperature, logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 

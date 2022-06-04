@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Gyroscope, new GyroscopeEvent(), logger, msBandService, subjectViewService, ntpSyncService)
+        public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Gyroscope, logger, msBandService, subjectViewService, ntpSyncService)
         {
         }
 
