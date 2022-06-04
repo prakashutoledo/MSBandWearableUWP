@@ -23,42 +23,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         {
         }
 
-        /// <summary>
-        /// Sets the acceleration X value and raise property change event
-        /// </summary>
-        private double AccelerationX
-        {
-            set
-            {
-                Model.AccelerationX = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
-        /// <summary>
-        /// Sets the acceleration Y value and raise property change event
-        /// </summary>
-        private double AccelerationY
-        {
-            set
-            {
-                Model.AccelerationY = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
-        /// <summary>
-        /// Sets the acceleration Z value and raise property change event
-        /// </summary>
-        private double AccelerationZ
-        {
-            set
-            {
-                Model.AccelerationZ = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
         /// <inheritdoc />
         protected override IBandSensor<IBandAccelerometerReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Accelerometer;
 
@@ -68,9 +32,9 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="accelerometerReading">An updated accelorometer reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandAccelerometerReading accelerometerReading)
         {
-            AccelerationX = accelerometerReading.AccelerationX;
-            AccelerationY = accelerometerReading.AccelerationY;
-            AccelerationZ = accelerometerReading.AccelerationZ;
+            Model.AccelerationX = accelerometerReading.AccelerationX;
+            Model.AccelerationY = accelerometerReading.AccelerationY;
+            Model.AccelerationZ = accelerometerReading.AccelerationZ;
         }
     }
 }

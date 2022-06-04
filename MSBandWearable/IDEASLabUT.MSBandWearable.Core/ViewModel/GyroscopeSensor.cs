@@ -23,42 +23,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         {
         }
 
-        /// <summary>
-        /// Sets the angular velocity in X direction and raise property changed event
-        /// </summary>
-        private double AngularX
-        {
-            set
-            {
-                Model.AngularX = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
-        /// <summary>
-        /// Sets the angular velocity in Y direction and raise property changed event
-        /// </summary>
-        private double AngularY
-        {
-            set
-            {
-                Model.AngularY = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
-        /// <summary>
-        /// Sets the angular velocity in Z direction and raise property changed event
-        /// </summary>
-        private double AngularZ
-        {
-            set
-            {
-                Model.AngularZ = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
         /// <inheritdoc />
         protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gyroscope;
 
@@ -68,9 +32,9 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="gyroscopeReading">An updated gyroscope reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandGyroscopeReading gyroscopeReading)
         {
-            AngularX = gyroscopeReading.AngularVelocityX;
-            AngularY = gyroscopeReading.AngularVelocityY;
-            AngularZ = gyroscopeReading.AngularVelocityZ;
+            Model.AngularX = gyroscopeReading.AngularVelocityX;
+            Model.AngularY = gyroscopeReading.AngularVelocityY;
+            Model.AngularZ = gyroscopeReading.AngularVelocityZ;
         }
     }
 }

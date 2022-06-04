@@ -23,18 +23,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         {
         }
 
-        /// <summary>
-        /// Sets the temperature and raise property changed event
-        /// </summary>
-        private double Temperature
-        {
-            set
-            {
-                Model.Temperature = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
         /// <inheritdoc />
         protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.SkinTemperature;
 
@@ -44,7 +32,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="temperatureReading">An updated temperature reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandSkinTemperatureReading temperatureReading)
         {
-            Temperature = temperatureReading.Temperature;
+            Model.Temperature = temperatureReading.Temperature;
         }
     }
 }

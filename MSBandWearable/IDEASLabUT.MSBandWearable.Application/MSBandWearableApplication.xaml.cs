@@ -1,7 +1,10 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Views;
+﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+using IDEASLabUT.MSBandWearable.Application.Views;
+using Serilog;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core.Preview;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -49,8 +52,48 @@ namespace IDEASLabUT.MSBandWearable.Application
                 {
                     _ = rootFrame.Navigate(typeof(MSBandPage), eventArgs.Arguments);
                 }
+                AddApplicationCloseRequestHandler();
                 Window.Current.Activate();
             }
+        }
+
+        /// <summary>
+        /// Add callback handler for current page close request event
+        /// </summary>
+        private void AddApplicationCloseRequestHandler()
+        {
+            SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += OnApplicationCloseRequest;
+        }
+
+        /// <summary>
+        /// A callback when user close the currently loaded page from UI
+        /// </summary>
+        /// <param name="sender">The sender of the current page close event</param>
+        /// <param name="closeRequestEventArgs">A system navigation close request preview event arguments</param>
+        private async void OnApplicationCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs closeRequestEventArgs)
+        {
+            var deferral = closeRequestEventArgs.GetDeferral();
+            var messageDialog = new MessageDialog("Are you sure you want to exit?");
+            var cancelCommand = new UICommand("Cancel");
+            var closeCommand = new UICommand("Close");
+
+            messageDialog.Commands.Add(closeCommand);
+            messageDialog.Commands.Add(cancelCommand);
+            var response = await messageDialog.ShowAsync();
+
+            if (response == closeCommand)
+            {
+                // Sets the global logger
+                // On application close request, flush the logger and close it
+                Log.Logger = Logger;
+                Log.CloseAndFlush();
+            }
+            else
+            {
+                closeRequestEventArgs.Handled = true;
+            }
+
+            deferral.Complete();
         }
 
         /// <summary>

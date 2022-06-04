@@ -22,12 +22,9 @@ using Windows.UI.Xaml.Navigation;
 using System.Linq;
 using Microsoft.Band;
 using Windows.UI.Xaml.Media;
-using System.Collections.Generic;
 using LiveCharts;
 using LiveCharts.Configurations;
 using Windows.System;
-using Serilog;
-using Windows.UI.Core.Preview;
 
 namespace IDEASLabUT.MSBandWearable.Application.Views
 {
@@ -61,7 +58,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             AddLiveCharts();
             AddDispatchTimers();
             AddSensorValueChangedHandlers();
-            AddApplicationCloseRequestHandler();
         }
 
         /// <summary>
@@ -102,14 +98,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
             BandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
             BandManagerService.Gsr.SensorModelChanged = GsrSensorValueChanged;
             BandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
-        }
-
-        /// <summary>
-        /// Add callback handler for current page close request event
-        /// </summary>
-        private void AddApplicationCloseRequestHandler()
-        {
-            SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += OnApplicationCloseRequest;
         }
 
         /// <summary>
@@ -202,19 +190,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Views
         private async void PageLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             await SearchBands();
-        }
-
-        /// <summary>
-        /// A callback when user close the currently loaded page from UI
-        /// </summary>
-        /// <param name="sender">The sender of the current page close event</param>
-        /// <param name="closeRequestEventArgs">A system navigation close request preview event arguments</param>
-        private void OnApplicationCloseRequest(object sender, SystemNavigationCloseRequestedPreviewEventArgs closeRequestEventArgs)
-        {
-            // Sets the global logger
-            // On application close request, flush the logger and close it
-            Log.Logger = Logger;
-            Log.CloseAndFlush();
         }
 
         /// <summary>

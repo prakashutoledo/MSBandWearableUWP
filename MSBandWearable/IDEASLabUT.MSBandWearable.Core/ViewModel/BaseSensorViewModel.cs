@@ -85,24 +85,25 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// request the current user consent for subscribing corresponding sensor, if such request is not
         /// granted a sensor is not suscribed and will not start reading the changed values.
         /// </summary>
-        /// <returns>A task that can be awaited</returns>
-        public async Task Subscribe()
+        /// <returns>A task that can be awaited which determines if we can read sensor</returns>
+        public async Task<bool> Subscribe()
         {
             var sensorManager = msBandService.BandClient.SensorManager;
             if (sensorManager == null)
             {
-                return;
+                return false;
             }
 
             var sensor = GetBandSensor(sensorManager);
             var userConsent = sensor.GetCurrentUserConsent() == UserConsent.Granted || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
-                return;
+                return false;
             }
 
             sensor.ReadingChanged += OnBandSensorReadingChanged;
-            _ = await sensor.StartReadingsAsync();
+            var startReadingStatus =  await sensor.StartReadingsAsync();
+            return startReadingStatus;
         }
 
         /// <summary>
@@ -130,17 +131,15 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             await RunLaterInUIThread(() =>
             {
                 UpdateSensorModel(sensorReading);
+                NotifyPropertyChanged(nameof(Model));
             });
 
             if (subjectViewService.SessionInProgress)
             {
                 logger.Information($"{{{sensorType.GetName()}}}", Model);
             }
-
-            if (SensorModelChanged != null)
-            {
-                await SensorModelChanged.Invoke(Model);
-            }
+            
+            await SensorModelChanged?.Invoke(Model);
         }
     }
 }

@@ -16,18 +16,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         {
         }
 
-        /// <summary>
-        /// Sets the model gsr value and raise property changed event
-        /// </summary>
-        private double Gsr
-        {
-            set
-            {
-                Model.Gsr = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
         /// <inheritdoc />
         protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gsr;
 
@@ -38,7 +26,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         protected override void UpdateSensorModel(IBandGsrReading gsrReading)
         {
             // Resistance is in KOhms, need to converted into microseimens
-            Gsr = 1000.0 / gsrReading.Resistance;
+            Model.Gsr = 1000.0 / gsrReading.Resistance;
         }
     }
 }

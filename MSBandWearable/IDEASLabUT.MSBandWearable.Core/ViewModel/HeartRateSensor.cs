@@ -54,18 +54,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             set => UpdateAndNotify(ref heartRateStatus, value);
         }
 
-        /// <summary>
-        /// Sets the heart rate beats per minute value and also raise property changed event
-        /// </summary>
-        private double Bpm
-        {
-            set
-            {
-                Model.Bpm = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
         /// <inheritdoc />
         protected override IBandSensor<IBandHeartRateReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.HeartRate;
 
@@ -75,18 +63,18 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="heartRateReading">An updated heartRate reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandHeartRateReading heartRateReading)
         {
-            Bpm = heartRateReading.HeartRate;
+            var bpm = Model.Bpm = heartRateReading.HeartRate;
             HeartRateStatus = heartRateReading.Quality;
 
-            if (Model.Bpm > MaxBpm)
+            if (bpm > MaxBpm)
             {
-                MaxBpm = Model.Bpm;
+                MaxBpm = bpm;
                 return;
             }
 
-            if (Model.Bpm < MinBpm)
+            if (bpm < MinBpm)
             {
-                MinBpm = Model.Bpm;
+                MinBpm = bpm;
             }
         }
     }

@@ -23,18 +23,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         {
         }
 
-        /// <summary>
-        /// Sets the inter beat interval value for this event and also raise property changed event
-        /// </summary>
-        private double Ibi
-        {
-            set
-            {
-                Model.Ibi = value;
-                NotifyPropertyChanged(nameof(Model));
-            }
-        }
-
         /// <inheritdoc />
         protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.RRInterval;
 
@@ -44,7 +32,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="ibiReading">An updated RR interval reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(IBandRRIntervalReading ibiReading)
         {
-            Ibi = ibiReading.Interval;
+            Model.Ibi = ibiReading.Interval;
         }
     }
 }

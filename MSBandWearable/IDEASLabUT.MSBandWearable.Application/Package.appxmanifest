@@ -45,8 +45,8 @@
   </Applications>
 
   <Capabilities>
-	<rescap:Capability Name="extendedExecutionUnconstrained"/>
     <rescap:Capability Name="confirmAppClose"/>
+	<rescap:Capability Name="extendedExecutionUnconstrained"/>
     <Capability Name="internetClient" />
 	<DeviceCapability Name="bluetooth"/>
   </Capabilities>

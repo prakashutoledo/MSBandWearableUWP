@@ -1,4 +1,6 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+
+using IDEASLabUT.MSBandWearable.Core.Model.Notification;
 
 using Newtonsoft.Json;
 
@@ -39,13 +41,9 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public async Task Connect(string webSocketUrl, Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived)
         {
             messageWebSocket = new MessageWebSocket();
-            if(onEmpaticaE4BandMessageReceived != null)
-            {
-                this.onEmpaticaE4BandMessageReceived = onEmpaticaE4BandMessageReceived;
-            }
+            this.onEmpaticaE4BandMessageReceived = onEmpaticaE4BandMessageReceived;
             messageWebSocket.MessageReceived += MessageReceivedEvent;
             messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
-
             await messageWebSocket.ConnectAsync(new Uri(webSocketUrl));
         }
 
@@ -97,14 +95,16 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
                 return;
             }
 
+            if (!NotificationTypeMap.TryGetValue(baseMessage.PayloadType, out Type notificationMessageType))
+            {
+                return;
+            };
+            var websocketMessage = JsonConvert.DeserializeObject(message, notificationMessageType);
             switch (baseMessage.PayloadType)
             {
                 case PayloadType.E4Band:
-                    var empaticaE4BandMessage = JsonConvert.DeserializeObject<EmpaticaE4BandMessage>(message);
-                    if (onEmpaticaE4BandMessageReceived != null)
-                    {
-                        await onEmpaticaE4BandMessageReceived.Invoke(empaticaE4BandMessage.Payload);
-                    }
+                    var empaticaE4BandMessage = websocketMessage as EmpaticaE4BandMessage;
+                    await onEmpaticaE4BandMessageReceived?.Invoke(empaticaE4BandMessage.Payload);
                     break;
                 default:
                     break;
@@ -117,10 +117,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// <param name="reason"></param>
         public void Close(string reason = "Application Closed")
         {
-            if (messageWebSocket != null)
-            {
-                messageWebSocket.Close(1000, reason);
-            }
+            messageWebSocket?.Close(1000, reason);
         }
     }
 }

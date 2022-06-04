@@ -121,12 +121,12 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         /// <returns>A task that can be awaited</returns>
         public async Task SubscribeSensors()
         {
-            await Accelerometer.Subscribe();
-            await Gsr.Subscribe();
-            await Gyroscope.Subscribe();
-            await HeartRate.Subscribe();
-            await RRInterval.Subscribe();
-            await Temperature.Subscribe();
+            var allSubscription = await Task.WhenAll(Accelerometer.Subscribe(), Gsr.Subscribe(), Gyroscope.Subscribe(), HeartRate.Subscribe(), RRInterval.Subscribe(), Temperature.Subscribe());
+            if (!allSubscription.All(success => success))
+            {
+                BandStatus = BandStatus.Error;
+                return;
+            }
             await msBandService.BandClient.NotificationManager.VibrateAsync(VibrationType.NotificationTwoTone);
             BandStatus = BandStatus.Subscribed;
         }

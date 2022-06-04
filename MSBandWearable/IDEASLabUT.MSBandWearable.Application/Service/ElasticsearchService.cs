@@ -4,7 +4,6 @@ using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlob
 using IDEASLabUT.MSBandWearable.Core.Service;
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 
@@ -55,7 +54,6 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             var jsonBody = await new StreamReader(contentStream).ReadToEndAsync();
             var authenticationHeaderValue = new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetValue<string>(ElasticsearchAuthenticationJsonKey));
             var response = await elasticsearchRestClient.BulkRequestAsync(requestUri, jsonBody, authenticationHeaderValue);
-            Trace.WriteLine(await response.Content.ReadAsStringAsync()); 
             return response;
         }
 

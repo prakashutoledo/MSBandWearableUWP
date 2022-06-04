@@ -4,19 +4,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{3717EA5F-BB74-44F8-986F-31641C7D6180}</ProjectGuid>
+    <ProjectGuid>{10049B52-68BA-4F43-8AA5-F0CA0EA49B3C}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IDEASLabUT.MSBandWearable.Application</RootNamespace>
-    <AssemblyName>IDEASLabUT.MSBandWearable.Application</AssemblyName>
+    <RootNamespace>IDEASLabUT.MSBandWearable.Test</RootNamespace>
+    <AssemblyName>IDEASLabUT.MSBandWearable.Test</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <UnitTestPlatformVersion Condition="'$(UnitTestPlatformVersion)' == ''">$(VisualStudioVersion)</UnitTestPlatformVersion>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -116,25 +116,21 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Converter\GSRConverter.cs" />
-    <Compile Include="Converter\HeartRateConverter.cs" />
-    <Compile Include="Converter\TemperatureConverter.cs" />
-    <Compile Include="MSBandWearableApplicationGlobals.cs" />
-    <Compile Include="Service\ElasticsearchRestClient.cs" />
-    <Compile Include="Service\ElasticsearchService.cs" />
-    <Compile Include="Service\MSBandManagerService.cs" />
-    <Compile Include="Service\NtpSyncService.cs" />
-    <Compile Include="Service\SubjectViewService.cs" />
-    <Compile Include="Service\WebSocketService.cs" />
-    <Compile Include="MSBandWearableApplication.xaml.cs">
-      <DependentUpon>MSBandWearableApplication.xaml</DependentUpon>
-    </Compile>
+    <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\MSBandClientService.cs" />
-    <Compile Include="Util\MSBandWearableUtil.cs" />
-    <Compile Include="Views\MSBandPage.xaml.cs">
-      <DependentUpon>MSBandPage.xaml</DependentUpon>
+    <Compile Include="UnitTestApp.xaml.cs">
+      <DependentUpon>UnitTestApp.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\AccelerometerSensorTest.cs" />
+    <Compile Include="ViewModel\BaseSensorTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="UnitTestApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -142,11 +138,6 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\msband.png" />
-    <Content Include="Assets\SplashScreen.scale-100.png" />
-    <Content Include="Assets\SplashScreen.scale-125.png" />
-    <Content Include="Assets\SplashScreen.scale-150.png" />
-    <Content Include="Assets\SplashScreen.scale-400.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -157,45 +148,24 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="MSBandWearableApplication.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="Style\Styles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MSBandPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="GuerrillaNtp">
-      <Version>2.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="LiveCharts.Uwp">
-      <Version>0.8.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json">
-      <Version>6.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions">
-      <Version>6.0.0</Version>
+    <PackageReference Include="HyperMock.Universal">
+      <Version>2.1.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.13</Version>
     </PackageReference>
+    <PackageReference Include="MSTest.TestAdapter">
+      <Version>2.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="MSTest.TestFramework">
+      <Version>2.2.3</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ApplicationProperties.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ApplicationProperties.local.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Application\IDEASLabUT.MSBandWearable.Application.csproj">
+      <Project>{3717ea5f-bb74-44f8-986f-31641c7d6180}</Project>
+      <Name>IDEASLabUT.MSBandWearable.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Core\IDEASLabUT.MSBandWearable.Core.csproj">
       <Project>{11fc93b7-ba88-4ad7-b234-1fe3f24357b7}</Project>
       <Name>IDEASLabUT.MSBandWearable.Core</Name>
