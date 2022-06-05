@@ -66,6 +66,14 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         }
 
         /// <summary>
+        /// A current sensor type
+        /// </summary>
+        public SensorType SensorType
+        {
+            get => sensorType;
+        }
+
+        /// <summary>
         /// Gets the MS band 2 sensor from given band sensor manager
         /// </summary>
         /// <param name="sensorManager">A sensor manager to be used to get the band sensor</param>
