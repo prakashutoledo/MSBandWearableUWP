@@ -1,4 +1,5 @@
 ﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Core.Model.Notification.PayloadType;
 
 using IDEASLabUT.MSBandWearable.Core.Model.Notification;
 
@@ -99,10 +100,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             {
                 return;
             };
+
             var websocketMessage = JsonConvert.DeserializeObject(message, notificationMessageType);
             switch (baseMessage.PayloadType)
             {
-                case PayloadType.E4Band:
+                case E4Band:
                     var empaticaE4BandMessage = websocketMessage as EmpaticaE4BandMessage;
                     await onEmpaticaE4BandMessageReceived?.Invoke(empaticaE4BandMessage.Payload);
                     break;

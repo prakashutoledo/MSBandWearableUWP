@@ -1,9 +1,11 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Service;
+﻿using static System.Text.Encoding;
+using static System.Net.Http.HttpMethod;
+
+using IDEASLabUT.MSBandWearable.Core.Service;
 
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Application.Service
@@ -60,8 +62,8 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
 
             HttpResponseMessage response;
             var elasticsearchURI = $"{baseElasticsearchURI}/_bulk";
-            using (var bulkPostRequest = new HttpRequestMessage(HttpMethod.Post, elasticsearchURI))
-            using (var bulkRequestContent = new StringContent(requestBody, Encoding.UTF8, JsonContentType))
+            using (var bulkPostRequest = new HttpRequestMessage(Post, elasticsearchURI))
+            using (var bulkRequestContent = new StringContent(requestBody, UTF8, JsonContentType))
             {
                 bulkRequestContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
                 bulkPostRequest.Headers.Authorization = authenticationHeaderValue;

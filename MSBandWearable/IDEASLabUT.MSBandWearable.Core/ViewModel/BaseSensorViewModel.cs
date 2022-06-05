@@ -29,6 +29,8 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         private readonly ISubjectViewService subjectViewService;
         private readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
+        private readonly Action<R> updateSensorModel;
+        private readonly Func<IBandSensorManager, IBandSensor<R>> bandSensor;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BaseSensorViewModel{T, R}"/>
@@ -148,7 +150,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
 
             if (SensorModelChanged != null)
             {
-                await SensorModelChanged?.Invoke(Model);
+                await SensorModelChanged.Invoke(Model);
             }
         }
     }

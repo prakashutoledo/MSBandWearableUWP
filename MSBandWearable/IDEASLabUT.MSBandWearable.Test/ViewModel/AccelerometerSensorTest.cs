@@ -16,14 +16,8 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     [TestClass]
     public class AccelerometerSensorTest : BaseSensorTest<AccelerometerEvent, IBandAccelerometerReading>
     {
-        public AccelerometerSensorTest() : base(sensorManager => sensorManager.Accelerometer)
+        public AccelerometerSensorTest() : base(sensorManager => sensorManager.Accelerometer, (logger, bandClientService, subjectViewService, ntpSyncService) => new AccelerometerSensor(logger, bandClientService, subjectViewService, ntpSyncService))
         {
-        }
-
-        [TestInitialize]
-        public void InitializeAccelerometer()
-        {
-            viewModel = new AccelerometerSensor(logger.Object, bandClientService.Object, subjectViewService.Object, ntpSyncService.Object);
         }
         
         [TestMethod]

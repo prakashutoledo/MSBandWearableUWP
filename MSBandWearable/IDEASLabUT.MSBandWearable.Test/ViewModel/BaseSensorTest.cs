@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.ViewModel;
 using System.Threading;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
@@ -21,20 +23,25 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     [TestClass]
     public class BaseSensorTest<T, R> where T : BaseEvent, new() where R : IBandSensorReading
     {
-        protected Mock<ILogger> logger = null;
-        protected Mock<IBandClientService> bandClientService = null;
-        protected Mock<ISubjectViewService> subjectViewService = null;
-        protected Mock<INtpSyncService> ntpSyncService = null;
-        protected Mock<IBandClient> band = null;
-        protected Mock<IBandSensorManager> sensorManager = null;
-        protected Mock<R> sensorReading = null;
-        protected Mock<IBandSensor<R>> sensor = null;
-        protected BaseSensorViewModel<T, R> viewModel = null;
-        private readonly Expression<Func<IBandSensorManager, IBandSensor<R>>> sensorExpression;
+        protected Mock<ILogger> logger;
+        protected Mock<IBandClientService> bandClientService;
+        protected Mock<ISubjectViewService> subjectViewService;
+        protected Mock<INtpSyncService> ntpSyncService;
+        protected Mock<IBandClient> band;
+        protected Mock<IBandSensorManager> sensorManager;
+        protected Mock<R> sensorReading;
+        protected Mock<IBandSensor<R>> sensor;
+        protected BaseSensorViewModel<T, R> viewModel;
 
-        protected BaseSensorTest(Expression<Func<IBandSensorManager, IBandSensor<R>>> sensorExpression)
+        private readonly Expression<Func<IBandSensorManager, IBandSensor<R>>> sensorExpression;
+        private readonly Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, BaseSensorViewModel<T, R>> viewModelSupplier;
+        private readonly IDictionary<string, int> propertyMap;
+
+        protected BaseSensorTest(Expression<Func<IBandSensorManager, IBandSensor<R>>> sensorExpression, Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, BaseSensorViewModel<T, R>> viewModelSupplier)
         {
-            this.sensorExpression = sensorExpression;
+            this.sensorExpression = sensorExpression ?? throw new ArgumentNullException(nameof(sensorExpression));
+            this.viewModelSupplier = viewModelSupplier ?? throw new ArgumentNullException(nameof(viewModelSupplier));
+            propertyMap = new Dictionary<string, int>();
         }
 
         [TestInitialize]
@@ -52,6 +59,9 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             band.SetupGet(band => band.SensorManager).Returns(sensorManager.Object);
             bandClientService.SetupGet(bandClientService => bandClientService.BandClient).Returns(band.Object);
             sensorManager.SetupGet(sensorExpression).Returns(sensor.Object);
+
+            viewModel = viewModelSupplier.Invoke(logger.Object, bandClientService.Object, subjectViewService.Object, ntpSyncService.Object);
+            viewModel.PropertyChanged += OnPropertyChanged;
         }
 
         [TestCleanup]
@@ -65,19 +75,22 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             sensorManager = null;
             sensorReading = null;
             sensor = null;
+            viewModel = null;
+            propertyMap.Clear();
         }
 
         /// <summary>
         /// Mocks sensor reading changed handler by seting all setup for mocking model value changed
         /// </summary>
         /// <typeparam name="E">A type of mock return value for when expression</typeparam>
-        /// <param name="setups">All when then expression setup for mocking model change</param>
+        /// <param name="setups">All tuples (when, then) expression setup for mocking model change</param>
         /// <returns></returns>
         protected async Task MockSensorReadingChanged<E>(params (Expression<Func<R, E>> when, E then)[] setups)
         {
-            var awaitLatch = new AutoResetEvent(false);
+            EventWaitHandle awaitLatch = new AutoResetEvent(false);
             viewModel.SensorModelChanged = async _ =>
             {
+                Assert.IsNotNull(_, "Changed model shouldn't be null");
                 awaitLatch.Set();
                 await Task.CompletedTask;
             };
@@ -179,6 +192,25 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             ntpSyncService.VerifyGet(ntpSyncService => ntpSyncService.LocalTimeNow, Occurred.Once());
             subjectViewService.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, Occurred.Once());
             logger.Verify(logger => logger.Information($"{{{viewModel.SensorType.GetName()}}}", Param.IsAny<T>()), Occurred.Once());
+
+            Assert.IsTrue(propertyMap.ContainsKey("Model"));
+            Assert.AreEqual(1, propertyMap["Model"]);
+        }
+
+        /// <summary>
+        /// A test callback for property changed event
+        /// </summary>
+        /// <param name="sender">A sender of this event</param>
+        /// <param name="eventArgs">A property changed event arguments</param>
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs eventArgs)
+        {
+            var propertyName = eventArgs.PropertyName;
+            if (!propertyMap.ContainsKey(propertyName))
+            {
+                propertyMap.Add(propertyName, 0);
+            }
+
+            propertyMap[propertyName]++;
         }
     }
 }
