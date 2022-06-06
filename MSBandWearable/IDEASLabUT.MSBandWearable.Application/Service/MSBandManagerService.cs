@@ -122,6 +122,7 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
         public async Task SubscribeSensors()
         {
             var allSubscription = await Task.WhenAll(Accelerometer.Subscribe(), Gsr.Subscribe(), Gyroscope.Subscribe(), HeartRate.Subscribe(), RRInterval.Subscribe(), Temperature.Subscribe());
+            
             if (!allSubscription.All(success => success))
             {
                 BandStatus = BandStatus.Error;

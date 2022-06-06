@@ -9,7 +9,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
 {
     public class ElasticsearchEventJsonFormatter : ITextFormatter
     {
-        private const char DoubleQuoteChar = (char)34;
+        private const char DoubleQuoteChar = (char) 34;
         private const string StringSplitChar = "\\";
 
         /// <summary>

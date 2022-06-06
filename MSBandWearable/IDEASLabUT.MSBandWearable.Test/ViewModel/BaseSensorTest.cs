@@ -1,37 +1,40 @@
 ﻿using HyperMock;
+
+using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.Service;
+using IDEASLabUT.MSBandWearable.Core.ViewModel;
+
 using Microsoft.Band;
 using Microsoft.Band.Sensors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Serilog;
+
 using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
-using System.Threading;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
     /// <summary>
-    /// Base sensor model test for all view sensor models
+    /// Base sensor model test for all view sensor models inheriting <see cref="BaseSensorViewModel{T, R}"/>
     /// </summary>
     /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
     /// <typeparam name="R">A parameter of type <see cref="IBandSensorReading"/></typeparam>
     [TestClass]
-    public class BaseSensorTest<T, R> where T : BaseEvent, new() where R : IBandSensorReading
+    public class BaseSensorTest<T, R> : BaseViewModelTest where T : BaseEvent, new() where R : IBandSensorReading
     {
-        protected Mock<ILogger> logger;
-        protected Mock<IBandClientService> bandClientService;
-        protected Mock<ISubjectViewService> subjectViewService;
-        protected Mock<INtpSyncService> ntpSyncService;
-        protected Mock<IBandClient> band;
-        protected Mock<IBandSensorManager> sensorManager;
-        protected Mock<R> sensorReading;
-        protected Mock<IBandSensor<R>> sensor;
-        protected BaseSensorViewModel<T, R> viewModel;
+        private Mock<ILogger> logger;
+        private Mock<IBandClientService> bandClientService;
+        private Mock<ISubjectViewService> subjectViewService;
+        private Mock<INtpSyncService> ntpSyncService;
+        private Mock<IBandClient> band;
+        private Mock<IBandSensorManager> sensorManager;
+        private Mock<R> sensorReading;
+        private Mock<IBandSensor<R>> sensor;
+        private BaseSensorViewModel<T, R> viewModel;
 
         private readonly Expression<Func<IBandSensorManager, IBandSensor<R>>> sensorExpression;
         private readonly Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, BaseSensorViewModel<T, R>> viewModelSupplier;
@@ -65,7 +68,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         }
 
         [TestCleanup]
-        public void Cleanup()
+        public void SensorCleanup()
         {
             logger = null;
             bandClientService = null;
@@ -88,11 +91,11 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         protected async Task MockSensorReadingChanged<E>(params (Expression<Func<R, E>> when, E then)[] setups)
         {
             EventWaitHandle awaitLatch = new AutoResetEvent(false);
-            viewModel.SensorModelChanged = async _ =>
+            viewModel.SensorModelChanged = model =>
             {
-                Assert.IsNotNull(_, "Changed model shouldn't be null");
+                Assert.IsNotNull(model, "Changed model shouldn't be null");
                 awaitLatch.Set();
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             };
 
             _ = await MockSubscribe();
@@ -193,24 +196,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             subjectViewService.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, Occurred.Once());
             logger.Verify(logger => logger.Information($"{{{viewModel.SensorType.GetName()}}}", Param.IsAny<T>()), Occurred.Once());
 
-            Assert.IsTrue(propertyMap.ContainsKey("Model"));
-            Assert.AreEqual(1, propertyMap["Model"]);
-        }
-
-        /// <summary>
-        /// A test callback for property changed event
-        /// </summary>
-        /// <param name="sender">A sender of this event</param>
-        /// <param name="eventArgs">A property changed event arguments</param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs eventArgs)
-        {
-            var propertyName = eventArgs.PropertyName;
-            if (!propertyMap.ContainsKey(propertyName))
-            {
-                propertyMap.Add(propertyName, 0);
-            }
-
-            propertyMap[propertyName]++;
+            VerifyProperty(propertyName : "Model", expectedCount: 1);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// <summary>
     /// Base class for all view model which listens property changed for all changed properties
     /// </summary>
-    public class BaseViewModel : INotifyPropertyChanged
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// A property changed event handler delegate

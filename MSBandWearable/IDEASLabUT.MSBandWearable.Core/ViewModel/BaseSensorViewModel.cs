@@ -30,7 +30,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         private readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
         private readonly Action<R> updateSensorModel;
-        private readonly Func<IBandSensorManager, IBandSensor<R>> bandSensor;
+        private readonly Func<IBandSensorManager, IBandSensor<R>> bandSensorSupplier;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BaseSensorViewModel{T, R}"/>
@@ -121,7 +121,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">A band sensor reading event arguments</param>
         /// <see cref="BandSensorReadingEventArgs{R}"/>
-        private async void OnBandSensorReadingChanged(object sendor, BandSensorReadingEventArgs<R> readingEventArgs)
+        private async void OnBandSensorReadingChanged(object sender, BandSensorReadingEventArgs<R> readingEventArgs)
         {
             var sensorReading = readingEventArgs.SensorReading;
             if (sensorReading == null)

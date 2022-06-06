@@ -1,17 +1,18 @@
-﻿using static HyperMock.Occurred;
-using static Microsoft.Band.UserConsent;
-
+﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.ViewModel;
-using IDEASLabUT.MSBandWearable.Core.Model;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Band.Sensors;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using System.Threading.Tasks;
+
+using static HyperMock.Occurred;
+using static Microsoft.Band.UserConsent;
 
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
     /// <summary>
-    /// Accelerometer sensor view model test
+    /// View model test for <see cref="AccelerometerSensor"/>
     /// </summary>
     [TestClass]
     public class AccelerometerSensorTest : BaseSensorTest<AccelerometerEvent, IBandAccelerometerReading>
@@ -21,7 +22,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         }
         
         [TestMethod]
-        public async Task SubscribeWithCurrentUserConsentSuccess()
+        public async Task SubscribeAccelerometerSensorWithCurrentUserConsentSuccess()
         {
             var status = await MockSubscribe();
             VerifySubscribe(expectedStatus: true, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Never(), startReadingOccurred: Once());
@@ -29,21 +30,21 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 
 
         [TestMethod]
-        public async Task SubscribeWithRequestUserConsentSuccess()
+        public async Task SubscribeAccelerometerSensorWithRequestUserConsentSuccess()
         {
             var status = await MockSubscribe(currentUserConsent: NotSpecified, requestUserAsync: true);
             VerifySubscribe(expectedStatus: true, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Once(), startReadingOccurred: Once());
         }
 
         [TestMethod]
-        public async Task SubscribeWithRequestUserConsentReadFailure()
+        public async Task SubscribeAccelerometerSensorWithRequestUserConsentReadFailure()
         {
             var status = await MockSubscribe(currentUserConsent: Granted, startReadingAsync: false);
             VerifySubscribe(expectedStatus: false, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Never(), startReadingOccurred: Once());
         }
 
         [TestMethod]
-        public async Task SubscribeWithRequestUserConsentNotGranted()
+        public async Task SubscribeAccelerometerSensorWithRequestUserConsentNotGranted()
         {
             var status = await MockSubscribe(currentUserConsent: Declined);
             VerifySubscribe(expectedStatus: false, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Once(), startReadingOccurred: Never());
@@ -61,7 +62,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
                 value.AccelerationZ = 3.0;
             });
 
-            VerifySensorValueChanged(expectedModel: expectedModel);
+            VerifySensorValueChanged(expectedModel);
         }
     }
 }
