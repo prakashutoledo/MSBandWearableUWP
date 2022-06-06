@@ -15,6 +15,9 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     {
         private readonly IDictionary<string, int> propertyMap;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="BaseViewModelTest"/>
+        /// </summary>
         public BaseViewModelTest() => propertyMap = new Dictionary<string, int>();
 
         [TestCleanup]

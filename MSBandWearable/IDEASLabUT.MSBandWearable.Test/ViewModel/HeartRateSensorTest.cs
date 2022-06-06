@@ -16,6 +16,9 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     [TestClass]
     public class HeartRateSensorTest : BaseSensorTest<HeartRateEvent, IBandHeartRateReading, HeartRateSensor>
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="HeartRateSensorTest"/>
+        /// </summary>
         public HeartRateSensorTest() : base(sensorManager => sensorManager.HeartRate, (logger, bandClientService, subjectViewService, ntpSyncService) => new HeartRateSensor(logger, bandClientService, subjectViewService, ntpSyncService))
         {
         }

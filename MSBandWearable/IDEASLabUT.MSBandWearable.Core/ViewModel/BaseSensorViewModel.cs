@@ -19,18 +19,18 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
     /// to all the listeners for as model value changes. Model is initialized only during construction and 
     /// values are updated to existing model instead of creating new instance of model when value is changed
     /// </summary>
-    /// <typeparam name="T">A parameter of type <see cref="BaseEvent"/></typeparam>
-    /// <typeparam name="R">A parameter of type <see cref="IBandSensorReading"/></typeparam>
-    public abstract class BaseSensorViewModel<T, R> : BaseViewModel where T : BaseEvent, new() where R : IBandSensorReading
+    /// <typeparam name="SensorEvent">A parameter of type <see cref="BaseEvent"/></typeparam>
+    /// <typeparam name="SensorReading">A parameter of type <see cref="IBandSensorReading"/></typeparam>
+    public abstract class BaseSensorViewModel<SensorEvent, SensorReading> : BaseViewModel where SensorEvent : BaseEvent, new() where SensorReading : IBandSensorReading
     {
-        private T model;
+        private SensorEvent model;
         private readonly SensorType sensorType;
         private readonly ILogger logger;
         private readonly ISubjectViewService subjectViewService;
         private readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
-        private readonly Action<R> updateSensorModel;
-        private readonly Func<IBandSensorManager, IBandSensor<R>> bandSensorSupplier;
+        private readonly Action<SensorReading> updateSensorModel;
+        private readonly Func<IBandSensorManager, IBandSensor<SensorReading>> bandSensorSupplier;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BaseSensorViewModel{T, R}"/>
@@ -48,7 +48,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
             this.subjectViewService = subjectViewService ?? throw new ArgumentNullException(nameof(subjectViewService));
             this.ntpSyncService = ntpSyncService ?? throw new ArgumentNullException(nameof(ntpSyncService));
-            Model = new T();
+            Model = new SensorEvent();
         }
 
         /// <summary>
@@ -56,12 +56,12 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// </summary>
         /// <param name="value">A value to set</param>
         /// <returns>A task that can be awaited</returns>
-        public Func<T, Task> SensorModelChanged { get; set; }
+        public Func<SensorEvent, Task> SensorModelChanged { get; set; }
 
         /// <summary>
         /// A current sensor model holding data for MS Band 2 sensor
         /// </summary>
-        public T Model
+        public SensorEvent Model
         {
             get => model;
             protected set => UpdateAndNotify(ref model, value);
@@ -80,14 +80,14 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// </summary>
         /// <param name="sensorManager">A sensor manager to be used to get the band sensor</param>
         /// <returns>The corresponding MS band 2 sensor</returns>
-        protected abstract IBandSensor<R> GetBandSensor(IBandSensorManager sensorManager);
+        protected abstract IBandSensor<SensorReading> GetBandSensor(IBandSensorManager sensorManager);
 
         /// <summary>
         /// A callback for a change in MS band 2 sensor reading
         /// </summary>
         /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
         /// <remarks>This function is guaranteed to run in a Core Dispatcher thread. Thus implementing sub class doesn't need to update model in Dispatcher thread</remarks>
-        protected abstract void UpdateSensorModel(R sensorReading);
+        protected abstract void UpdateSensorModel(SensorReading sensorReading);
 
         /// <summary>
         /// A task that can be subscribe sensor to start reading values by setting callback. This will 
@@ -121,7 +121,7 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">A band sensor reading event arguments</param>
         /// <see cref="BandSensorReadingEventArgs{R}"/>
-        private async void OnBandSensorReadingChanged(object sender, BandSensorReadingEventArgs<R> readingEventArgs)
+        private async void OnBandSensorReadingChanged(object sender, BandSensorReadingEventArgs<SensorReading> readingEventArgs)
         {
             var sensorReading = readingEventArgs.SensorReading;
             if (sensorReading == null)

@@ -102,6 +102,11 @@ namespace IDEASLabUT.MSBandWearable.Application.Service
             };
 
             var websocketMessage = JsonConvert.DeserializeObject(message, notificationMessageType);
+            if (websocketMessage == null)
+            {
+                return;
+            }
+
             switch (baseMessage.PayloadType)
             {
                 case E4Band:

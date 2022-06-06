@@ -129,7 +129,9 @@
     <Compile Include="ViewModel\GSRSensorTest.cs" />
     <Compile Include="ViewModel\GyroscopeSensorTest.cs" />
     <Compile Include="ViewModel\HeartRateSensorTest.cs" />
+    <Compile Include="ViewModel\RRIntervalSensorTest.cs" />
     <Compile Include="ViewModel\SubjectViewModelTest.cs" />
+    <Compile Include="ViewModel\TemperatureSensorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="UnitTestApp.xaml">

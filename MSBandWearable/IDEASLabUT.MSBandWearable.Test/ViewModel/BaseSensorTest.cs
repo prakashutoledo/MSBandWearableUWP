@@ -22,7 +22,7 @@ using static Microsoft.Band.UserConsent;
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
     /// <summary>
-    /// Base sensor model test for all view sensor models inheriting <see cref="BaseSensorViewModel{T, R}"/>
+    /// Base sensor model test for all view sensor models inheriting <see cref="BaseSensorViewModel{SensorEvent, SensorReading}"/>
     /// </summary>
     /// <typeparam name="SensorEvent">A parameter of type <see cref="BaseEvent"/></typeparam>
     /// <typeparam name="SensorReading">A parameter of type <see cref="IBandSensorReading"/></typeparam>
@@ -43,6 +43,11 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         private readonly Expression<Func<IBandSensorManager, IBandSensor<SensorReading>>> sensorExpression;
         private readonly Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, SensorViewModel> viewModelSupplier;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="BaseSensorTest{SensorEvent, SensorReading, SensorViewModel}"/>
+        /// </summary>
+        /// <param name="sensorExpression">An expression for getting sensor from sensor manager</param>
+        /// <param name="viewModelSupplier">A supplies for view model</param>
         protected BaseSensorTest(Expression<Func<IBandSensorManager, IBandSensor<SensorReading>>> sensorExpression, Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, SensorViewModel> viewModelSupplier)
         {
             this.sensorExpression = sensorExpression ?? throw new ArgumentNullException(nameof(sensorExpression));

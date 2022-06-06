@@ -14,6 +14,9 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     [TestClass]
     public class GyroscopeSensorTest : BaseSensorTest<GyroscopeEvent, IBandGyroscopeReading, GyroscopeSensor>
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="GyroscopeSensorTest"/>
+        /// </summary>
         public GyroscopeSensorTest() : base(sensorManager => sensorManager.Gyroscope, (logger, bandClientService, subjectViewService, ntpSyncService) => new GyroscopeSensor(logger, bandClientService, subjectViewService, ntpSyncService))
         {
         }
