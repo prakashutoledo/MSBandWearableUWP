@@ -1,8 +1,7 @@
 ﻿using HyperMock;
 
-using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Core.Service;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
+using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.Service;
 
 using Microsoft.Band;
 using Microsoft.Band.Sensors;
@@ -12,13 +11,12 @@ using Serilog;
 
 using System;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 using static HyperMock.Occurred;
 using static Microsoft.Band.UserConsent;
 
-namespace IDEASLabUT.MSBandWearable.Test.ViewModel
+namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// Base sensor model test for all view sensor models inheriting <see cref="BaseSensorViewModel{SensorEvent, SensorReading}"/>

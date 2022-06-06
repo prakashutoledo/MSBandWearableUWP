@@ -1,8 +1,6 @@
-﻿using IDEASLabUT.MSBandWearable.Core.ViewModel;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace IDEASLabUT.MSBandWearable.Test.ViewModel
+namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// View model test for <see cref="SubjectViewModel"/>

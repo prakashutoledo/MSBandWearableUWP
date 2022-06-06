@@ -1,32 +1,33 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
-using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
-using static Microsoft.Band.Sensors.HeartRateQuality;
-using static Windows.UI.Colors;
+﻿using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.Model.Notification;
+using IDEASLabUT.MSBandWearable.Service;
+using IDEASLabUT.MSBandWearable.ViewModel;
 
-using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Core.Model.Notification;
-using IDEASLabUT.MSBandWearable.Core.Service;
-using IDEASLabUT.MSBandWearable.Application.Service;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
+using LiveCharts;
+using LiveCharts.Configurations;
 
+using Microsoft.Band;
 using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
+
+using Windows.System;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-using System.Linq;
-using Microsoft.Band;
 using Windows.UI.Xaml.Media;
-using LiveCharts;
-using LiveCharts.Configurations;
-using Windows.System;
+using Windows.UI.Xaml.Navigation;
 
-namespace IDEASLabUT.MSBandWearable.Application.Views
+using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+using static Microsoft.Band.Sensors.HeartRateQuality;
+using static Windows.UI.Colors;
+
+namespace IDEASLabUT.MSBandWearable.Views
 {
     /// <summary>
     /// A page for showing Microsoft Band 2 sensors data including continuous time series graphs.

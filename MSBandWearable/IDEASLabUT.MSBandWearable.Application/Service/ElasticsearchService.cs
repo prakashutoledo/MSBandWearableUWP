@@ -1,18 +1,17 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
-using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
+﻿using Microsoft.Extensions.Configuration;
 
-using IDEASLabUT.MSBandWearable.Core.Service;
+using Serilog.Sinks.Http;
 
 using System;
 using System.IO;
 using System.Net.Http;
-
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Serilog.Sinks.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// An Elasticserach service which performs bulk api request using <see cref="IElasticsearchRestClient"/>

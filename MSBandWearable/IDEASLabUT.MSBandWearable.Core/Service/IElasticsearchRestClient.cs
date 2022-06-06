@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Core.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// An interface for providing Elasticsearch rest client

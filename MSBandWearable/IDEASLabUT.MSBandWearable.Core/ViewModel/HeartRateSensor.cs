@@ -1,11 +1,11 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Core.Service;
+﻿using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.Service;
 
 using Microsoft.Band.Sensors;
 
 using Serilog;
 
-namespace IDEASLabUT.MSBandWearable.Core.ViewModel
+namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// A sensor manager for Microsoft Band 2 heart rate sensor

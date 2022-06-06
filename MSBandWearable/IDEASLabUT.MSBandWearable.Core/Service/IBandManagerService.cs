@@ -1,9 +1,10 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
+﻿using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.ViewModel;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Core.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// An interface for managing supported sensors, see the status of conneted MS Band 2

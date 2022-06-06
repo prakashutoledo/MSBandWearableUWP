@@ -1,5 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
+﻿using IDEASLabUT.MSBandWearable.Model;
 
 using Microsoft.Band.Sensors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 using static Microsoft.Band.Sensors.HeartRateQuality;
 
-namespace IDEASLabUT.MSBandWearable.Test.ViewModel
+namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// View model test for <see cref="HeartRateSensor"/>

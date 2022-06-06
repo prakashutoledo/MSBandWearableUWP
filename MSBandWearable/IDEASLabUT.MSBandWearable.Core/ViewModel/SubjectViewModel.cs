@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.ViewModel
+﻿namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// View model for subject id running IOS application,

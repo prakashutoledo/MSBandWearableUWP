@@ -1,8 +1,10 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+﻿using IDEASLabUT.MSBandWearable.Model.Notification;
+
 using Newtonsoft.Json;
+
 using System;
 
-namespace IDEASLabUT.MSBandWearable.Core.Json
+namespace IDEASLabUT.MSBandWearable.Json
 {
     /// <summary>
     /// A custom json enum converter for <see cref="PayloadType"/>

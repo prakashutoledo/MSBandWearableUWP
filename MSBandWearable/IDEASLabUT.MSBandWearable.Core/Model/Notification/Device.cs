@@ -1,8 +1,6 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+﻿using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
 
-using Newtonsoft.Json;
-
-namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
+namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
     /// <summary>
     /// POCO for holding device serial number and connection status.

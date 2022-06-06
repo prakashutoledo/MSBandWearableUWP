@@ -1,15 +1,15 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.Model.Notification;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 using System.Threading.Tasks;
 
-using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
-using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
-using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
 
-namespace IDEASLabUT.MSBandWearable.Test.Util
+namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
     /// Unit test of utility methods

@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Service
+﻿namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// An interface for providing subject view service

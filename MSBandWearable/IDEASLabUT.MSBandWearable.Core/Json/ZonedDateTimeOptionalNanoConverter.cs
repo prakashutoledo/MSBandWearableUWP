@@ -1,9 +1,10 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+﻿using Newtonsoft.Json;
 
-using Newtonsoft.Json;
 using System;
 
-namespace IDEASLabUT.MSBandWearable.Core.Json
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+
+namespace IDEASLabUT.MSBandWearable.Json
 {
     /// <summary>
     /// A custom json nano seconds <see cref="DateTime"/> or <see cref="DateTimeOffset"/> converter

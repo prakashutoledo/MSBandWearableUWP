@@ -1,6 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Service;
-
-using GuerrillaNtp;
+﻿using GuerrillaNtp;
 
 using System;
 using System.Diagnostics;
@@ -8,7 +6,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// A service class for performing timestamp synchronization using Guerrilla <see cref="NtpClient"/>

@@ -1,11 +1,12 @@
-﻿using System.Linq;
-using System.IO;
-using Serilog.Events;
+﻿using Serilog.Events;
 using Serilog.Formatting;
+
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
+namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
 {
     public class ElasticsearchEventJsonFormatter : ITextFormatter
     {
@@ -51,7 +52,7 @@ namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
             KeyValuePair<string, LogEventPropertyValue> eventPair = default;
             try
             {
-                eventPair = logEvent.Properties.Select(property => property).First();
+                eventPair = logEvent.Properties.First();
             } 
             catch(InvalidOperationException)
             {

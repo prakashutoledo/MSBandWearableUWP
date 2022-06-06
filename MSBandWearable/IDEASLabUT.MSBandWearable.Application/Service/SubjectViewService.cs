@@ -1,9 +1,7 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Service;
-
-using System;
+﻿using System;
 using System.Threading;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// A service class for current experiment subject, view and session details

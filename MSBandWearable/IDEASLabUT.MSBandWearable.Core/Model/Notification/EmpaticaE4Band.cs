@@ -1,9 +1,10 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+﻿using IDEASLabUT.MSBandWearable.Json;
 
-using IDEASLabUT.MSBandWearable.Core.Json;
 using Newtonsoft.Json;
 
-namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+
+namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
     /// <summary>
     /// An Empatica E4 Band device details POCO

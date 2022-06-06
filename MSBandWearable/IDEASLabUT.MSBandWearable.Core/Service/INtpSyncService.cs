@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Core.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// An interface for providing timestamp synchronization service using ntp client

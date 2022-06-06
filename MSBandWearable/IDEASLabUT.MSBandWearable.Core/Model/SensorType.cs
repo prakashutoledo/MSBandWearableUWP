@@ -1,6 +1,6 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+﻿using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
 
-namespace IDEASLabUT.MSBandWearable.Core.Model
+namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// Currently supported available MS Band 2 sensor types

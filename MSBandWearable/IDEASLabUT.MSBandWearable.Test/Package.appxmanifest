@@ -27,7 +27,7 @@
   <Applications>
     <Application Id="vstest.executionengine.universal.App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="IDEASLabUT.MSBandWearable.Test.App">
+        EntryPoint="IDEASLabUT.MSBandWearable.TestApplication">
       <uap:VisualElements
         DisplayName="IDEASLabUT.MSBandWearable.Test"
         Square150x150Logo="Assets\Square150x150Logo.png"

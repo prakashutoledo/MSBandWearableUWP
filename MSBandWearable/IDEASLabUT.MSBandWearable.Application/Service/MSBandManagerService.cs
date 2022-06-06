@@ -1,7 +1,6 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Service;
-using IDEASLabUT.MSBandWearable.Core.Model;
-using IDEASLabUT.MSBandWearable.Application.Util;
-using IDEASLabUT.MSBandWearable.Core.ViewModel;
+﻿using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.Util;
+using IDEASLabUT.MSBandWearable.ViewModel;
 
 using Microsoft.Band.Notifications;
 using Serilog;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// A service class for managing supported sensors, see the status of conneted MS Band 2 client using  <see cref="MSBandClientService"/>

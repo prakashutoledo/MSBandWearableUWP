@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Application
+﻿namespace IDEASLabUT.MSBandWearable
 {
     /// <summary>
     /// Application global constant for MS Band Wearable application

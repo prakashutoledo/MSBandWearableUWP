@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model
+﻿namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// An enum representing MS Band 2 connection status details

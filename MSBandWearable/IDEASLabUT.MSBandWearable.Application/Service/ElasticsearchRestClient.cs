@@ -1,14 +1,12 @@
-﻿using static System.Text.Encoding;
-using static System.Net.Http.HttpMethod;
-
-using IDEASLabUT.MSBandWearable.Core.Service;
-
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+using static System.Net.Http.HttpMethod;
+using static System.Text.Encoding;
+
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// Elasticsearch rest client for providing bulk request api using <see cref="HttpClient"/>

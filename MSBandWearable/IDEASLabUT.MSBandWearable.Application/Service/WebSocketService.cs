@@ -1,7 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
-using static IDEASLabUT.MSBandWearable.Core.Model.Notification.PayloadType;
-
-using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+﻿using IDEASLabUT.MSBandWearable.Model.Notification;
 
 using Newtonsoft.Json;
 
@@ -11,7 +8,10 @@ using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// A service class for managing webSocket connection details using <see cref="MessageWebSocket"/>

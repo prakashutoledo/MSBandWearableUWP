@@ -1,10 +1,12 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+﻿using IDEASLabUT.MSBandWearable.Json;
 
-using IDEASLabUT.MSBandWearable.Core.Json;
 using Newtonsoft.Json;
+
 using System;
 
-namespace IDEASLabUT.MSBandWearable.Core.Model
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+
+namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// An abstract class providing basis for all MS Band 2 sensor events common details

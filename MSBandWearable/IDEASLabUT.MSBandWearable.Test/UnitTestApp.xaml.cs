@@ -5,18 +5,18 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace IDEASLabUT.MSBandWearable.Test
+namespace IDEASLabUT.MSBandWearable
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Windows.UI.Xaml.Application
+    sealed partial class TestApplication : Windows.UI.Xaml.Application
     {
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
-        public App()
+        public TestApplication()
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;

@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace IDEASLabUT.MSBandWearable.Application.Converter
+namespace IDEASLabUT.MSBandWearable.Converter
 {
     /// <summary>
     /// A converter for converting MS Band GSR sensor value to max of 5 decimal places

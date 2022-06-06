@@ -1,12 +1,11 @@
-﻿using IDEASLabUT.MSBandWearable.Core.ViewModel;
-using IDEASLabUT.MSBandWearable.Test.Util;
+﻿using IDEASLabUT.MSBandWearable.Util;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace IDEASLabUT.MSBandWearable.Test.ViewModel
+namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// Base view model test providing property changed handler for all classes inheriting <see cref="BaseViewModel"/>

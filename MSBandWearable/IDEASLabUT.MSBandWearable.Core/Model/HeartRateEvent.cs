@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model
+﻿namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// POCO holding MS Band 2 heart rate sensor event details

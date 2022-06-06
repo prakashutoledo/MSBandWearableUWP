@@ -1,7 +1,9 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.Util.MSBandWearableUtil;
-using IDEASLabUT.MSBandWearable.Application.Views;
+﻿using IDEASLabUT.MSBandWearable.Views;
+
 using Serilog;
+
 using System;
+
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Core.Preview;
@@ -10,11 +12,13 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+
 /// <summary>
-/// <auther>Prakash Khadka</auther>
+/// <author>Prakash Khadka</author>
 /// <mailto>prakashkhadka@aol.com</mailto>
 /// </summary>
-namespace IDEASLabUT.MSBandWearable.Application
+namespace IDEASLabUT.MSBandWearable
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.

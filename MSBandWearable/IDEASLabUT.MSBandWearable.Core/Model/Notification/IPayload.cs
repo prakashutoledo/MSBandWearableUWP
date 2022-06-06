@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model.Notification
+﻿namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
     /// <summary>
     /// An interface holding webSocket message <see cref="Notification.PayloadType"/>

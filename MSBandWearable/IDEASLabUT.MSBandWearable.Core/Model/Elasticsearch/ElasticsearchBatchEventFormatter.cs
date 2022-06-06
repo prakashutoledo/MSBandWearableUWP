@@ -1,12 +1,13 @@
-﻿using static Serilog.Sinks.Http.ByteSize;
+﻿using Serilog.Sinks.Http.BatchFormatters;
 
-using Serilog.Sinks.Http.BatchFormatters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch
+using static Serilog.Sinks.Http.ByteSize;
+
+namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
 {
     public class ElasticsearchBatchEventFormatter : BatchFormatter
     {

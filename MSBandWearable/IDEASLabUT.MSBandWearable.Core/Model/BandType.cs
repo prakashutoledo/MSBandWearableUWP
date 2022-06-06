@@ -1,6 +1,6 @@
-﻿using static IDEASLabUT.MSBandWearable.Core.Util.MSBandWearableCoreUtil;
+﻿using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
 
-namespace IDEASLabUT.MSBandWearable.Core.Model
+namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// An enum representing wearable band types

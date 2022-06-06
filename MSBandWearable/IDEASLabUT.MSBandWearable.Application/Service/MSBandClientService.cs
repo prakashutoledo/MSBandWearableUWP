@@ -1,11 +1,9 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Service;
-
-using Microsoft.Band;
+﻿using Microsoft.Band;
 
 using System;
 using System.Threading.Tasks;
 
-namespace IDEASLabUT.MSBandWearable.Application.Service
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// A MS Band 2 client service to connect to band and subscribe available supported sensors using <see cref="IBandClientManager"/>

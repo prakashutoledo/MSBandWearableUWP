@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Core.Model
+﻿namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// POCO holding date time model mapper value used in line charts

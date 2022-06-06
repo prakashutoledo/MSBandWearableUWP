@@ -1,15 +1,15 @@
-﻿using IDEASLabUT.MSBandWearable.Core.Model;
+﻿using IDEASLabUT.MSBandWearable.Model;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 using System;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
-
-using Windows.UI.Core;
 using Windows.ApplicationModel.Core;
-using Newtonsoft.Json.Serialization;
+using Windows.UI.Core;
 
-namespace IDEASLabUT.MSBandWearable.Core.Util
+namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
     /// Core utility class

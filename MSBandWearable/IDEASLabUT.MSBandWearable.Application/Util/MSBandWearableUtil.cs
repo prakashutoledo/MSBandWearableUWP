@@ -1,20 +1,21 @@
-﻿using static IDEASLabUT.MSBandWearable.Application.MSBandWearableApplicationGlobals;
-
-using IDEASLabUT.MSBandWearable.Core.Model.Elasticsearch;
-using IDEASLabUT.MSBandWearable.Application.Service;
-using IDEASLabUT.MSBandWearable.Core.Model.Notification;
+﻿using IDEASLabUT.MSBandWearable.Model.Elasticsearch;
+using IDEASLabUT.MSBandWearable.Model.Notification;
+using IDEASLabUT.MSBandWearable.Service;
 
 using Microsoft.Extensions.Configuration;
 
 using Serilog;
+
 using System;
+using System.Collections.Generic;
 using System.IO;
 
-using Windows.Storage;
 using Windows.ApplicationModel;
-using System.Collections.Generic;
+using Windows.Storage;
 
-namespace IDEASLabUT.MSBandWearable.Application.Util
+using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
+
+namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
     /// Utility class for creating lazy singleton application properties and logger configuration for MS Band Wearable Application
