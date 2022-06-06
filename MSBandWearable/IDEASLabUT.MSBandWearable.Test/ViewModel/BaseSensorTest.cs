@@ -11,7 +11,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Serilog;
 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -156,11 +155,9 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         /// <returns>A task that can be awaited</returns>
         private async Task MockSensorReadingChanged()
         {
-            EventWaitHandle awaitLatch = new AutoResetEvent(false);
             viewModel.SensorModelChanged = async model =>
             {
-                Assert.IsNotNull(model, "Changed model shouldn't be null");
-                awaitLatch.Set();
+                ApplyLatch(() => Assert.IsNotNull(model, "Changed model shouldn't be null"));
                 await Task.CompletedTask;
             };
             _ = await MockSubscribe();
@@ -173,7 +170,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
             // Raise Sensor reading change event
             sensor.Raise(sensor => sensor.ReadingChanged += null, new BandSensorReadingEventArgs<SensorReading>(sensorReading.Object));
             // Wait for signal to be received
-            awaitLatch.WaitOne();
+            WaitFor();
         }
 
         /// <summary>

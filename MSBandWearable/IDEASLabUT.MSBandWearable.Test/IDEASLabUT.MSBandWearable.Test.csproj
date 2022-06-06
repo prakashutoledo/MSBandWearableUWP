@@ -123,6 +123,8 @@
     <Compile Include="UnitTestApp.xaml.cs">
       <DependentUpon>UnitTestApp.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\AwaitableTest.cs" />
+    <Compile Include="Util\MSBandWearableUtilTest.cs" />
     <Compile Include="ViewModel\AccelerometerSensorTest.cs" />
     <Compile Include="ViewModel\BaseSensorTest.cs" />
     <Compile Include="ViewModel\BaseViewModelTest.cs" />
