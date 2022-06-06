@@ -96,11 +96,11 @@ namespace IDEASLabUT.MSBandWearable.Core.Util
         /// <remarks>Index from last is 1 based not zero based</remarks>
         public static string RemoveNthCharacterFromLast(this string value, int indexFromLast)
         {
-            if (value.Length  >= indexFromLast)
+            if (indexFromLast <= 0 || indexFromLast > value.Length)
             {
-                return value.Remove(value.Length - indexFromLast, 1);
+                return value;
             }
-            return value;
+            return value.Remove(value.Length - indexFromLast, 1);
         }
     }
 }
