@@ -127,6 +127,7 @@
     <Compile Include="ViewModel\BaseSensorTest.cs" />
     <Compile Include="ViewModel\BaseViewModelTest.cs" />
     <Compile Include="ViewModel\GSRSensorTest.cs" />
+    <Compile Include="ViewModel\GyroscopeSensorTest.cs" />
     <Compile Include="ViewModel\SubjectViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>

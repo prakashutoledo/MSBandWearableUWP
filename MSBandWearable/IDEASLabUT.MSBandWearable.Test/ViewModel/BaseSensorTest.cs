@@ -16,6 +16,9 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
+using static HyperMock.Occurred;
+using static Microsoft.Band.UserConsent;
+
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
     /// <summary>
@@ -65,6 +68,35 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 
             viewModel = viewModelSupplier.Invoke(logger.Object, bandClientService.Object, subjectViewService.Object, ntpSyncService.Object);
             viewModel.PropertyChanged += OnPropertyChanged;
+        }
+
+        [TestMethod]
+        public async Task SubscribeSensorWithCurrentUserConsentSuccess()
+        {
+            var actualStatus = await MockSubscribe();
+            VerifySubscribe(true, actualStatus, Once(), Once(), Once(), Never(), Once());
+        }
+
+
+        [TestMethod]
+        public async Task SubscribeSensorWithRequestUserConsentSuccess()
+        {
+            var actualStatus = await MockSubscribe(currentUserConsent: NotSpecified, requestUserAsync: true);
+            VerifySubscribe(true, actualStatus, Once(), Once(), Once(), Once(), Once());
+        }
+
+        [TestMethod]
+        public async Task SubscribeSensorWithRequestUserConsentReadFailure()
+        {
+            var actualStatus = await MockSubscribe(currentUserConsent: Granted, startReadingAsync: false);
+            VerifySubscribe(false, actualStatus, Once(), Once(), Once(), Never(), Once());
+        }
+
+        [TestMethod]
+        public async Task SubscribeSensorWithRequestUserConsentNotGranted()
+        {
+            var actualStatus = await MockSubscribe(currentUserConsent: Declined);
+            VerifySubscribe(false, actualStatus, Once(), Once(), Once(), Once(), Never());
         }
 
         [TestCleanup]

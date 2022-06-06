@@ -6,9 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Threading.Tasks;
 
-using static HyperMock.Occurred;
-using static Microsoft.Band.UserConsent;
-
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
     /// <summary>
@@ -21,35 +18,6 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         {
         }
         
-        [TestMethod]
-        public async Task SubscribeAccelerometerSensorWithCurrentUserConsentSuccess()
-        {
-            var status = await MockSubscribe();
-            VerifySubscribe(expectedStatus: true, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Never(), startReadingOccurred: Once());
-        }
-
-
-        [TestMethod]
-        public async Task SubscribeAccelerometerSensorWithRequestUserConsentSuccess()
-        {
-            var status = await MockSubscribe(currentUserConsent: NotSpecified, requestUserAsync: true);
-            VerifySubscribe(expectedStatus: true, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Once(), startReadingOccurred: Once());
-        }
-
-        [TestMethod]
-        public async Task SubscribeAccelerometerSensorWithRequestUserConsentReadFailure()
-        {
-            var status = await MockSubscribe(currentUserConsent: Granted, startReadingAsync: false);
-            VerifySubscribe(expectedStatus: false, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Never(), startReadingOccurred: Once());
-        }
-
-        [TestMethod]
-        public async Task SubscribeAccelerometerSensorWithRequestUserConsentNotGranted()
-        {
-            var status = await MockSubscribe(currentUserConsent: Declined);
-            VerifySubscribe(expectedStatus: false, actualStatus: status, bandClientOccurred: Once(), sensorManagerOccurred: Once(), getConsentOccurred: Once(), requestConsentOccurred: Once(), startReadingOccurred: Never());
-        }
-
         [TestMethod]
         public async Task OnAccelerometerReadingChanged()
         {
