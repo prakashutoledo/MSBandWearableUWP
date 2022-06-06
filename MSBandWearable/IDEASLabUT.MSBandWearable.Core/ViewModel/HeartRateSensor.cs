@@ -69,7 +69,6 @@ namespace IDEASLabUT.MSBandWearable.Core.ViewModel
             if (bpm > MaxBpm)
             {
                 MaxBpm = bpm;
-                return;
             }
 
             if (bpm < MinBpm)

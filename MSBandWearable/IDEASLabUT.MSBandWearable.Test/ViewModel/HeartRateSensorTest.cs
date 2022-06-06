@@ -1,18 +1,20 @@
 ﻿using IDEASLabUT.MSBandWearable.Core.Model;
 using IDEASLabUT.MSBandWearable.Core.ViewModel;
+
 using Microsoft.Band.Sensors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
+using static Microsoft.Band.Sensors.HeartRateQuality;
 
 namespace IDEASLabUT.MSBandWearable.Test.ViewModel
 {
+    /// <summary>
+    /// View model test for <see cref="HeartRateSensor"/>
+    /// </summary>
     [TestClass]
-    public class HeartRateSensorTest : BaseSensorTest<HeartRateEvent, IBandHeartRateReading>
+    public class HeartRateSensorTest : BaseSensorTest<HeartRateEvent, IBandHeartRateReading, HeartRateSensor>
     {
         public HeartRateSensorTest() : base(sensorManager => sensorManager.HeartRate, (logger, bandClientService, subjectViewService, ntpSyncService) => new HeartRateSensor(logger, bandClientService, subjectViewService, ntpSyncService))
         {
@@ -21,11 +23,39 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         [TestMethod]
         public async Task OnHeartRateReadingChanged()
         {
-            await MockSensorReadingChanged(When(reading => reading.HeartRate, 97));
+            await MockSensorReadingChanged(When(reading => reading.HeartRate, 97), When(reading => reading.Quality, Locked));
 
             var expectedModel = NewModel(value => value.Bpm = 97.0);
+            VerifySensorValueChanged(expectedModel: expectedModel, extraPropertyVerifier: viewModel =>
+            {
+                VerifyHeartRate(expectedHeartStatus: (Locked, 1), expectedMax: (97.0, 1), expectedMin: (97.0, 1), viewModel: viewModel);
+            });
 
-            VerifySensorValueChanged(expectedModel);
+            await MockSensorReadingChanged(When(reading => reading.HeartRate, 110), When(reading => reading.Quality, Locked));
+
+            expectedModel = NewModel(value => value.Bpm = 110.0);
+            VerifySensorValueChanged(expectedModel: expectedModel, expectedCount: 2, extraPropertyVerifier: viewModel =>
+            {
+                VerifyHeartRate(expectedHeartStatus: (Locked, 1), expectedMax: (110.0, 2), expectedMin: (97.0, 1), viewModel: viewModel);
+            });
+
+            await MockSensorReadingChanged(When(reading => reading.HeartRate, 92), When(reading => reading.Quality, Acquiring));
+
+            expectedModel = NewModel(value => value.Bpm = 92.0);
+            VerifySensorValueChanged(expectedModel: expectedModel, expectedCount: 3, extraPropertyVerifier: viewModel =>
+            {
+                VerifyHeartRate(expectedHeartStatus: (Acquiring, 2), expectedMax: (110.0, 2), expectedMin: (92.0, 2), viewModel: viewModel);
+            });
+        }
+
+        private void VerifyHeartRate((HeartRateQuality quality, int count) expectedHeartStatus, (double bpm, int count) expectedMax, (double bpm, int count) expectedMin, HeartRateSensor viewModel)
+        {
+            Assert.AreEqual(expectedHeartStatus.quality, viewModel.HeartRateStatus, "Heart Rate Status should match actual");
+            VerifyProperty("HeartRateStatus", expectedHeartStatus.count);
+            Assert.AreEqual(expectedMax.bpm, viewModel.MaxBpm);
+            VerifyProperty("MaxBpm", expectedMax.count);
+            Assert.AreEqual(expectedMin.bpm, viewModel.MinBpm);
+            VerifyProperty("MinBpm", expectedMin.count);
         }
     }
 }

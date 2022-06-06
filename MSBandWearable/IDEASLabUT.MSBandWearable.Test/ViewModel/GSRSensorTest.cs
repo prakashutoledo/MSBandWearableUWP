@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     /// View model test for <see cref="GSRSensor"/>
     /// </summary>
     [TestClass]
-    public class GSRSensorTest : BaseSensorTest<GSREvent, IBandGsrReading>
+    public class GSRSensorTest : BaseSensorTest<GSREvent, IBandGsrReading, GSRSensor>
     {
         public GSRSensorTest() : base(sensorManager => sensorManager.Gsr, (logger, bandClientService, subjectViewService, ntpSyncService) => new GSRSensor(logger, bandClientService, subjectViewService, ntpSyncService))
         {

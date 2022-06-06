@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
     /// View model test for <see cref="AccelerometerSensor"/>
     /// </summary>
     [TestClass]
-    public class AccelerometerSensorTest : BaseSensorTest<AccelerometerEvent, IBandAccelerometerReading>
+    public class AccelerometerSensorTest : BaseSensorTest<AccelerometerEvent, IBandAccelerometerReading, AccelerometerSensor>
     {
         public AccelerometerSensorTest() : base(sensorManager => sensorManager.Accelerometer, (logger, bandClientService, subjectViewService, ntpSyncService) => new AccelerometerSensor(logger, bandClientService, subjectViewService, ntpSyncService))
         {
