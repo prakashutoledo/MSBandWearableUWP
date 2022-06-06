@@ -21,7 +21,7 @@ namespace IDEASLabUT.MSBandWearable.Test.ViewModel
         [TestMethod]
         public async Task OnGyroscopeReadingChanged()
         {
-            await MockSensorReadingChanged(When(reading => reading.AngularVelocityX, 1.0), When(reading => reading.AngularVelocityY, 2.0), When(reading => reading.AngularVelocityZ, 3.0));
+            await MockSensorReadingChanged(When(r => r.AngularVelocityX, 1.0), When(r => r.AngularVelocityY, 2.0), When(r => r.AngularVelocityZ, 3.0));
 
             var expectedModel = NewModel(value => 
             {
