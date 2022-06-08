@@ -23,15 +23,20 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
 
         public IDataWriter DataWriter => dataWriter;
 
-        public async Task ConnectAsync(string webSocketUrl, Func<bool, Task> continueWith)
+        public async Task ConnectAsync(string webSocketUrl)
         {
             messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
             messageWebSocket.MessageReceived += MessageReceivedEvent;
-            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask().ContinueWith(task => continueWith?.Invoke(task.IsCompleted && task.Exception == null)).Unwrap();
+            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl));
         }
 
         private async void MessageReceivedEvent(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs receivedEventArgs)
         {
+            if (receivedEventArgs.MessageType != SocketMessageType.Utf8)
+            {
+                return;
+            }
+
             using (var dataReader = receivedEventArgs.GetDataReader())
             {
                 dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
@@ -51,8 +56,8 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
 
         public void Dispose()
         {
-            dataWriter.DetachStream();
-            messageWebSocket.Dispose();
+            dataWriter?.DetachStream();
+            messageWebSocket?.Dispose();
         }
     }
 }

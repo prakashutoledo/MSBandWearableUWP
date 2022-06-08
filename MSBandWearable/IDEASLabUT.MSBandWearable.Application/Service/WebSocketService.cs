@@ -39,18 +39,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// </summary>
         /// <param name="webSocketUrl">A webSocket URL to connect</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task<bool> Connect(string webSocketUrl)
+        public async Task Connect(string webSocketUrl, Func<bool, Task> continueWith = null)
         {
             messageWebSocket = Utf8MessageWebSocket.SocketSupplier.Invoke();
-            bool result = false;
-            Task continueWith(bool status)
-            {
-                result = status;
-                return Task.CompletedTask;
-            }
             messageWebSocket.OnMessageReceived = OnMessageReceived;
-            await messageWebSocket.ConnectAsync(webSocketUrl, continueWith);
-            return result;
+            await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWith(connect => continueWith?.Invoke(connect.IsCompleted && connect.Exception == null)).Unwrap();
         }
 
         /// <summary>

@@ -13,7 +13,6 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-using Windows.Networking.Sockets;
 
 using static HyperMock.Occurred;
 using static Microsoft.Band.UserConsent;
@@ -180,7 +179,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="requestUserAsync">A return value for request user async expression mock</param>
         /// <param name="startReadingAsync">A return for start reading async expression mock</param>
         /// <returns>An awaiatable task with sensor subscription status</returns>
-        protected async Task<bool> MockSubscribe(UserConsent currentUserConsent = UserConsent.Granted, bool requestUserAsync = false, bool startReadingAsync = true)
+        protected async Task<bool> MockSubscribe(UserConsent currentUserConsent = Granted, bool requestUserAsync = false, bool startReadingAsync = true)
         {
             sensor.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(currentUserConsent);
             sensor.Setup(sensor => sensor.RequestUserConsentAsync()).Returns(Task.FromResult(requestUserAsync));
