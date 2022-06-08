@@ -13,6 +13,8 @@ using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
+using Windows.Networking.Sockets;
+
 using static HyperMock.Occurred;
 using static Microsoft.Band.UserConsent;
 

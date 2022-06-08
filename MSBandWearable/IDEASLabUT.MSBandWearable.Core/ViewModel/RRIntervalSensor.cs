@@ -19,20 +19,14 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.RRInterval, logger, msBandService, subjectViewService, ntpSyncService)
+        public RRIntervalSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.RRInterval, logger, msBandService, subjectViewService, ntpSyncService, sensorManager => sensorManager.RRInterval)
         {
         }
-
-        /// <inheritdoc />
-        protected override IBandSensor<IBandRRIntervalReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.RRInterval;
 
         /// <summary>
         /// Updates the underlying model value
         /// </summary>
         /// <param name="ibiReading">An updated RR interval reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(IBandRRIntervalReading ibiReading)
-        {
-            Model.Ibi = ibiReading.Interval;
-        }
+        protected override void UpdateSensorModel(IBandRRIntervalReading ibiReading) => Model.Ibi = ibiReading.Interval;
     }
 }

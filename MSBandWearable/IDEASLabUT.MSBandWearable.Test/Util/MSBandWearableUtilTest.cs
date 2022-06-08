@@ -7,7 +7,7 @@ using System;
 using System.Threading.Tasks;
 
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {

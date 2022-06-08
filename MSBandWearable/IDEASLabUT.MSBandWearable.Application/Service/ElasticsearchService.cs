@@ -9,7 +9,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {

@@ -19,12 +19,9 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Gyroscope, logger, msBandService, subjectViewService, ntpSyncService)
+        public GyroscopeSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Gyroscope, logger, msBandService, subjectViewService, ntpSyncService, sensorManager => sensorManager.Gyroscope)
         {
         }
-
-        /// <inheritdoc />
-        protected override IBandSensor<IBandGyroscopeReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gyroscope;
 
         /// <summary>
         /// Updates the underlying model value

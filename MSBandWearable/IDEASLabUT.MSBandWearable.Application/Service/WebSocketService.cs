@@ -3,13 +3,13 @@
 using Newtonsoft.Json;
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 
-using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -23,67 +23,81 @@ namespace IDEASLabUT.MSBandWearable.Service
         // Lazy singleton pattern
         public static WebSocketService Singleton => Instance.Value;
 
-        private Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived;
-        private MessageWebSocket messageWebSocket;
+        private IUtf8MessageWebSocket messageWebSocket;
+        private readonly IDictionary<PayloadType, Func<object, Task>> processors;
 
         /// <summary>
         /// Initializes a new instance of <see cref="WebSocketService"/>
         /// </summary>
         private WebSocketService()
         {
+            processors = new Dictionary<PayloadType, Func<object, Task>>();
         }
 
         /// <summary>
         /// Connect to given webSocket url by setting given webSocket message received callback function
         /// </summary>
         /// <param name="webSocketUrl">A webSocket URL to connect</param>
-        /// <param name="onEmpaticaE4BandMessageReceived">An asynchronous webSocket message received callback function</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task Connect(string webSocketUrl, Func<EmpaticaE4Band, Task> onEmpaticaE4BandMessageReceived)
+        public async Task<bool> Connect(string webSocketUrl)
         {
-            messageWebSocket = new MessageWebSocket();
-            this.onEmpaticaE4BandMessageReceived = onEmpaticaE4BandMessageReceived;
-            messageWebSocket.MessageReceived += MessageReceivedEvent;
-            messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
-            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl));
+            messageWebSocket = Utf8MessageWebSocket.SocketSupplier.Invoke();
+            bool result = false;
+            Task continueWith(bool status)
+            {
+                result = status;
+                return Task.CompletedTask;
+            }
+            messageWebSocket.OnMessageReceived = OnMessageReceived;
+            await messageWebSocket.ConnectAsync(webSocketUrl, continueWith);
+            return result;
         }
 
         /// <summary>
-        /// Sends the given string message as webSocket message
+        /// An asynchronous call back for webSocket message received
         /// </summary>
-        /// <param name="message">A message to be sent</param>
+        /// <param name="message">A received raw webSocket message</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task SendMessage(string message)
+        private async Task OnMessageReceived(string message)
         {
-            using (var dataWriter = new DataWriter(messageWebSocket.OutputStream))
-            {
-                _ = dataWriter.WriteString(message);
-                _ = await dataWriter.StoreAsync();
-                _ = dataWriter.DetachStream();
-            }
+            await ParseMessageAndProcess(message);
         }
 
         /// <summary>
-        /// A callback function for receiving webSocket message
+        /// Sends the given message as webSocket message
         /// </summary>
-        /// <param name="sender">The sender of current message received event</param>
-        /// <param name="receivedEventArgs">A message websocket message received event arguments</param>
-        private async void MessageReceivedEvent(MessageWebSocket sender, MessageWebSocketMessageReceivedEventArgs receivedEventArgs)
+        /// <typeparam name="Payload">A type of payload holding by given message</typeparam>
+        /// <param name="message">A webSocket mesage to send</param>
+        /// <param name="continueWith">An asynchronous callback function to continue with after sending message</param>
+        /// <returns>A task that can be awaited</returns>
+        public async Task SendMessage<Payload>(Message<Payload> message, Func<bool, Task> continueWith) where Payload : IPayload
         {
-            using (var dataReader = receivedEventArgs.GetDataReader())
-            {
-                dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
-                var message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
-                await ParseMessageAndSend(message);
-            }
+            var dataWriter = messageWebSocket.DataWriter;
+            _ = await dataWriter.FlushAsync();
+            _ = dataWriter.WriteString(message.ToString());
+            await dataWriter.StoreAsync().AsTask().ContinueWith(task => continueWith?.Invoke(task.IsCompleted && task.Exception == null)).Unwrap();
         }
 
         /// <summary>
-        /// Serialize given webSocket json message and call the message received function
+        /// Sets the message post processor from given payload type
+        /// </summary>
+        /// <param name="type">A type of payload to set message post processor</param>
+        /// <param name="processor">A message post processor to set</param>
+        public void SetMessagePostProcessor(PayloadType type, Func<object, Task> processor)
+        {
+            if (processor == null)
+            {
+                return;
+            }
+            processors.Add(type, processor);
+        }
+
+        /// <summary>
+        /// Serialize given webSocket raw json message and call the message received function
         /// </summary>
         /// <param name="message">A webSocket json message to be serialized</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task ParseMessageAndSend(string message)
+        private async Task ParseMessageAndProcess(string message)
         {
             if (message == null)
             {
@@ -101,21 +115,17 @@ namespace IDEASLabUT.MSBandWearable.Service
                 return;
             };
 
+            if (!processors.TryGetValue(baseMessage.PayloadType, out var processor))
+            {
+                return;
+            }
+  
             var websocketMessage = JsonConvert.DeserializeObject(message, notificationMessageType);
             if (websocketMessage == null)
             {
                 return;
             }
-
-            switch (baseMessage.PayloadType)
-            {
-                case E4Band:
-                    var empaticaE4BandMessage = websocketMessage as EmpaticaE4BandMessage;
-                    await onEmpaticaE4BandMessageReceived?.Invoke(empaticaE4BandMessage.Payload);
-                    break;
-                default:
-                    break;
-            }
+            await processor.Invoke(websocketMessage);
         }
 
         /// <summary>
@@ -125,6 +135,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public void Close(string reason = "Application Closed")
         {
             messageWebSocket?.Close(1000, reason);
+            messageWebSocket = null;
         }
     }
 }

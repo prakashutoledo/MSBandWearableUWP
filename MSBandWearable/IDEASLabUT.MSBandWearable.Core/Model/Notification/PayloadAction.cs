@@ -1,4 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+﻿using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {

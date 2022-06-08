@@ -29,25 +29,26 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         private readonly ISubjectViewService subjectViewService;
         private readonly INtpSyncService ntpSyncService;
         private readonly IBandClientService msBandService;
-        private readonly Action<SensorReading> updateSensorModel;
         private readonly Func<IBandSensorManager, IBandSensor<SensorReading>> bandSensorSupplier;
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="BaseSensorViewModel{T, R}"/>
+        /// <summary
+        /// Initializes a new instance of <see cref="BaseSensorViewModel{SensorEvent, SensorReading}"/>
         /// </summary>
         /// <param name="sensorType">A type of this sensor to set</param>
         /// <param name="logger">A logger to set</param>
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
+        /// <param name="bandSensorSupplier">A MS Band 2 sensor supplier from sensor manager</param>
         /// <exception cref="ArgumentNullException">If any of the parameters model, logger, msBandService, subjectViewService or ntpSyncService is null</exception>
-        protected BaseSensorViewModel(SensorType sensorType, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
+        protected BaseSensorViewModel(SensorType sensorType, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService, Func<IBandSensorManager, IBandSensor<SensorReading>> bandSensorSupplier)
         {
             this.sensorType = sensorType;
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
             this.subjectViewService = subjectViewService ?? throw new ArgumentNullException(nameof(subjectViewService));
             this.ntpSyncService = ntpSyncService ?? throw new ArgumentNullException(nameof(ntpSyncService));
+            this.bandSensorSupplier = bandSensorSupplier ?? throw new ArgumentException(nameof(bandSensorSupplier));
             Model = new SensorEvent();
         }
 
@@ -76,13 +77,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         }
 
         /// <summary>
-        /// Gets the MS band 2 sensor from given band sensor manager
-        /// </summary>
-        /// <param name="sensorManager">A sensor manager to be used to get the band sensor</param>
-        /// <returns>The corresponding MS band 2 sensor</returns>
-        protected abstract IBandSensor<SensorReading> GetBandSensor(IBandSensorManager sensorManager);
-
-        /// <summary>
         /// A callback for a change in MS band 2 sensor reading
         /// </summary>
         /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
@@ -103,7 +97,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
                 return false;
             }
 
-            var sensor = GetBandSensor(sensorManager);
+            var sensor = bandSensorSupplier.Invoke(sensorManager);
             var userConsent = sensor.GetCurrentUserConsent() == UserConsent.Granted || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {

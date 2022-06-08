@@ -20,16 +20,16 @@ namespace IDEASLabUT.MSBandWearable.Util
     /// <summary>
     /// Utility class for creating lazy singleton application properties and logger configuration for MS Band Wearable Application
     /// </summary>
-    public static class MSBandWearableUtil
+    public static class MSBandWearableApplicationUtil
     {
         private static readonly Lazy<IConfiguration> ApplicationPropertiesInstance;
         private static readonly Lazy<LoggerConfiguration> LoggerConfigurationInstance;
         private static readonly Lazy<ILogger> LoggerInstance;
         private static readonly Lazy<IDictionary<PayloadType, Type>> NotificationTypeMapInstance;
         /// <summary>
-        /// Static constructor for <see cref="MSBandWearableUtil"/>
+        /// Static constructor for <see cref="MSBandWearableApplicationUtil"/>
         /// </summary>
-        static MSBandWearableUtil()
+        static MSBandWearableApplicationUtil()
         {
             // Add passwords, api keys, and secret keys in ApplicationProperties.local.json (local application properties) so that 
             // it won't get uploaded in remote git repositories. Properties values inside local file are ignored by git while commiting change

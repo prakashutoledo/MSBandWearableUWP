@@ -16,20 +16,6 @@ namespace IDEASLabUT.MSBandWearable.Util
     /// </summary>
     public static class MSBandWearableCoreUtil
     {
-        public const string Accelerometer = "accelerometer";
-        public const string GSR = "gsr";
-        public const string Gyroscope = "gyroscope";
-        public const string HeartRate = "heartrate";
-        public const string RRInterval = "ibi";
-        public const string Temperature = "temperature";
-
-        public const string MSBandDescription = "MSBAND";
-        public const string E4BandDescription = "E4BAND";
-
-        public const string E4BandPayloadTypeDescription = "E4Band";
-
-        public const string SendMessageDescription = "sendMessage";
-
         static MSBandWearableCoreUtil()
         {
             // Default json converter settings to ignore null value, unknown properties resolving members in camel case
@@ -96,11 +82,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <remarks>Index from last is 1 based not zero based</remarks>
         public static string RemoveNthCharacterFromLast(this string value, int indexFromLast)
         {
-            if (indexFromLast <= 0 || indexFromLast > value.Length)
-            {
-                return value;
-            }
-            return value.Remove(value.Length - indexFromLast, 1);
+            return indexFromLast <= 0 || indexFromLast > value.Length ? value : value.Remove(value.Length - indexFromLast, 1);
         }
     }
 }

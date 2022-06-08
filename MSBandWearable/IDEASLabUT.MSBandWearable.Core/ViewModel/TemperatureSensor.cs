@@ -19,20 +19,14 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
-        public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Temperature, logger, msBandService, subjectViewService, ntpSyncService)
+        public TemperatureSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.Temperature, logger, msBandService, subjectViewService, ntpSyncService, sensorManager => sensorManager.SkinTemperature)
         {
         }
-
-        /// <inheritdoc />
-        protected override IBandSensor<IBandSkinTemperatureReading> GetBandSensor(IBandSensorManager sensorManager) => sensorManager.SkinTemperature;
 
         /// <summary>
         /// Updates the underlying model value
         /// </summary>
         /// <param name="temperatureReading">An updated temperature reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(IBandSkinTemperatureReading temperatureReading)
-        {
-            Model.Temperature = temperatureReading.Temperature;
-        }
+        protected override void UpdateSensorModel(IBandSkinTemperatureReading temperatureReading) => Model.Temperature = temperatureReading.Temperature;
     }
 }

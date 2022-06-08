@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ using Windows.UI.Xaml.Navigation;
 
 using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;
 
@@ -41,8 +42,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         private WebSocketService SocketService { get; } = WebSocketService.Singleton;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
-        private DispatcherTimer GsrTimer { get; set; }
-        private DispatcherTimer WebSocketTimer { get; set; }
+        private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
+        private DispatcherTimer WebSocketTimer { get; } = new DispatcherTimer();
 
         // These chart values properties should be public for data binding line series chart
         public ChartValues<DateTimeModel> GsrDataPoint { get; } = new ChartValues<DateTimeModel>();
@@ -57,8 +58,9 @@ namespace IDEASLabUT.MSBandWearable.Views
         {
             InitializeComponent();
             AddLiveCharts();
-            AddDispatchTimers();
+            AddDispatchTimersTickIntervals();
             AddSensorValueChangedHandlers();
+            SetMessagePostProcessor();
         }
 
         /// <summary>
@@ -76,18 +78,11 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <summary>
         /// Creates a dispatch timer and its corresponding call back action for GSR and webSocket connection
         /// </summary>
-        private void AddDispatchTimers()
+        private void AddDispatchTimersTickIntervals()
         {
-            GsrTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
+            GsrTimer.Interval = TimeSpan.FromSeconds(1);
             GsrTimer.Tick += GsrTimerOnTick;
-
-            WebSocketTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMinutes(5)
-            };
+            WebSocketTimer.Interval = TimeSpan.FromMinutes(5);
             WebSocketTimer.Tick += WebSocketTimerOnTick;
         }
 
@@ -102,6 +97,14 @@ namespace IDEASLabUT.MSBandWearable.Views
         }
 
         /// <summary>
+        /// Set webSocket message post processors
+        /// </summary>
+        private void SetMessagePostProcessor()
+        {
+            SocketService.SetMessagePostProcessor(PayloadType.E4Band, OnEmpaticaE4BandMessageReceived);
+        }
+
+        /// <summary>
         /// An on tick callback for webSocket dispatch timer for closing the current webSocket connection and creating new one
         /// </summary>
         /// <param name="sender">The sender of current timer on tick event</param>
@@ -109,7 +112,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
         {
             SocketService.Close();
-            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
+            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
         }
 
         /// <summary>
@@ -207,10 +210,11 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <summary>
         /// A callback for Empatica E4 Band webSocket message received
         /// </summary>
-        /// <param name="empaticaE4Band">A webSocket message containing Empatica E4 Band details</param>
+        /// <param name="message">A webSocket message containing Empatica E4 Band details</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
+        private async Task OnEmpaticaE4BandMessageReceived(object message)
         {
+            var empaticaE4Band = (message as EmpaticaE4BandMessage).Payload;
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
             SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
 
@@ -419,7 +423,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             });
 
             await NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
-            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey), OnEmpaticaE4BandMessageReceived);
+            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
 
             GsrTimer.Start();
             WebSocketTimer.Start();

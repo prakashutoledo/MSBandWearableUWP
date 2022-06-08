@@ -131,7 +131,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\MSBandClientService.cs" />
-    <Compile Include="Util\MSBandWearableUtil.cs" />
+    <Compile Include="Util\MSBandWearableApplicationUtil.cs" />
     <Compile Include="Views\MSBandPage.xaml.cs">
       <DependentUpon>MSBandPage.xaml</DependentUpon>
     </Compile>

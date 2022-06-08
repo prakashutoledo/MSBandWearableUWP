@@ -12,21 +12,14 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// </summary>
     public class GSRSensor : BaseSensorViewModel<GSREvent, IBandGsrReading>
     {
-        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, logger, msBandService, subjectViewService, ntpSyncService)
+        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, logger, msBandService, subjectViewService, ntpSyncService, bandSensorManager => bandSensorManager.Gsr)
         {
         }
-
-        /// <inheritdoc />
-        protected override IBandSensor<IBandGsrReading> GetBandSensor(IBandSensorManager bandSensorManager) => bandSensorManager.Gsr;
 
         /// <summary>
         /// Updates the underlying model value
         /// </summary>
         /// <param name="gsrReading">An updated gsr reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(IBandGsrReading gsrReading)
-        {
-            // Resistance is in KOhms, need to converted into microseimens
-            Model.Gsr = 1000.0 / gsrReading.Resistance;
-        }
+        protected override void UpdateSensorModel(IBandGsrReading gsrReading) => Model.Gsr = 1000.0 / gsrReading.Resistance; // Resistance is in KOhms, need to converted into microseimens
     }
 }

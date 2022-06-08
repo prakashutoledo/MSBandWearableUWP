@@ -1,4 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+﻿using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
@@ -7,7 +7,8 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
     /// </summary>
     public enum PayloadType
     {
-        E4Band
+        E4Band,
+        MSBand
     }
 
     /// <summary>
@@ -25,6 +26,8 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
             switch (payloadType)
             {
                 case PayloadType.E4Band:
+                    return E4BandPayloadTypeDescription;
+                case PayloadType.MSBand:
                     return E4BandPayloadTypeDescription;
                 default:
                     return null;
@@ -47,6 +50,8 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
             {
                 case E4BandPayloadTypeDescription:
                     return PayloadType.E4Band;
+                case MSBandPayloadTypeDescription:
+                    return PayloadType.MSBand;
                 default:
                     return null;
             }

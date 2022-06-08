@@ -12,7 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 
 /// <summary>
 /// <author>Prakash Khadka</author>
