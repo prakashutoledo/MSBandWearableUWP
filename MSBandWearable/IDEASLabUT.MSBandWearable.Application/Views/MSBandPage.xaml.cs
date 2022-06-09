@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,8 +22,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
+using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
 using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;
 

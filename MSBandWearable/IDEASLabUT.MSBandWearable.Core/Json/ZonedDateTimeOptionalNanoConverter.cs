@@ -2,7 +2,7 @@
 
 using System;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+using static IDEASLabUT.MSBandWearable.Util.StringUtil;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {

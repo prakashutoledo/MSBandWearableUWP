@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 using System;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+using static IDEASLabUT.MSBandWearable.Util.JsonUtil;
 
 namespace IDEASLabUT.MSBandWearable.Model
 {

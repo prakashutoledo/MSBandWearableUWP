@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 
 using static HyperMock.Occurred;
+using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadAction;
+using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -41,7 +43,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         [DataTestMethod]
         [DataRow(false, true)]
         [DataRow(true, false)]
-        public async Task ConnectAsync(bool throwException, bool expectedStatus)
+        public async Task ShouldConnectAsync(bool throwException, bool expectedStatus)
         {
             await SetupConnection("wss://some-fake-url", throwException ? Task.FromException(new Exception("fake exception")) : Task.CompletedTask);
             webSocketMessage.Verify(message => message.ConnectAsync("wss://some-fake-url"), Exactly(1));
@@ -49,11 +51,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         }
 
         [TestMethod]
-        public async Task SendMessage()
+        public async Task ShouldSendMessage()
         {
             await SetupConnection("wss://new-fake-url", Task.CompletedTask);
 
-            var randomAccessStream = new InMemoryRandomAccessStream();
+            IRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
             var dataWriter = new DataWriter(randomAccessStream);
             webSocketMessage.SetupGet(webSocketMessage => webSocketMessage.DataWriter).Returns(dataWriter);
             var message = NewMessage();
@@ -69,7 +71,17 @@ namespace IDEASLabUT.MSBandWearable.Service
                 Assert.AreEqual(message.ToJson(), actualMessage, "Raw json message should match");
                 Assert.IsTrue(actualStatus, "Send message task is succesfull");
             }
-            
+        }
+
+        [TestMethod]
+        public void ShouldHaveMessagePostProcessor()
+        {
+            webSocketService.SetMessagePostProcessor(E4Band, null);
+            Assert.IsFalse(webSocketService.GetMessagePostProcessors.ContainsKey(E4Band));
+
+            Func<object, Task> processor = _ => Task.CompletedTask;
+            webSocketService.SetMessagePostProcessor(E4Band, processor);
+            Assert.AreEqual(processor, webSocketService.GetMessagePostProcessors[E4Band]);
         }
 
         [TestCleanup]
@@ -109,8 +121,8 @@ namespace IDEASLabUT.MSBandWearable.Service
                     FromView = "Fake View",
                     SubjectId = "Fake Id"
                 },
-                PayloadType = PayloadType.E4Band,
-                Action = PayloadAction.SendMessage
+                PayloadType = E4Band,
+                Action = SendMessage
             };
         }
     }

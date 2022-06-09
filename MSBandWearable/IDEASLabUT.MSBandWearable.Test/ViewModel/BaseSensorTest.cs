@@ -208,7 +208,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         protected SensorEvent NewModel(Action<SensorEvent> update)
         {
             var modelEvent = new SensorEvent();
-            update.Invoke(modelEvent);
+            update?.Invoke(modelEvent);
             modelEvent.AcquiredTime = Param.IsAny<DateTime>();
             modelEvent.ActualTime = Param.IsAny<DateTime>();
             modelEvent.FromView = "Fake View";

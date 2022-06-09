@@ -7,7 +7,6 @@ using System;
 using System.Threading.Tasks;
 
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
@@ -56,24 +55,6 @@ namespace IDEASLabUT.MSBandWearable.Util
 
             var expectedJson = "{\"gsr\":1.0,\"acquiredTime\":\"2009-08-01T01:01:01.100000-0400\",\"actualTime\":\"2009-08-01T01:01:01.100000-0400\",\"bandType\":\"MSBAND\",\"fromView\":\"Fake View\",\"subjectId\":\"Fake Id\"}";
             Assert.AreEqual(expectedJson, gsrEvent.ToJson(), "Expected json should match actual json string");
-        }
-
-        [DataTestMethod]
-        [DataRow("abcde", "abcde", 7)]
-        [DataRow("abcde", "bcde", 5)]
-        [DataRow("abcde", "abcd", 1)]
-        [DataRow("abcde", "abcde", 0)]
-        [DataRow("abcde", "abcde", -1)]
-        public void RemoveNthCharacterFromString(string actual, string expected, int indexFromLast)
-        {
-            Assert.AreEqual(expected, actual.RemoveNthCharacterFromLast(indexFromLast));
-        }
-
-        [TestMethod]
-        public void ValidateNotificationTypeMap()
-        {
-            Assert.AreEqual(1, NotificationTypeMap.Count);
-            Assert.AreEqual(typeof(EmpaticaE4BandMessage), NotificationTypeMap[PayloadType.E4Band]);
         }
     }
 }

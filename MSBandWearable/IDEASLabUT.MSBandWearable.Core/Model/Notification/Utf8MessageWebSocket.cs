@@ -6,6 +6,9 @@ using Windows.Storage.Streams;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Utf8MessageWebSocket : IUtf8MessageWebSocket
     {
         public static Func<IUtf8MessageWebSocket> SocketSupplier = () => new Utf8MessageWebSocket();

@@ -22,7 +22,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         [DataRow("CurrentView")]
         [DataRow("E4SerialNumber")]
         [DataRow("MSBandSerialNumber")]
-        public void PropertyChanged(string propertyName)
+        public void ShouldHavePropertyChanged(string propertyName)
         {
             var propertyInfo = viewModel.GetType().GetProperty(propertyName);
 

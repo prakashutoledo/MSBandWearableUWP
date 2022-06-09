@@ -127,6 +127,8 @@
     <Compile Include="Service\WebSocketServiceTest.cs" />
     <Compile Include="Util\AwaitableTest.cs" />
     <Compile Include="Util\MSBandWearableUtilTest.cs" />
+    <Compile Include="Util\StringUtilTest.cs" />
+    <Compile Include="Util\WebSocketUtilTest.cs" />
     <Compile Include="ViewModel\AccelerometerSensorTest.cs" />
     <Compile Include="ViewModel\BaseSensorTest.cs" />
     <Compile Include="ViewModel\BaseViewModelTest.cs" />

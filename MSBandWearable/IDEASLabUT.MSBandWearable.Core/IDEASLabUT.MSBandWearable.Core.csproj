@@ -149,7 +149,9 @@
     <Compile Include="Model\TemperatureEvent.cs" />
     <Compile Include="MSBandWearableCoreGlobals.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\JsonUtil.cs" />
     <Compile Include="Util\MSBandWearableCoreUtil.cs" />
+    <Compile Include="Util\StringUtil.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\GSRSensor.cs" />
     <Compile Include="ViewModel\HeartRateSensor.cs" />

@@ -1,6 +1,4 @@
-﻿using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
-
-using IDEASLabUT.MSBandWearable.Model;
+﻿using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Service;
 
 using Microsoft.Band;
@@ -43,12 +41,12 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <exception cref="ArgumentNullException">If any of the parameters model, logger, msBandService, subjectViewService or ntpSyncService is null</exception>
         protected BaseSensorViewModel(SensorType sensorType, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService, Func<IBandSensorManager, IBandSensor<SensorReading>> bandSensorSupplier)
         {
-            this.sensorType = sensorType;
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
             this.subjectViewService = subjectViewService ?? throw new ArgumentNullException(nameof(subjectViewService));
             this.ntpSyncService = ntpSyncService ?? throw new ArgumentNullException(nameof(ntpSyncService));
             this.bandSensorSupplier = bandSensorSupplier ?? throw new ArgumentException(nameof(bandSensorSupplier));
+            this.sensorType = sensorType;
             Model = new SensorEvent();
         }
 
@@ -130,12 +128,8 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             Model.ActualTime = sensorReading.Timestamp.DateTime;
             Model.SubjectId = subjectViewService.SubjectId;
 
-            // This update sensor model should reflect change in UI. Thus, it should update model in core dispatcher UI thread
-            await RunLaterInUIThread(() =>
-            {
-                UpdateSensorModel(sensorReading);
-                NotifyPropertyChanged(nameof(Model));
-            });
+            UpdateSensorModel(sensorReading);
+            NotifyPropertyChanged(nameof(Model));
 
             if (subjectViewService.SessionInProgress)
             {

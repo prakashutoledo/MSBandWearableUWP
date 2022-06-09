@@ -25,7 +25,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         private static readonly Lazy<IConfiguration> ApplicationPropertiesInstance;
         private static readonly Lazy<LoggerConfiguration> LoggerConfigurationInstance;
         private static readonly Lazy<ILogger> LoggerInstance;
-        private static readonly Lazy<IDictionary<PayloadType, Type>> NotificationTypeMapInstance;
+
         /// <summary>
         /// Static constructor for <see cref="MSBandWearableApplicationUtil"/>
         /// </summary>
@@ -61,16 +61,6 @@ namespace IDEASLabUT.MSBandWearable.Util
             });
 
             LoggerInstance = new Lazy<ILogger>(() => LoggerFactory.CreateLogger());
-            NotificationTypeMapInstance = new Lazy<IDictionary<PayloadType, Type>>(() => BuildNotificationMap());
-        }
-
-        private static IDictionary<PayloadType, Type> BuildNotificationMap()
-        {
-            var notificationMap = new Dictionary<PayloadType, Type>
-            {
-                { PayloadType.E4Band, typeof(EmpaticaE4BandMessage) }
-            };
-            return notificationMap;
         }
 
         /// <summary>
@@ -87,7 +77,5 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// Gets the instiated lazy singleton application properties instance
         /// </summary>
         public static IConfiguration ApplicationProperties => ApplicationPropertiesInstance.Value;
-
-        public static IDictionary<PayloadType, Type> NotificationTypeMap => NotificationTypeMapInstance.Value;
     }
 }

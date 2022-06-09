@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+using static IDEASLabUT.MSBandWearable.Util.JsonUtil;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
@@ -16,13 +16,13 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// A message payload action
         /// </summary>
         [JsonConverter(typeof(PayloadActionConverter))]
-        public PayloadAction Action { get; set; }
+        public PayloadAction? Action { get; set; }
 
         /// <summary>
         /// A message payload type
         /// </summary>
         [JsonConverter(typeof(PayloadTypeConverter))]
-        public PayloadType PayloadType { get; set; }
+        public PayloadType? PayloadType { get; set; }
 
         /// <summary>
         /// Returns a serialized json representation of <see cref="BaseMessage"/>

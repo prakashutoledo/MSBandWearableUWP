@@ -32,16 +32,14 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="target">A target reference value of the property being changed</param>
         /// <param name="value">A new value of the property being changed</param>
         /// <param name="propertyName">An optional property name that is going to be changed</param>
-        /// <returns><code>true</code> if updated otherwise <code>false</code></returns>
-        protected virtual bool UpdateAndNotify<T>(ref T target, T value, [CallerMemberName] string propertyName = null)
+        protected virtual void UpdateAndNotify<T>(ref T target, T value, [CallerMemberName] string propertyName = null)
         {
             if (Equals(target, value))
             {
-                return false;
+                return;
             }
             target = value;
             NotifyPropertyChanged(propertyName);
-            return true;
         }
     }
 }

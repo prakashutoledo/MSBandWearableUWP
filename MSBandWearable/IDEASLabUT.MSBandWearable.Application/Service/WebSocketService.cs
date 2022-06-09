@@ -4,12 +4,13 @@ using Newtonsoft.Json;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Windows.Networking.Sockets;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
+using static IDEASLabUT.MSBandWearable.Util.WebSocketUtil;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -24,7 +25,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public static WebSocketService Singleton => Instance.Value;
 
         private IUtf8MessageWebSocket messageWebSocket;
-        private readonly IDictionary<PayloadType, Func<object, Task>> processors;
+        private readonly Dictionary<PayloadType, Func<object, Task>> processors;
 
         /// <summary>
         /// Initializes a new instance of <see cref="WebSocketService"/>
@@ -35,6 +36,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         }
 
         /// <summary>
+        /// Gets all the message post processor for converting raw websocket message to process
+        /// </summary>
+        public IReadOnlyDictionary<PayloadType, Func<object, Task>> GetMessagePostProcessors => processors;
+
+        /// <summary>
         /// Connect to given webSocket url by setting given webSocket message received callback function
         /// </summary>
         /// <param name="webSocketUrl">A webSocket URL to connect</param>
@@ -42,18 +48,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task Connect(string webSocketUrl, Func<bool, Task> continueWith = null)
         {
             messageWebSocket = Utf8MessageWebSocket.SocketSupplier.Invoke();
-            messageWebSocket.OnMessageReceived = OnMessageReceived;
+            messageWebSocket.OnMessageReceived = message => ParseMessageAndProcess(message, GetMessagePostProcessors);
             await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWith(connect => continueWith?.Invoke(connect.IsCompleted && connect.Exception == null)).Unwrap();
-        }
-
-        /// <summary>
-        /// An asynchronous call back for webSocket message received
-        /// </summary>
-        /// <param name="message">A received raw webSocket message</param>
-        /// <returns>A task that can be awaited</returns>
-        private async Task OnMessageReceived(string message)
-        {
-            await ParseMessageAndProcess(message);
         }
 
         /// <summary>
@@ -63,7 +59,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <param name="message">A webSocket mesage to send</param>
         /// <param name="continueWith">An asynchronous callback function to continue with after sending message</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task SendMessage<Payload>(Message<Payload> message, Func<bool, Task> continueWith) where Payload : IPayload
+        public async Task SendMessage<Payload>(Message<Payload> message, Func<bool, Task> continueWith = null) where Payload : IPayload
         {
             var dataWriter = messageWebSocket.DataWriter;
             _ = await dataWriter.FlushAsync();
@@ -90,35 +86,9 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// </summary>
         /// <param name="message">A webSocket json message to be serialized</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task ParseMessageAndProcess(string message)
+        private async Task ParseMessageAndProcess1(string message)
         {
-            if (message == null)
-            {
-                return;
-            }
-
-            var baseMessage = JsonConvert.DeserializeObject<BaseMessage>(message);
-            if (baseMessage == null)
-            {
-                return;
-            }
-
-            if (!NotificationTypeMap.TryGetValue(baseMessage.PayloadType, out Type notificationMessageType))
-            {
-                return;
-            };
-
-            if (!processors.TryGetValue(baseMessage.PayloadType, out var processor))
-            {
-                return;
-            }
-  
-            var websocketMessage = JsonConvert.DeserializeObject(message, notificationMessageType);
-            if (websocketMessage == null)
-            {
-                return;
-            }
-            await processor.Invoke(websocketMessage);
+            await Task.CompletedTask;
         }
 
         /// <summary>
