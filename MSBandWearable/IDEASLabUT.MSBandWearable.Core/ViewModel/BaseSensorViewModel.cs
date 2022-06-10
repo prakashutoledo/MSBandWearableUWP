@@ -69,11 +69,8 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <summary>
         /// A current sensor type
         /// </summary>
-        public SensorType SensorType
-        {
-            get => sensorType;
-        }
-
+        public SensorType SensorType => sensorType;
+        
         /// <summary>
         /// A callback for a change in MS band 2 sensor reading
         /// </summary>

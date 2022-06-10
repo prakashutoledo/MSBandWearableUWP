@@ -57,7 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Service
 
             IRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
             var dataWriter = new DataWriter(randomAccessStream);
-            webSocketMessage.SetupGet(webSocketMessage => webSocketMessage.DataWriter).Returns(dataWriter);
+            webSocketMessage.SetupGet(webSocketMessage => webSocketMessage.MessageWriter).Returns(dataWriter);
             var message = NewMessage();
 
             actualStatus = false;

@@ -58,7 +58,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task SendMessage<Payload>(Message<Payload> message, Func<bool, Task> continueWith = null) where Payload : IPayload
         {
-            var dataWriter = messageWebSocket.DataWriter;
+            var dataWriter = messageWebSocket.MessageWriter;
             _ = await dataWriter.FlushAsync();
             _ = dataWriter.WriteString(message.ToString());
             await dataWriter.StoreAsync().AsTask().ContinueWithStatusSupplier(continueWith);

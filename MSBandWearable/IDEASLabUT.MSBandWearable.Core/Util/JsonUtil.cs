@@ -8,7 +8,7 @@ namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
     /// A utility class which sets default settings for <see cref="JsonConvert"/>
-    /// and provides an extension method for json seriliazation and deseriliazation
+    /// and provides an extension method for json seriliazation and deseriliazation.
     /// </summary>
     public static class JsonUtil
     {
@@ -28,7 +28,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// </summary>
         /// <typeparam name="T">A type of object to be converted back into</typeparam>
         /// <param name="json">A json string to be deserialized</param>
-        /// <returns></returns>
+        /// <returns>A serialized object of type T from given json string</returns>
         public static T FromJson<T>(this string json) where T : class
         {
             return JsonConvert.DeserializeObject<T>(json);
@@ -39,7 +39,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// </summary>
         /// <param name="json">A json string to be deserialized</param>
         /// <param name="toType">A deserialized object parameter</param>
-        /// <returns></returns>
+        /// <returns>A serialized object from given json string</returns>
         public static object FromJson(this string json, Type toType)
         {
             return JsonConvert.DeserializeObject(json, toType);
