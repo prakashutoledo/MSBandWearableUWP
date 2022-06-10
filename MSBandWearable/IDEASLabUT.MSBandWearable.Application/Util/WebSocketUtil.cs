@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
+
 namespace IDEASLabUT.MSBandWearable.Util
 {
     public static class WebSocketUtil
@@ -38,8 +40,8 @@ namespace IDEASLabUT.MSBandWearable.Util
             {
                 return false;
             }
-            var payloadType = baseMessage.PayloadType.Value;
 
+            var payloadType = baseMessage.PayloadType.Value;
             if (!SupportedNotificationTypeMap.TryGetValue(payloadType, out Type notificationMessageType))
             {
                 return false;
@@ -51,11 +53,7 @@ namespace IDEASLabUT.MSBandWearable.Util
             }
 
             var websocketMessage = message.FromJson(notificationMessageType);
-            if (websocketMessage == null)
-            {
-                return false;
-            }
-            return await messagePostProcessor.Invoke(websocketMessage).ContinueWith(task => Task.FromResult(task.IsCompleted && task.Exception == null)).Unwrap();
+            return await messagePostProcessor.Invoke(websocketMessage).ContinueWithStatus();
         }
     }
 }

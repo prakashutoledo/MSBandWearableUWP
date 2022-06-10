@@ -39,22 +39,5 @@ namespace IDEASLabUT.MSBandWearable.Util
             WaitFor();
             Assert.AreEqual(temperatureEvent, actualEvent, $"{nameof(actualEvent)} gets updated in ui thread and should match expected value");
         }
-
-        [TestMethod]
-        public void JsonSerialization()
-        {
-            var eventTime = new DateTime(2009, 8, 1, 1, 1, 1, 100);
-            var gsrEvent = new GSREvent
-            {
-                Gsr = 1.0,
-                AcquiredTime = eventTime,
-                ActualTime = eventTime,
-                FromView = "Fake View",
-                SubjectId = "Fake Id",
-            };
-
-            var expectedJson = "{\"gsr\":1.0,\"acquiredTime\":\"2009-08-01T01:01:01.100000-0400\",\"actualTime\":\"2009-08-01T01:01:01.100000-0400\",\"bandType\":\"MSBAND\",\"fromView\":\"Fake View\",\"subjectId\":\"Fake Id\"}";
-            Assert.AreEqual(expectedJson, gsrEvent.ToJson(), "Expected json should match actual json string");
-        }
     }
 }

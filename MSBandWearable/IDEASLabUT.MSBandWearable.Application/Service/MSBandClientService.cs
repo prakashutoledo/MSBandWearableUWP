@@ -41,6 +41,16 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task ConnectBand(int selectedIndex)
         {
             var pairedBands = await bandClientManager.GetBandsAsync();
+            if (pairedBands == null)
+            {
+                throw new NullReferenceException(nameof(pairedBands));
+            }
+
+            if (selectedIndex < 0 || selectedIndex >= pairedBands.Length)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(selectedIndex)} should be between 0 and {pairedBands.Length} exclusive");
+            }
+
             BandClient = await bandClientManager.ConnectAsync(pairedBands[selectedIndex]);
         }
     }

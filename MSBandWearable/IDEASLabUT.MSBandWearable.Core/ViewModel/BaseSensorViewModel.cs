@@ -121,8 +121,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
                 return;
             }
 
-            // These next 4 lines for Model are not used in UI. So, they don't need to run in core dispatcher UI
-            // Thread to update their values. They are only used for logger
             Model.FromView = subjectViewService.CurrentView;
             Model.AcquiredTime = ntpSyncService.LocalTimeNow;
             Model.ActualTime = sensorReading.Timestamp.DateTime;

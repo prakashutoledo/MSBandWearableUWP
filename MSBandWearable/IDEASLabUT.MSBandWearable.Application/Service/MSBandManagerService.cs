@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 
+using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
+
 namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
@@ -97,10 +99,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task ConnectBand(int selectedIndex, string bandName)
         {
             var bandStatus = BandStatus.UNKNOWN;
+            BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
             try
             {
                 await msBandService.ConnectBand(selectedIndex);
-                BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
                 bandStatus = BandStatus.Connected;
             }
             catch (Exception)
@@ -120,15 +122,19 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task SubscribeSensors()
         {
-            var allSubscription = await Task.WhenAll(Accelerometer.Subscribe(), Gsr.Subscribe(), Gyroscope.Subscribe(), HeartRate.Subscribe(), RRInterval.Subscribe(), Temperature.Subscribe());
-            
-            if (!allSubscription.All(success => success))
+            await Task.WhenAll(Accelerometer.Subscribe(), Gsr.Subscribe(), Gyroscope.Subscribe(), HeartRate.Subscribe(), RRInterval.Subscribe(), Temperature.Subscribe())
+                    .ContinueWithStatus()
+                    .ContinueWithStatusSupplier(subscribeTask => StatusTask(subscribeTask))
+                    .ContinueWithAction(bandStatus => BandStatus = bandStatus);
+        }
+
+        private Task<BandStatus> StatusTask(Task<bool> subscriptionTasks)
+        {
+            if (subscriptionTasks.IsCompletedWithSuccess() && subscriptionTasks.Result)
             {
-                BandStatus = BandStatus.Error;
-                return;
+                return msBandService.BandClient.NotificationManager.VibrateAsync(VibrationType.NotificationTwoTone).ContinueWith(task => Task.FromResult(BandStatus.Subscribed)).Unwrap();
             }
-            await msBandService.BandClient.NotificationManager.VibrateAsync(VibrationType.NotificationTwoTone);
-            BandStatus = BandStatus.Subscribed;
+            return Task.FromResult(BandStatus.Error);
         }
 
         /// <summary>

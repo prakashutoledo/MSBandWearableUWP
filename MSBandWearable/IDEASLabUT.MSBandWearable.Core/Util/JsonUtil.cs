@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Serialization;
 
 using System;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
@@ -28,7 +29,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <typeparam name="T">A type of object to be converted back into</typeparam>
         /// <param name="json">A json string to be deserialized</param>
         /// <returns></returns>
-        public static T FromJson<T>(this string json)
+        public static T FromJson<T>(this string json) where T : class
         {
             return JsonConvert.DeserializeObject<T>(json);
         }

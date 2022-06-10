@@ -1,16 +1,13 @@
 ﻿using IDEASLabUT.MSBandWearable.Model.Notification;
 
-using Newtonsoft.Json;
-
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Windows.Networking.Sockets;
 
 using static IDEASLabUT.MSBandWearable.Util.WebSocketUtil;
+using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -49,7 +46,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             messageWebSocket = Utf8MessageWebSocket.SocketSupplier.Invoke();
             messageWebSocket.OnMessageReceived = message => ParseMessageAndProcess(message, GetMessagePostProcessors);
-            await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWith(connect => continueWith?.Invoke(connect.IsCompleted && connect.Exception == null)).Unwrap();
+            await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWithStatusSupplier(continueWith);
         }
 
         /// <summary>
@@ -64,7 +61,7 @@ namespace IDEASLabUT.MSBandWearable.Service
             var dataWriter = messageWebSocket.DataWriter;
             _ = await dataWriter.FlushAsync();
             _ = dataWriter.WriteString(message.ToString());
-            await dataWriter.StoreAsync().AsTask().ContinueWith(task => continueWith?.Invoke(task.IsCompleted && task.Exception == null)).Unwrap();
+            await dataWriter.StoreAsync().AsTask().ContinueWithStatusSupplier(continueWith);
         }
 
         /// <summary>
@@ -79,16 +76,6 @@ namespace IDEASLabUT.MSBandWearable.Service
                 return;
             }
             processors.Add(type, processor);
-        }
-
-        /// <summary>
-        /// Serialize given webSocket raw json message and call the message received function
-        /// </summary>
-        /// <param name="message">A webSocket json message to be serialized</param>
-        /// <returns>A task that can be awaited</returns>
-        private async Task ParseMessageAndProcess1(string message)
-        {
-            await Task.CompletedTask;
         }
 
         /// <summary>

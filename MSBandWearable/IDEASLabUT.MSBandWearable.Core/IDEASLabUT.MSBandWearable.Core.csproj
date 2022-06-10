@@ -152,6 +152,7 @@
     <Compile Include="Util\JsonUtil.cs" />
     <Compile Include="Util\MSBandWearableCoreUtil.cs" />
     <Compile Include="Util\StringUtil.cs" />
+    <Compile Include="Util\TaskUtil.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\GSRSensor.cs" />
     <Compile Include="ViewModel\HeartRateSensor.cs" />
