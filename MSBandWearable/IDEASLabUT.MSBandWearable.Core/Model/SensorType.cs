@@ -67,7 +67,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// <returns>A matching nullable <see cref="SensorType?"/></returns>
         public static SensorType? FromName(string name)
         {
-            return name == null ? null : !SensorTypeMap.TryGetValue(name, out SensorType sensorType) ? null : (SensorType?) sensorType;
+            return name == null ? null : SensorTypeMap.TryGetValue(name, out SensorType sensorType) ? (SensorType?) sensorType : null;
         }
     }
 }

@@ -1,4 +1,11 @@
-﻿using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
+﻿using IDEASLabUT.MSBandWearable.Model.Notification;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using static IDEASLabUT.MSBandWearable.Model.BandType;
+using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model
 {
@@ -16,22 +23,33 @@ namespace IDEASLabUT.MSBandWearable.Model
     /// </summary>
     public static class BandTypeExtension
     {
+        private static readonly Lazy<IReadOnlyDictionary<string, BandType>> bandTypeMap;
+        private static readonly Lazy<IReadOnlyDictionary<BandType, string>> descriptionMap;
+        static BandTypeExtension()
+        {
+            bandTypeMap = new Lazy<IReadOnlyDictionary<string, BandType>>(() =>
+            {
+                return new Dictionary<string, BandType>()
+                {
+                    { E4BandDescription, E4Band },
+                    { MSBandDescription, MSBand }
+                };
+            });
+
+            descriptionMap = new Lazy<IReadOnlyDictionary<BandType, string>>(() => BandTypeMap.ToDictionary(entry => entry.Value, entry => entry.Key));
+        }
+
+        private static IReadOnlyDictionary<string, BandType> BandTypeMap => bandTypeMap.Value;
+        private static IReadOnlyDictionary<BandType, string> DescriptionMap => descriptionMap.Value;
+
         /// <summary>
         /// Gets the description of represented band type
         /// </summary>
-        /// <param name="payloadType">A band type enum value</param>
+        /// <param name="bandType">A band type enum value</param>
         /// <returns>A string representation of this band type</returns>
-        public static string GetDescription(this BandType payloadType)
+        public static string GetDescription(this BandType bandType)
         {
-            switch (payloadType)
-            {
-                case BandType.E4Band:
-                    return E4BandDescription;
-                case BandType.MSBand:
-                    return MSBandDescription;
-                default:
-                    return null;
-            }
+            return DescriptionMap[bandType];
         }
 
         /// <summary>
@@ -41,20 +59,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// <returns>A matching nullable <see cref="BandType?"/></returns>
         public static BandType? FromDescription(string description)
         {
-            if (description == null)
-            {
-                return null;
-            }
-
-            switch (description)
-            {
-                case E4BandDescription:
-                    return BandType.E4Band;
-                case MSBandDescription:
-                    return BandType.MSBand;
-                default:
-                    return null;
-            }
+            return description == null ? null : BandTypeMap.TryGetValue(description, out var bandType) ? (BandType?) bandType : null;
         }
     }
 }

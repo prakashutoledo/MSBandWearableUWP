@@ -110,18 +110,18 @@ namespace IDEASLabUT.MSBandWearable.Util
             };
 
             await Task.CompletedTask.ContinueWithStatusSupplier(continuationFunction);
-            Assert.IsTrue(changed);
-            Assert.AreEqual(1, changedCount);
+            Assert.IsTrue(changed, "Continuation function is invoked with result set to true");
+            Assert.AreEqual(1, changedCount, "Continuation function is invoked with changed count increment to 1");
 
             changed = false;
             await Task.FromCanceled(new CancellationToken(true)).ContinueWithStatusSupplier(continuationFunction);
-            Assert.IsFalse(changed);
-            Assert.AreEqual(2, changedCount);
+            Assert.IsFalse(changed, "Continuation function is invoked with result set to false");
+            Assert.AreEqual(2, changedCount, "Continuation function is invoked with changed count increment to 2");
 
             changed = false;
             await Task.FromException(new Exception()).ContinueWithStatusSupplier(continuationFunction);
-            Assert.IsFalse(changed);
-            Assert.AreEqual(3, changedCount);
+            Assert.IsFalse(changed, "Continuation function is invoked with result set to false");
+            Assert.AreEqual(3, changedCount, "Continuation function is invoked with changed count increment to 1");
         }
 
         [TestMethod]
@@ -135,12 +135,12 @@ namespace IDEASLabUT.MSBandWearable.Util
             };
 
             var result = await Task.FromResult(true).ContinueWithStatusSupplier(continuationFunction);
-            Assert.IsTrue(result);
-            Assert.AreEqual(1, changedCount);
+            Assert.IsTrue(result, "Continuation function is invoked with result set to true");
+            Assert.AreEqual(1, changedCount, "Continuation function is invoked which increment changed count to 1");
 
             result = await Task.FromResult(false).ContinueWithStatusSupplier(continuationFunction);
-            Assert.IsFalse(result);
-            Assert.AreEqual(2, changedCount);
+            Assert.IsFalse(result, "Continuation function is invoked with result set to false");
+            Assert.AreEqual(2, changedCount, "Continuation function is invoked which increment changed count to 2");
         }
 
         [TestMethod]
