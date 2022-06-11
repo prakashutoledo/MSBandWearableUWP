@@ -1,4 +1,9 @@
-﻿using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
+using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
@@ -16,6 +21,26 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
     /// </summary>
     public static class PayloadTypeExtension
     {
+        private static readonly Lazy<IReadOnlyDictionary<string, PayloadType>> payloadTypeMap;
+        private static readonly Lazy<IReadOnlyDictionary<PayloadType, string>> descriptionMap;
+
+        static PayloadTypeExtension()
+        {
+            payloadTypeMap = new Lazy<IReadOnlyDictionary<string, PayloadType>>(() =>
+            {
+                return new Dictionary<string, PayloadType>()
+                {
+                    { E4BandPayloadTypeDescription, E4Band },
+                    { MSBandPayloadTypeDescription, MSBand }
+                };
+            });
+
+            descriptionMap = new Lazy<IReadOnlyDictionary<PayloadType, string>>(() => PayloadTypeMap.ToDictionary(entry => entry.Value, entry => entry.Key));
+        }
+
+        private static IReadOnlyDictionary<string, PayloadType> PayloadTypeMap => payloadTypeMap.Value;
+        private static IReadOnlyDictionary<PayloadType, string> DescriptionMap => descriptionMap.Value;
+
         /// <summary>
         /// Gets the description of representated payload type
         /// </summary>
@@ -23,15 +48,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// <returns>A string representation of this payload type</returns>
         public static string GetDescription(this PayloadType payloadType)
         {
-            switch (payloadType)
-            {
-                case PayloadType.E4Band:
-                    return E4BandPayloadTypeDescription;
-                case PayloadType.MSBand:
-                    return E4BandPayloadTypeDescription;
-                default:
-                    return null;
-            }
+            return DescriptionMap[payloadType];
         }
 
         /// <summary>
@@ -41,20 +58,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// <returns>A matching nullable <see cref="PayloadType?"/></returns>
         public static PayloadType? FromDescription(string description)
         {
-            if (description == null)
-            {
-                return null;
-            }
-
-            switch (description)
-            {
-                case E4BandPayloadTypeDescription:
-                    return PayloadType.E4Band;
-                case MSBandPayloadTypeDescription:
-                    return PayloadType.MSBand;
-                default:
-                    return null;
-            }
+            return description == null ? null : PayloadTypeMap.TryGetValue(description, out PayloadType payloadType) ? (PayloadType?) payloadType : null;
         }
     }
 }

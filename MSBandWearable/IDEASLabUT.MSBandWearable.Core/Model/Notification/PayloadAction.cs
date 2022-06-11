@@ -1,4 +1,9 @@
-﻿using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadAction;
+using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
@@ -15,6 +20,25 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
     /// </summary>
     public static class PayloadActionExtension
     {
+        private static readonly Lazy<IReadOnlyDictionary<string, PayloadAction>> payloadActionMap;
+        private static readonly Lazy<IReadOnlyDictionary<PayloadAction, string>> descriptionMap;
+
+        static PayloadActionExtension()
+        {
+            payloadActionMap = new Lazy<IReadOnlyDictionary<string, PayloadAction>>(() =>
+            {
+                return new Dictionary<string, PayloadAction>()
+                {
+                    { SendMessageDescription, SendMessage }
+                };
+            });
+
+            descriptionMap = new Lazy<IReadOnlyDictionary<PayloadAction, string>>(() => PayloadActionMap.ToDictionary(entry => entry.Value, entry => entry.Key));
+        }
+
+        private static IReadOnlyDictionary<string, PayloadAction> PayloadActionMap => payloadActionMap.Value;
+        private static IReadOnlyDictionary<PayloadAction, string> DescriptionMap => descriptionMap.Value;
+
         /// <summary>
         /// Gets the description of represented payload action
         /// </summary>
@@ -22,13 +46,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// <returns>A string representation of this payload action</returns>
         public static string GetDescription(this PayloadAction payloadAction)
         {
-            switch (payloadAction)
-            {
-                case PayloadAction.SendMessage:
-                    return SendMessageDescription;
-                default:
-                    return null;
-            }
+            return DescriptionMap[payloadAction];
         }
 
         /// <summary>
@@ -38,18 +56,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// <returns>A matching nullable <see cref="PayloadAction?"/></returns>
         public static PayloadAction? FromDescription(string description)
         {
-            if (description == null)
-            {
-                return null;
-            }
-
-            switch (description)
-            {
-                case SendMessageDescription:
-                    return PayloadAction.SendMessage;
-                default:
-                    return null;
-            }
+            return description == null ? null : PayloadActionMap.TryGetValue(description, out PayloadAction payloadAction) ? (PayloadAction?) payloadAction : null;
         }
     }
 }

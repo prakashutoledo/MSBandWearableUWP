@@ -1,7 +1,7 @@
 ﻿namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
-    /// A utility class for string manipulation
+    /// A utility class for string manipulation extension methods
     /// </summary>
     public static class StringUtil
     {

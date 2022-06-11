@@ -1,4 +1,9 @@
-﻿using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using static IDEASLabUT.MSBandWearable.Model.SensorType;
+using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model
 {
@@ -20,6 +25,31 @@ namespace IDEASLabUT.MSBandWearable.Model
     /// </summary>
     public static class SensorTypeExtension
     {
+        private static readonly Lazy<IReadOnlyDictionary<string, SensorType>> sensorTypeMap;
+        private static readonly Lazy<IReadOnlyDictionary<SensorType, string>> sensorNameMap;
+
+        static SensorTypeExtension()
+        {
+            sensorTypeMap = new Lazy<IReadOnlyDictionary<string, SensorType>>(() =>
+            {
+                return new Dictionary<string, SensorType>()
+                {
+                    { AccelerometerSensorName, Accelerometer },
+                    { GSRSensorName, GSR },
+                    { GyroscopeSensorName, Gyroscope },
+                    { HeartRateSensorName, HeartRate },
+                    { RRIntervalSensorName, RRInterval },
+                    { TemperatureSensorName, Temperature }
+                };
+            });
+
+            sensorNameMap = new Lazy<IReadOnlyDictionary<SensorType, string>>(() => SensorTypeMap.ToDictionary(entry => entry.Value, entry => entry.Key));
+        }
+
+        private static IReadOnlyDictionary<string, SensorType> SensorTypeMap => sensorTypeMap.Value;
+
+        private static IReadOnlyDictionary<SensorType, string> SensorNameMap => sensorNameMap.Value;
+
         /// <summary>
         /// Get name of given sensor type enum value
         /// </summary>
@@ -27,23 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// <returns>The name of given sensor type</returns>
         public static string GetName(this SensorType sensorType)
         {
-            switch (sensorType)
-            {
-                case SensorType.Accelerometer:
-                    return Accelerometer;
-                case SensorType.GSR:
-                    return GSR;
-                case SensorType.Gyroscope:
-                    return Gyroscope;
-                case SensorType.HeartRate:
-                    return HeartRate;
-                case SensorType.RRInterval:
-                    return RRInterval;
-                case SensorType.Temperature:
-                    return Temperature;
-                default:
-                    return null;
-            }
+            return SensorNameMap[sensorType];
         }
 
         /// <summary>
@@ -53,28 +67,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// <returns>A matching nullable <see cref="SensorType?"/></returns>
         public static SensorType? FromName(string name)
         {
-            if (name == null)
-            {
-                return null;
-            }
-
-            switch (name)
-            {
-                case Accelerometer:
-                    return SensorType.Accelerometer;
-                case GSR:
-                    return SensorType.GSR;
-                case Gyroscope:
-                    return SensorType.Gyroscope;
-                case HeartRate:
-                    return SensorType.HeartRate;
-                case RRInterval:
-                    return SensorType.RRInterval;
-                case Temperature:
-                    return SensorType.Temperature;
-                default:
-                    return null;
-            }
+            return name == null ? null : !SensorTypeMap.TryGetValue(name, out SensorType sensorType) ? null : (SensorType?) sensorType;
         }
     }
 }
