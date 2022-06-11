@@ -27,7 +27,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Updates the underlying model value
         /// </summary>
         /// <param name="accelerometerReading">An updated accelorometer reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(ref IBandAccelerometerReading accelerometerReading)
+        protected override void UpdateSensorModel(in IBandAccelerometerReading accelerometerReading)
         {
             Model.AccelerationX = accelerometerReading.AccelerationX;
             Model.AccelerationY = accelerometerReading.AccelerationY;

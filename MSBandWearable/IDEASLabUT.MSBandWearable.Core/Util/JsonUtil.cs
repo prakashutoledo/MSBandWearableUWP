@@ -40,7 +40,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <param name="json">A json string to be deserialized</param>
         /// <param name="toType">A deserialized object parameter</param>
         /// <returns>A serialized object from given json string</returns>
-        public static object FromJson(this string json, Type toType)
+        public static object FromJson(this string json, in Type toType)
         {
             return JsonConvert.DeserializeObject(json, toType);
         }

@@ -76,7 +76,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// </summary>
         /// <param name="sensorReading">A current sensor value reading for the corresponding sensor</param>
         /// <remarks>This function is guaranteed to run in a Core Dispatcher thread. Thus implementing sub class doesn't need to update model in Dispatcher thread</remarks>
-        protected abstract void UpdateSensorModel(ref SensorReading sensorReading);
+        protected abstract void UpdateSensorModel(in SensorReading sensorReading);
 
         /// <summary>
         /// A task that can be subscribe sensor to start reading values by setting callback. This will 
@@ -123,7 +123,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             Model.ActualTime = sensorReading.Timestamp.DateTime;
             Model.SubjectId = subjectViewService.SubjectId;
 
-            UpdateModelAndNotifyChange(ref sensorReading);
+            UpdateModelAndNotifyChange(in sensorReading);
             if (subjectViewService.SessionInProgress)
             {
                 logger.Information($"{{{sensorType.GetName()}}}", Model);
@@ -135,9 +135,9 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             }
         }
 
-        private void UpdateModelAndNotifyChange(ref SensorReading sensorReading)
+        private void UpdateModelAndNotifyChange(in SensorReading sensorReading)
         {
-            UpdateSensorModel(ref sensorReading);
+            UpdateSensorModel(in sensorReading);
             NotifyPropertyChanged(nameof(Model));
         }
     }

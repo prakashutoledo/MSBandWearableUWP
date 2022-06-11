@@ -2,7 +2,6 @@
 using IDEASLabUT.MSBandWearable.Util;
 using IDEASLabUT.MSBandWearable.ViewModel;
 
-using Microsoft.Band.Notifications;
 using Serilog;
 
 using System;
@@ -13,7 +12,9 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
 
+using static IDEASLabUT.MSBandWearable.Model.BandStatus;
 using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
+using static Microsoft.Band.Notifications.VibrationType;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -42,7 +43,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             // private initialization
             this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
-            BandStatus = BandStatus.UNKNOWN;
+            BandStatus = UNKNOWN;
             Accelerometer = new AccelerometerSensor(logger, msBandService, subjectViewService, ntpSyncService);
             Gsr = new GSRSensor(logger, msBandService, subjectViewService, ntpSyncService);
             Gyroscope = new GyroscopeSensor(logger, msBandService, subjectViewService, ntpSyncService);
@@ -98,16 +99,16 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(int selectedIndex, string bandName)
         {
-            var bandStatus = BandStatus.UNKNOWN;
+            var bandStatus = UNKNOWN;
             BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
             try
             {
                 await msBandService.ConnectBand(selectedIndex);
-                bandStatus = BandStatus.Connected;
+                bandStatus = Connected;
             }
             catch (Exception)
             {
-                bandStatus = BandStatus.Error;
+                bandStatus = Error;
                 throw;
             }
             finally
@@ -132,9 +133,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             if (subscriptionTasks.IsCompletedWithSuccess() && subscriptionTasks.Result)
             {
-                return msBandService.BandClient.NotificationManager.VibrateAsync(VibrationType.NotificationTwoTone).ContinueWith(task => Task.FromResult(BandStatus.Subscribed)).Unwrap();
+                var notificationManager = msBandService.BandClient.NotificationManager;
+                return notificationManager.VibrateAsync(NotificationTwoTone).ContinueWith(task => Task.FromResult(Subscribed)).Unwrap();
             }
-            return Task.FromResult(BandStatus.Error);
+            return Task.FromResult(Error);
         }
 
         /// <summary>

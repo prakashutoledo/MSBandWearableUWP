@@ -77,7 +77,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <returns>A task that can be awaited</returns>
         public static Task ContinueWithStatusSupplier(this Task currentTask, Func<bool, Task> continuationFunction)
         {
-            return currentTask.ContinueWith(previousTask => continuationFunction?.Invoke(previousTask.IsCompletedWithSuccess())).Unwrap();
+            return currentTask.ContinueWith(previousTask => continuationFunction.Invoke(previousTask.IsCompletedWithSuccess())).Unwrap();
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <returns>A task that can be awaited to get <see cref="{T}"/></returns>
         public static Task<T> ContinueWithStatusSupplier<T>(this Task<bool> currentTask, Func<Task<bool>, Task<T>> continuationFunction)
         {
-            return currentTask.ContinueWith(continueTask => continuationFunction?.Invoke(continueTask)).Unwrap();
+            return currentTask.ContinueWith(continueTask => continuationFunction.Invoke(continueTask)).Unwrap();
         }
 
         /// <summary>

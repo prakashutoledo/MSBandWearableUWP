@@ -27,6 +27,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Updates the underlying model value
         /// </summary>
         /// <param name="temperatureReading">An updated temperature reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(ref IBandSkinTemperatureReading temperatureReading) => Model.Temperature = temperatureReading.Temperature;
+        protected override void UpdateSensorModel(in IBandSkinTemperatureReading temperatureReading) => Model.Temperature = temperatureReading.Temperature;
     }
 }

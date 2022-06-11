@@ -65,7 +65,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// </summary>
         /// <param name="name">A name of enum value to match</param>
         /// <returns>A matching nullable <see cref="SensorType?"/></returns>
-        public static SensorType? FromName(string name)
+        public static SensorType? FromName(in string name)
         {
             return name == null ? null : SensorTypeMap.TryGetValue(name, out SensorType sensorType) ? (SensorType?) sensorType : null;
         }

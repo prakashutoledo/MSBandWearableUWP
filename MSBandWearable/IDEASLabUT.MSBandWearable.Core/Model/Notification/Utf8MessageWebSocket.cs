@@ -43,11 +43,11 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// </summary>
         /// <param name="webSocketUrl">A webSocket url to connect</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task ConnectAsync(string webSocketUrl)
+        public Task ConnectAsync(string webSocketUrl)
         {
             messageWebSocket.Control.MessageType = SocketMessageType.Utf8;
             messageWebSocket.MessageReceived += MessageReceivedEvent;
-            await messageWebSocket.ConnectAsync(new Uri(webSocketUrl));
+            return messageWebSocket.ConnectAsync(new Uri(webSocketUrl)).AsTask();
         }
 
         /// <summary>

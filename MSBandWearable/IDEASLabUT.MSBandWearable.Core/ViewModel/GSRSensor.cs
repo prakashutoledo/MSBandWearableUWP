@@ -20,6 +20,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Updates the underlying model value
         /// </summary>
         /// <param name="gsrReading">An updated gsr reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(ref IBandGsrReading gsrReading) => Model.Gsr = 1000.0 / gsrReading.Resistance; // Resistance is in KOhms, need to converted into microseimens
+        protected override void UpdateSensorModel(in IBandGsrReading gsrReading) => Model.Gsr = 1000.0 / gsrReading.Resistance; // Resistance is in KOhms, need to converted into microseimens
     }
 }

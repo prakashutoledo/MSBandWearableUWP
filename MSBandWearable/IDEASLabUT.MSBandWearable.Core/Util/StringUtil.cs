@@ -12,7 +12,7 @@
         /// <param name="indexFromLast">An index value from last</param>
         /// <returns>A string with removed nth character from last if valid otherwise returns itself</returns>
         /// <remarks>Index from last is 1 based not zero based</remarks>
-        public static string RemoveNthCharacterFromLast(this string value, int indexFromLast)
+        public static string RemoveNthCharacterFromLast(this string value, in int indexFromLast)
         {
             return indexFromLast <= 0 || indexFromLast > value.Length ? value : value.Remove(value.Length - indexFromLast, 1);
         }

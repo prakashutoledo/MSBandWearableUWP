@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -213,6 +214,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <returns>A task that can be awaited</returns>
         private async Task OnEmpaticaE4BandMessageReceived(object message)
         {
+            Trace.WriteLine("Received");
+            Trace.WriteLine(message);
             var empaticaE4Band = (message as EmpaticaE4BandMessage).Payload;
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
             SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
