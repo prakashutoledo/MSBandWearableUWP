@@ -36,7 +36,14 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
             descriptionMap = new Lazy<IReadOnlyDictionary<PayloadAction, string>>(() => PayloadActionMap.ToDictionary(entry => entry.Value, entry => entry.Key));
         }
 
+        /// <summary>
+        /// A readonly payload description by payload action
+        /// </summary>
         private static IReadOnlyDictionary<string, PayloadAction> PayloadActionMap => payloadActionMap.Value;
+
+        /// <summary>
+        /// A readonly payload action by description map
+        /// </summary>
         private static IReadOnlyDictionary<PayloadAction, string> DescriptionMap => descriptionMap.Value;
 
         /// <summary>

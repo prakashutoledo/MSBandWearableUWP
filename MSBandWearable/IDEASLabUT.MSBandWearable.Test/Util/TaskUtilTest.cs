@@ -4,8 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
-
 namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
@@ -54,7 +52,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         public async Task ShouldContinueWithActionWithInput()
         {
             bool changed = false;
-            Action<bool> continuationAction = (result) => changed = result;
+            Action<bool> continuationAction = result => changed = result;
 
             await Task.FromCanceled<bool>(new CancellationToken(true)).ContinueWithAction(continuationAction);
             Assert.IsFalse(changed, "Action hasn't been invoked as task is cancelled");
@@ -96,6 +94,69 @@ namespace IDEASLabUT.MSBandWearable.Util
 
             status = await Task.WhenAll(Task.FromResult(true), Task.FromResult(true)).ContinueWithStatus();
             Assert.IsTrue(status, "Tasks are complete and result is all true");
+        }
+
+        [TestMethod]
+        public async Task ShouldContinueWithStatusSupplier()
+        {
+            int changedCount = 0;
+            bool changed = false;
+
+            Func<bool, Task> continuationFunction = result =>
+            {
+                changedCount++;
+                changed = result;
+                return Task.CompletedTask;
+            };
+
+            await Task.CompletedTask.ContinueWithStatusSupplier(continuationFunction);
+            Assert.IsTrue(changed);
+            Assert.AreEqual(1, changedCount);
+
+            changed = false;
+            await Task.FromCanceled(new CancellationToken(true)).ContinueWithStatusSupplier(continuationFunction);
+            Assert.IsFalse(changed);
+            Assert.AreEqual(2, changedCount);
+
+            changed = false;
+            await Task.FromException(new Exception()).ContinueWithStatusSupplier(continuationFunction);
+            Assert.IsFalse(changed);
+            Assert.AreEqual(3, changedCount);
+        }
+
+        [TestMethod]
+        public async Task ShouldContinueWithStatusSupplierGeneric()
+        {
+            int changedCount = 0;
+            Func<Task<bool>, Task<bool>> continuationFunction = task =>
+            {
+                changedCount++;
+                return Task.FromResult(task.Result);
+            };
+
+            var result = await Task.FromResult(true).ContinueWithStatusSupplier(continuationFunction);
+            Assert.IsTrue(result);
+            Assert.AreEqual(1, changedCount);
+
+            result = await Task.FromResult(false).ContinueWithStatusSupplier(continuationFunction);
+            Assert.IsFalse(result);
+            Assert.AreEqual(2, changedCount);
+        }
+
+        [TestMethod]
+        public void IsCompletedWithSuccess()
+        {
+            var status = Task.FromResult(false).IsCompletedWithSuccess();
+            Assert.IsTrue(status, "Task is completed from result");
+
+            status = Task.FromResult(true).IsCompletedWithSuccess();
+            Assert.IsTrue(status, "Task is completed from result");
+
+            status = Task.FromCanceled(new CancellationToken(true)).IsCompletedWithSuccess();
+            Assert.IsFalse(status, "Task is completed but is cancelled");
+
+            status = Task.FromException(new Exception()).IsCompletedWithSuccess();
+            Assert.IsFalse(status, "Task is completed but is halted with exception");
         }
      }
 }
