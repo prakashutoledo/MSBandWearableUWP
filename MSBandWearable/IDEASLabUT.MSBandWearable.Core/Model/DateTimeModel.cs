@@ -5,7 +5,14 @@
     /// </summary>
     public class DateTimeModel
     {
+        /// <summary>
+        /// A date time stamp for current value
+        /// </summary>
         public long DateTime { get; set; }
+
+        /// <summary>
+        /// A value of the model
+        /// </summary>
         public double Value { get; set; }
     }
 }

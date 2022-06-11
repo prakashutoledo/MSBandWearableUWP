@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -50,7 +51,13 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             // Only used the first address from the given pool
             var ipAddresses = await Dns.GetHostAddressesAsync(poolAddress).ConfigureAwait(false);
-            using (var ntpClient = new NtpClient(ipAddresses[0]))
+
+            if (ipAddresses == null || ipAddresses.Length == 0)
+            {
+                return;
+            }
+
+            using (var ntpClient = new NtpClient(ipAddresses.First()))
             {
                 CorrectionOffset = ntpClient.GetCorrectionOffset();
                 Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");

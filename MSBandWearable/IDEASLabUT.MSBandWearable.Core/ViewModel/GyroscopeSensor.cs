@@ -27,7 +27,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Updates the underlying model value
         /// </summary>
         /// <param name="gyroscopeReading">An updated gyroscope reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(IBandGyroscopeReading gyroscopeReading)
+        protected override void UpdateSensorModel(ref IBandGyroscopeReading gyroscopeReading)
         {
             Model.AngularX = gyroscopeReading.AngularVelocityX;
             Model.AngularY = gyroscopeReading.AngularVelocityY;

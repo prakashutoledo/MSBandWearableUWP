@@ -58,7 +58,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Updates the underlying model value
         /// </summary>
         /// <param name="heartRateReading">An updated heartRate reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(IBandHeartRateReading heartRateReading)
+        protected override void UpdateSensorModel(ref IBandHeartRateReading heartRateReading)
         {
             var bpm = Model.Bpm = heartRateReading.HeartRate;
             HeartRateStatus = heartRateReading.Quality;

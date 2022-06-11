@@ -27,6 +27,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Updates the underlying model value
         /// </summary>
         /// <param name="ibiReading">An updated RR interval reading value to be reflected to model changed</param>
-        protected override void UpdateSensorModel(IBandRRIntervalReading ibiReading) => Model.Ibi = ibiReading.Interval;
+        protected override void UpdateSensorModel(ref IBandRRIntervalReading ibiReading) => Model.Ibi = ibiReading.Interval;
     }
 }
