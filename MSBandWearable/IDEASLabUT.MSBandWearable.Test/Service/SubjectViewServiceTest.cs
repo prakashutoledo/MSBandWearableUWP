@@ -4,6 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
+    /// <summary>
+    /// Unit test for <see cref="SubjectViewService"/>
+    /// </summary>
     [TestClass]
     public class SubjectViewServiceTest : BaseHyperMock<SubjectViewService>
     {
