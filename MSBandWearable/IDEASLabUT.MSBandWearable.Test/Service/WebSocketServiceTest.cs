@@ -76,11 +76,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         [TestMethod]
         public void ShouldHaveMessagePostProcessor()
         {
-            webSocketService.SetMessagePostProcessor(E4Band, null);
+            webSocketService.AddMessagePostProcessor(E4Band, null);
             Assert.IsFalse(webSocketService.GetMessagePostProcessors.ContainsKey(E4Band));
 
             Func<object, Task> processor = _ => Task.CompletedTask;
-            webSocketService.SetMessagePostProcessor(E4Band, processor);
+            webSocketService.AddMessagePostProcessor(E4Band, processor);
             Assert.AreEqual(processor, webSocketService.GetMessagePostProcessors[E4Band]);
         }
 

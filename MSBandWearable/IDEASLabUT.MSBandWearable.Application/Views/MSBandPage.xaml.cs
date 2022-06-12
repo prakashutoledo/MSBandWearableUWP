@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
 using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
@@ -101,7 +102,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void SetMessagePostProcessor()
         {
-            SocketService.SetMessagePostProcessor(PayloadType.E4Band, OnEmpaticaE4BandMessageReceived);
+            SocketService.AddMessagePostProcessor(E4Band, OnEmpaticaE4BandMessageReceived);
         }
 
         /// <summary>
@@ -214,8 +215,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <returns>A task that can be awaited</returns>
         private async Task OnEmpaticaE4BandMessageReceived(object message)
         {
-            Trace.WriteLine("Received");
-            Trace.WriteLine(message);
             var empaticaE4Band = (message as EmpaticaE4BandMessage).Payload;
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
             SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;

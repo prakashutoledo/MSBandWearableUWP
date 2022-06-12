@@ -46,15 +46,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task Connect(string webSocketUrl, Func<bool, Task> continueWith = null)
         {
             messageWebSocket = Utf8MessageWebSocket.SocketSupplier.Invoke();
-            bool status = false;
-            Func<bool, Task> test = result =>
-            {
-                status = result;
-                return Task.CompletedTask;
-            };
             messageWebSocket.OnMessageReceived = message => ParseMessageAndProcess(message, GetMessagePostProcessors);
-            await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWithStatusSupplier(test);
-            Trace.WriteLine("tete");
+            await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWithStatusSupplier(continueWith);
         }
 
         /// <summary>
@@ -77,7 +70,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// </summary>
         /// <param name="type">A type of payload to set message post processor</param>
         /// <param name="processor">A message post processor to set</param>
-        public void SetMessagePostProcessor(PayloadType type, Func<object, Task> processor)
+        public void AddMessagePostProcessor(PayloadType type, Func<object, Task> processor)
         {
             if (processor == null)
             {
