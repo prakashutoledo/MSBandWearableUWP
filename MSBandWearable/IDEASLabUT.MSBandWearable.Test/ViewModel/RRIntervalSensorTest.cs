@@ -23,7 +23,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         [TestMethod]
         public async Task OnGSRReadingChanged()
         {
-            await MockSensorReadingChanged(When(reading => reading.Interval, 50.0))
+            await MockSensorReadingChanged(When(reading => reading.Interval, 50.0));
             VerifySensorValueChanged(NewModel(value => value.Ibi = 50.0));
         }
     }

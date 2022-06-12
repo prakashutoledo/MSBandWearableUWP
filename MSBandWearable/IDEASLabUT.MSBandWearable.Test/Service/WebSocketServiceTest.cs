@@ -27,7 +27,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public void SocketSetup()
         {
             originalSocketSupplier = Utf8MessageWebSocket.SocketSupplier;
-            Utf8MessageWebSocket.SocketSupplier = () => GetOrCreateMock<IUtf8MessageWebSocket>().Object;
+            Utf8MessageWebSocket.SocketSupplier = () => MockValue<IUtf8MessageWebSocket>();
             continueWith = (status) =>
             {
                 ApplyLatch(() => actualStatus = status);

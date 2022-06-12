@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 
 using static HyperMock.Occurred;
 using static Microsoft.Band.UserConsent;
-using System.Linq;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
