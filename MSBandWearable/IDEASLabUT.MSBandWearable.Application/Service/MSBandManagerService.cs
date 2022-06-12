@@ -99,22 +99,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(int selectedIndex, string bandName)
         {
-            var bandStatus = UNKNOWN;
             BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
-            try
-            {
-                await msBandService.ConnectBand(selectedIndex);
-                bandStatus = Connected;
-            }
-            catch (Exception)
-            {
-                bandStatus = Error;
-                throw;
-            }
-            finally
-            {
-                BandStatus = bandStatus;
-            }
+            await msBandService.ConnectBand(selectedIndex)
+                .ContinueWithSupplier(connectTask =>  ToBandStatusTask(connectTask))
+                .ContinueWithAction(bandStatus => BandStatus = bandStatus);
         }
 
         /// <summary>
@@ -125,18 +113,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             await Task.WhenAll(Accelerometer.Subscribe(), Gsr.Subscribe(), Gyroscope.Subscribe(), HeartRate.Subscribe(), RRInterval.Subscribe(), Temperature.Subscribe())
                     .ContinueWithStatus()
-                    .ContinueWithStatusSupplier(subscribeTask => StatusTask(subscribeTask))
+                    .ContinueWithSupplier(subscribeTask => VibrateAndSubscriptionStatus(subscribeTask))
                     .ContinueWithAction(bandStatus => BandStatus = bandStatus);
-        }
-
-        private Task<BandStatus> StatusTask(Task<bool> subscriptionTasks)
-        {
-            if (subscriptionTasks.IsCompletedWithSuccess() && subscriptionTasks.Result)
-            {
-                var notificationManager = msBandService.BandClient.NotificationManager;
-                return notificationManager.VibrateAsync(NotificationTwoTone).ContinueWith(task => Task.FromResult(Subscribed)).Unwrap();
-            }
-            return Task.FromResult(Error);
         }
 
         /// <summary>
@@ -147,6 +125,21 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true));
             return devices.Where(device => device.Name.StartsWith(MSBandNamePrefix)).Select(device => device.Name);
+        }
+
+        private Task<BandStatus> ToBandStatusTask(Task task)
+        {
+            return Task.FromResult(task.IsCompletedWithSuccess() ? Connected : Error);
+        }
+
+        private Task<BandStatus> VibrateAndSubscriptionStatus(Task<bool> subscriptionTask)
+        {
+            if (subscriptionTask.IsCompletedWithSuccess() && subscriptionTask.Result)
+            {
+                var notificationManager = msBandService.BandClient.NotificationManager;
+                return notificationManager.VibrateAsync(NotificationTwoTone).ContinueWith(task => Task.FromResult(Subscribed)).Unwrap();
+            }
+            return Task.FromResult(Error);
         }
     }
 }

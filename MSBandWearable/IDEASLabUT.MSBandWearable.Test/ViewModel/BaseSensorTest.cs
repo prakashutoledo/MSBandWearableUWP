@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 using static HyperMock.Occurred;
 using static Microsoft.Band.UserConsent;
+using System.Linq;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
@@ -24,51 +25,27 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// </summary>
     /// <typeparam name="SensorEvent">A parameter of type <see cref="BaseEvent"/></typeparam>
     /// <typeparam name="SensorReading">A parameter of type <see cref="IBandSensorReading"/></typeparam>
-    /// <typeparam name="SensorViewModel">A parameter of type inheriting <see cref="BaseSensorViewModel{T, R}"/></typeparam>
+    /// <typeparam name="SensorViewModel">A parameter of type inheriting <see cref="BaseSensorViewModel{SensorEvent, SensorReading}"/></typeparam>
     [TestClass]
-    public class BaseSensorTest<SensorEvent, SensorReading, SensorViewModel> : BaseViewModelTest where SensorEvent : BaseEvent, new() where SensorReading : IBandSensorReading where SensorViewModel : BaseSensorViewModel<SensorEvent, SensorReading>
+    public class BaseSensorTest<SensorEvent, SensorReading, SensorViewModel> : BaseViewModelTest<SensorViewModel> where SensorEvent : BaseEvent, new() where SensorReading : IBandSensorReading where SensorViewModel : BaseSensorViewModel<SensorEvent, SensorReading>
     {
-        private Mock<ILogger> logger;
-        private Mock<IBandClientService> bandClientService;
-        private Mock<ISubjectViewService> subjectViewService;
-        private Mock<INtpSyncService> ntpSyncService;
-        private Mock<IBandClient> band;
-        private Mock<IBandSensorManager> sensorManager;
-        private Mock<SensorReading> sensorReading;
-        private Mock<IBandSensor<SensorReading>> sensor;
-        private SensorViewModel viewModel;
-
         private readonly Expression<Func<IBandSensorManager, IBandSensor<SensorReading>>> sensorExpression;
-        private readonly Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, SensorViewModel> viewModelSupplier;
 
         /// <summary>
         /// Creates a new instance of <see cref="BaseSensorTest{SensorEvent, SensorReading, SensorViewModel}"/>
         /// </summary>
         /// <param name="sensorExpression">An expression for getting sensor from sensor manager</param>
-        /// <param name="viewModelSupplier">A supplies for view model</param>
-        protected BaseSensorTest(Expression<Func<IBandSensorManager, IBandSensor<SensorReading>>> sensorExpression, Func<ILogger, IBandClientService, ISubjectViewService, INtpSyncService, SensorViewModel> viewModelSupplier)
+        protected BaseSensorTest(Expression<Func<IBandSensorManager, IBandSensor<SensorReading>>> sensorExpression)
         {
             this.sensorExpression = sensorExpression ?? throw new ArgumentNullException(nameof(sensorExpression));
-            this.viewModelSupplier = viewModelSupplier ?? throw new ArgumentNullException(nameof(viewModelSupplier));
         }
 
         [TestInitialize]
         public void Initialize()
         {
-            logger = Mock.Create<ILogger>();
-            bandClientService = Mock.Create<IBandClientService>();
-            subjectViewService = Mock.Create<ISubjectViewService>();
-            ntpSyncService = Mock.Create<INtpSyncService>();
-            band = Mock.Create<IBandClient>();
-            sensorManager = Mock.Create<IBandSensorManager>();
-            sensorReading = Mock.Create<SensorReading>();
-            sensor = Mock.Create<IBandSensor<SensorReading>>();
-
-            band.SetupGet(band => band.SensorManager).Returns(sensorManager.Object);
-            bandClientService.SetupGet(bandClientService => bandClientService.BandClient).Returns(band.Object);
-            sensorManager.SetupGet(sensorExpression).Returns(sensor.Object);
-            viewModel = viewModelSupplier.Invoke(logger.Object, bandClientService.Object, subjectViewService.Object, ntpSyncService.Object);
-            viewModel.PropertyChanged += OnPropertyChanged;
+            MockFor<IBandSensorManager>(sensorManagerMock => sensorManagerMock.SetupGet(sensorExpression).Returns(MockValue<IBandSensor<SensorReading>>()));
+            MockFor<IBandClient>(bandClientMock => bandClientMock.SetupGet(bandClient => bandClient.SensorManager).Returns(MockValue<IBandSensorManager>()));
+            MockFor<IBandClientService>(bandClientServiceMock => bandClientServiceMock.SetupGet(bandClientService => bandClientService.BandClient).Returns(MockValue<IBandClient>()));
         }
 
         [TestMethod]
@@ -103,15 +80,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         [TestCleanup]
         public void SensorCleanup()
         {
-            logger = null;
-            bandClientService = null;
-            subjectViewService = null;
-            ntpSyncService = null;
-            band = null;
-            sensorManager = null;
-            sensorReading = null;
-            sensor = null;
-            viewModel = null;
         }
 
         /// <summary>
@@ -124,8 +92,12 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <returns>A task that can be awaited</returns>
         protected async Task MockSensorReadingChanged<X, Y>((Expression<Func<SensorReading, X>> when, X then) first, (Expression<Func<SensorReading, Y>> when, Y then) second)
         {
-            sensorReading.SetupGet(first.when).Returns(first.then);
-            sensorReading.SetupGet(second.when).Returns(second.then);
+            MockFor<SensorReading>(sensorReading =>
+            {
+                sensorReading.SetupGet(first.when).Returns(first.then);
+                sensorReading.SetupGet(second.when).Returns(second.then);
+            });
+           
             await MockSensorReadingChanged();
         }
 
@@ -138,12 +110,15 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <returns>A task that can be awaited</returns>
         protected async Task MockSensorReadingChanged<E>((Expression<Func<SensorReading, E>> when, E then) first, params (Expression<Func<SensorReading, E>> when, E then)[] remaining)
         {
-            sensorReading.SetupGet(first.when).Returns(first.then);
-
-            foreach (var setup in remaining)
+            MockFor<SensorReading>(sensorReadingMock =>
             {
-                sensorReading.SetupGet(setup.when).Returns(setup.then);
-            }
+                sensorReadingMock.SetupGet(first.when).Returns(first.then);
+
+                foreach (var setup in remaining)
+                {
+                    sensorReadingMock.SetupGet(setup.when).Returns(setup.then);
+                }
+            });
 
             await MockSensorReadingChanged();
         }
@@ -154,20 +129,23 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <returns>A task that can be awaited</returns>
         private async Task MockSensorReadingChanged()
         {
-            viewModel.SensorModelChanged = async model =>
+            Subject.SensorModelChanged = async model =>
             {
                 ApplyLatch(() => Assert.IsNotNull(model, "Changed model shouldn't be null"));
                 await Task.CompletedTask;
             };
             _ = await MockSubscribe();
-            sensorReading.SetupGet(sensorReading => sensorReading.Timestamp).Returns(Param.IsAny<DateTime>());
-            subjectViewService.SetupGet(subjectViewService => subjectViewService.CurrentView).Returns("Fake View");
-            subjectViewService.SetupGet(subjectViewService => subjectViewService.SubjectId).Returns("Fake Id");
-            subjectViewService.SetupGet(subjectViewService => subjectViewService.SessionInProgress).Returns(true);
-            ntpSyncService.SetupGet(ntpSyncService => ntpSyncService.LocalTimeNow).Returns(Param.IsAny<DateTime>());
+            MockFor<SensorReading>(sensorReadingMock => sensorReadingMock.SetupGet(sensorReading => sensorReading.Timestamp).Returns(Param.IsAny<DateTime>()));
+            MockFor<ISubjectViewService>(subjectViewServiceMock =>
+            {
+                subjectViewServiceMock.SetupGet(subjectViewService => subjectViewService.CurrentView).Returns("Fake View");
+                subjectViewServiceMock.SetupGet(subjectViewService => subjectViewService.SubjectId).Returns("Fake Id");
+                subjectViewServiceMock.SetupGet(subjectViewService => subjectViewService.SessionInProgress).Returns(true);
+            });
+            MockFor<INtpSyncService>(ntpSyncServiceMock => ntpSyncServiceMock.SetupGet(ntpSyncService => ntpSyncService.LocalTimeNow).Returns(Param.IsAny<DateTime>()));
 
             // Raise Sensor reading change event
-            sensor.Raise(sensor => sensor.ReadingChanged += null, new BandSensorReadingEventArgs<SensorReading>(sensorReading.Object));
+            MockFor<IBandSensor<SensorReading>>(sensorMock => sensorMock.Raise(sensor => sensor.ReadingChanged += null, new BandSensorReadingEventArgs<SensorReading>(MockValue<SensorReading>())));
             // Wait for signal to be received
             WaitFor();
         }
@@ -181,11 +159,13 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <returns>An awaiatable task with sensor subscription status</returns>
         protected async Task<bool> MockSubscribe(UserConsent currentUserConsent = Granted, bool requestUserAsync = false, bool startReadingAsync = true)
         {
-            sensor.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(currentUserConsent);
-            sensor.Setup(sensor => sensor.RequestUserConsentAsync()).Returns(Task.FromResult(requestUserAsync));
-            sensor.Setup(sensor => sensor.StartReadingsAsync()).Returns(Task.FromResult(startReadingAsync));
-            var status = await viewModel.Subscribe();
-            return status;
+            MockFor<IBandSensor<SensorReading>>(sensorMock => {
+                sensorMock.Setup(sensor => sensor.GetCurrentUserConsent()).Returns(currentUserConsent);
+                sensorMock.Setup(sensor => sensor.RequestUserConsentAsync()).Returns(Task.FromResult(requestUserAsync));
+                sensorMock.Setup(sensor => sensor.StartReadingsAsync()).Returns(Task.FromResult(startReadingAsync));
+            });
+   
+            return await Subject.Subscribe();
         }
 
         /// <summary>
@@ -229,12 +209,14 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         protected void VerifySubscribe(bool expectedStatus, bool actualStatus, Occurred bandClientOccurred, Occurred sensorManagerOccurred, Occurred getConsentOccurred, Occurred requestConsentOccurred, Occurred startReadingOccurred)
         {
             Assert.AreEqual(expectedStatus, actualStatus, "Expected subscription status should match actual");
+            MockFor<IBandClientService>(bandClientServiceMock => bandClientServiceMock.VerifyGet(bandClientService => bandClientService.BandClient, bandClientOccurred));
+            MockFor<IBandSensorManager>(sensorManagerMock => sensorManagerMock.VerifyGet(sensorExpression, sensorManagerOccurred));
+            MockFor<IBandSensor<SensorReading>>(sensorMock => {
+                sensorMock.Verify(sensor => sensor.GetCurrentUserConsent(), getConsentOccurred);
+                sensorMock.Verify(sensor => sensor.RequestUserConsentAsync(), requestConsentOccurred);
+                sensorMock.Verify(sensor => sensor.StartReadingsAsync(), startReadingOccurred);
+            });
 
-            bandClientService.VerifyGet(bandClientService => bandClientService.BandClient, bandClientOccurred);
-            sensorManager.VerifyGet(sensorExpression, sensorManagerOccurred);
-            sensor.Verify(sensor => sensor.GetCurrentUserConsent(), getConsentOccurred);
-            sensor.Verify(sensor => sensor.RequestUserConsentAsync(), requestConsentOccurred);
-            sensor.Verify(sensor => sensor.StartReadingsAsync(), startReadingOccurred);
         }
 
         /// <summary>
@@ -244,17 +226,23 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="extraPropertyVerifier">An extra sensor model view property verifier</param>
         protected void VerifySensorValueChanged(SensorEvent expectedModel, int expectedCount = 1, Action<SensorViewModel> extraPropertyVerifier = null)
         {
-            Assert.AreEqual(expectedModel.ToString(), viewModel.Model.ToString(), "Expected serialized model should match actual model");
+            Assert.AreEqual(expectedModel.ToString(), Subject.Model.ToString(), "Expected serialized model should match actual model");
+            MockFor<ISubjectViewService>(subjectViewServiceMock => 
+            {
+                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.CurrentView, AtLeast(1));
+                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.SubjectId, AtLeast(1));
+                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, AtLeast(1));
+            });
 
-            subjectViewService.VerifyGet(subjectViewService => subjectViewService.CurrentView, AtLeast(1));
-            subjectViewService.VerifyGet(subjectViewService => subjectViewService.SubjectId, AtLeast(1));
-            ntpSyncService.VerifyGet(ntpSyncService => ntpSyncService.LocalTimeNow, AtLeast(1));
-            subjectViewService.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, AtLeast(1));
-            logger.Verify(logger => logger.Information($"{{{viewModel.SensorType.GetName()}}}", Param.IsAny<SensorEvent>()), AtLeast(1));
+            MockFor<INtpSyncService>(ntpSyncServiceMock => 
+            {
+                ntpSyncServiceMock.VerifyGet(ntpSyncService => ntpSyncService.LocalTimeNow, AtLeast(1));
+            });
+
+            MockFor<ILogger>(loggerMock => loggerMock.Verify(logger => logger.Information($"{{{Subject.SensorType.GetName()}}}", Param.IsAny<SensorEvent>()), AtLeast(1)));
 
             VerifyProperty(propertyName : "Model", expectedCount: expectedCount);
-
-            extraPropertyVerifier?.Invoke(viewModel);
+            extraPropertyVerifier?.Invoke(Subject);
         }
     }
 }

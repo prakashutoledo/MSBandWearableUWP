@@ -134,11 +134,11 @@ namespace IDEASLabUT.MSBandWearable.Util
                 return Task.FromResult(task.Result);
             };
 
-            var result = await Task.FromResult(true).ContinueWithStatusSupplier(continuationFunction);
+            var result = await Task.FromResult(true).ContinueWithSupplier(continuationFunction);
             Assert.IsTrue(result, "Continuation function is invoked with result set to true");
             Assert.AreEqual(1, changedCount, "Continuation function is invoked which increment changed count to 1");
 
-            result = await Task.FromResult(false).ContinueWithStatusSupplier(continuationFunction);
+            result = await Task.FromResult(false).ContinueWithSupplier(continuationFunction);
             Assert.IsFalse(result, "Continuation function is invoked with result set to false");
             Assert.AreEqual(2, changedCount, "Continuation function is invoked which increment changed count to 2");
         }

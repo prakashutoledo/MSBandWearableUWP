@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 using Windows.Networking.Sockets;
 
-using static IDEASLabUT.MSBandWearable.Util.WebSocketUtil;
+using static IDEASLabUT.MSBandWearable.Model.Notification.Utf8MessageWebSocket;
 using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
-using System.Diagnostics;
+using static IDEASLabUT.MSBandWearable.Util.WebSocketUtil;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -45,7 +45,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task Connect(string webSocketUrl, Func<bool, Task> continueWith = null)
         {
-            messageWebSocket = Utf8MessageWebSocket.SocketSupplier.Invoke();
+            messageWebSocket = SocketSupplier.Invoke();
             messageWebSocket.OnMessageReceived = message => ParseMessageAndProcess(message, GetMessagePostProcessors);
             await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWithStatusSupplier(continueWith);
         }

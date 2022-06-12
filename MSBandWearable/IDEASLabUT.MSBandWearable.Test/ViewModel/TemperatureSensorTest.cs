@@ -16,7 +16,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <summary>
         /// Creates a new instance of <see cref="TemperatureSensorTest"/>
         /// </summary>
-        public TemperatureSensorTest() : base(sensorManager => sensorManager.SkinTemperature, (logger, bandClientService, subjectViewService, ntpSyncService) => new TemperatureSensor(logger, bandClientService, subjectViewService, ntpSyncService))
+        public TemperatureSensorTest() : base(sensorManager => sensorManager.SkinTemperature)
         {
         }
 
@@ -24,10 +24,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         public async Task OnGSRReadingChanged()
         {
             await MockSensorReadingChanged(When(reading => reading.Temperature, 37.0));
-
-            var expectedModel = NewModel(value => value.Temperature = 37.0);
-
-            VerifySensorValueChanged(expectedModel);
+            VerifySensorValueChanged(NewModel(value => value.Temperature = 37.0));
         }
     }
 }

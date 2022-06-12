@@ -2,10 +2,10 @@
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {

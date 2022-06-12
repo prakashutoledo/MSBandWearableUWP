@@ -1,6 +1,5 @@
-﻿using HyperMock;
-
-using IDEASLabUT.MSBandWearable.Model.Notification;
+﻿using IDEASLabUT.MSBandWearable.Model.Notification;
+using IDEASLabUT.MSBandWearable.Test;
 using IDEASLabUT.MSBandWearable.Util;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,10 +17,8 @@ using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
 namespace IDEASLabUT.MSBandWearable.Service
 {
     [TestClass]
-    public class WebSocketServiceTest : AwaitableTest
+    public class WebSocketServiceTest : BaseHyperMock<WebSocketService>
     {
-        private WebSocketService webSocketService;
-        private Mock<IUtf8MessageWebSocket> webSocketMessage;
         private Func<IUtf8MessageWebSocket> originalSocketSupplier;
         private Func<bool, Task> continueWith;
         private bool actualStatus = false;
@@ -29,10 +26,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         [TestInitialize]
         public void SocketSetup()
         {
-            webSocketMessage = Mock.Create<IUtf8MessageWebSocket>();
-            webSocketService = WebSocketService.Singleton;
             originalSocketSupplier = Utf8MessageWebSocket.SocketSupplier;
-            Utf8MessageWebSocket.SocketSupplier = () => webSocketMessage.Object;
+            Utf8MessageWebSocket.SocketSupplier = () => GetOrCreateMock<IUtf8MessageWebSocket>().Object;
             continueWith = (status) =>
             {
                 ApplyLatch(() => actualStatus = status);
@@ -46,7 +41,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task ShouldConnectAsync(bool throwException, bool expectedStatus)
         {
             await SetupConnection("wss://some-fake-url", throwException ? Task.FromException(new Exception("fake exception")) : Task.CompletedTask);
-            webSocketMessage.Verify(message => message.ConnectAsync("wss://some-fake-url"), Exactly(1));
+            MockFor<IUtf8MessageWebSocket>(mockMessage => mockMessage.Verify(message => message.ConnectAsync("wss://some-fake-url"), Exactly(1)));
             Assert.AreEqual(expectedStatus, actualStatus, "WebSocket connection status");
         }
 
@@ -57,18 +52,18 @@ namespace IDEASLabUT.MSBandWearable.Service
 
             IRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
             var dataWriter = new DataWriter(randomAccessStream);
-            webSocketMessage.SetupGet(webSocketMessage => webSocketMessage.MessageWriter).Returns(dataWriter);
-            var message = NewMessage();
+            MockFor<IUtf8MessageWebSocket>(mockMessage => mockMessage.SetupGet(message => message.MessageWriter).Returns(dataWriter));
+            var expectedMessage = NewMessage();
 
             actualStatus = false;
-            await webSocketService.SendMessage(message, continueWith);
+            await Subject.SendMessage(expectedMessage, continueWith);
             WaitFor();
 
             randomAccessStream.Seek(0);
             using (var streamReader = new StreamReader(randomAccessStream.AsStreamForRead()))
             {
                 var actualMessage = await streamReader.ReadToEndAsync();
-                Assert.AreEqual(message.ToJson(), actualMessage, "Raw json message should match");
+                Assert.AreEqual(expectedMessage.ToJson(), actualMessage, "Raw json message should match");
                 Assert.IsTrue(actualStatus, "Send message task is succesfull");
             }
         }
@@ -76,12 +71,12 @@ namespace IDEASLabUT.MSBandWearable.Service
         [TestMethod]
         public void ShouldHaveMessagePostProcessor()
         {
-            webSocketService.AddMessagePostProcessor(E4Band, null);
-            Assert.IsFalse(webSocketService.GetMessagePostProcessors.ContainsKey(E4Band));
+            Subject.AddMessagePostProcessor(E4Band, null);
+            Assert.IsFalse(Subject.GetMessagePostProcessors.ContainsKey(E4Band));
 
             Func<object, Task> processor = _ => Task.CompletedTask;
-            webSocketService.AddMessagePostProcessor(E4Band, processor);
-            Assert.AreEqual(processor, webSocketService.GetMessagePostProcessors[E4Band]);
+            Subject.AddMessagePostProcessor(E4Band, processor);
+            Assert.AreEqual(processor, Subject.GetMessagePostProcessors[E4Band]);
         }
 
         [TestCleanup]
@@ -98,8 +93,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         private async Task SetupConnection(string fakeUrl, Task task)
         {
-            webSocketMessage.Setup(webSocketMessage => webSocketMessage.ConnectAsync(fakeUrl)).Returns(task);
-            await webSocketService.Connect(fakeUrl, continueWith);
+            MockFor<IUtf8MessageWebSocket>(mockMessage => mockMessage.Setup(message => message.ConnectAsync(fakeUrl)).Returns(task));
+            await Subject.Connect(fakeUrl, continueWith);
             WaitFor();
         }
 

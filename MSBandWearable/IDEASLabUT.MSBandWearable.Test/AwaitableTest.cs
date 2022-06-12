@@ -3,7 +3,7 @@
 using System;
 using System.Threading;
 
-namespace IDEASLabUT.MSBandWearable.Util
+namespace IDEASLabUT.MSBandWearable.Test
 {
     /// <summary>
     /// Class that provides await latch for testing values that gets updated asynchronously 

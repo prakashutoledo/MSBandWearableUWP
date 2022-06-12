@@ -1,13 +1,14 @@
 ﻿using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Service;
 
-using Microsoft.Band;
 using Microsoft.Band.Sensors;
 
 using Serilog;
 
 using System;
 using System.Threading.Tasks;
+
+using static Microsoft.Band.UserConsent;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
@@ -21,7 +22,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// <typeparam name="SensorReading">A parameter of type <see cref="IBandSensorReading"/></typeparam>
     public abstract class BaseSensorViewModel<SensorEvent, SensorReading> : BaseViewModel where SensorEvent : BaseEvent, new() where SensorReading : IBandSensorReading
     {
-        private SensorEvent model;
+        private readonly SensorEvent model;
         private readonly SensorType sensorType;
         private readonly ILogger logger;
         private readonly ISubjectViewService subjectViewService;
@@ -39,15 +40,15 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <param name="ntpSyncService">A ntp synchronization to set</param>
         /// <param name="bandSensorSupplier">A MS Band 2 sensor supplier from sensor manager</param>
         /// <exception cref="ArgumentNullException">If any of the parameters model, logger, msBandService, subjectViewService or ntpSyncService is null</exception>
-        protected BaseSensorViewModel(SensorType sensorType, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService, Func<IBandSensorManager, IBandSensor<SensorReading>> bandSensorSupplier)
+        protected BaseSensorViewModel(SensorType? sensorType, ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService, Func<IBandSensorManager, IBandSensor<SensorReading>> bandSensorSupplier)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
             this.subjectViewService = subjectViewService ?? throw new ArgumentNullException(nameof(subjectViewService));
             this.ntpSyncService = ntpSyncService ?? throw new ArgumentNullException(nameof(ntpSyncService));
-            this.bandSensorSupplier = bandSensorSupplier ?? throw new ArgumentException(nameof(bandSensorSupplier));
-            this.sensorType = sensorType;
-            Model = new SensorEvent();
+            this.bandSensorSupplier = bandSensorSupplier ?? throw new ArgumentNullException(nameof(bandSensorSupplier));
+            this.sensorType = sensorType ?? throw new ArgumentNullException(nameof(sensorType));
+            model = new SensorEvent();
         }
 
         /// <summary>
@@ -63,7 +64,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         public SensorEvent Model
         {
             get => model;
-            protected set => UpdateAndNotify(ref model, value);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             }
 
             var sensor = bandSensorSupplier.Invoke(sensorManager);
-            var userConsent = sensor.GetCurrentUserConsent() == UserConsent.Granted || await sensor.RequestUserConsentAsync();
+            var userConsent = sensor.GetCurrentUserConsent() == Granted || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
                 return false;
@@ -109,7 +109,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// </summary>
         /// <param name="sender">The sender of the current changed event</param>
         /// <param name="readingEventArgs">A band sensor reading event arguments</param>
-        /// <see cref="BandSensorReadingEventArgs{R}"/>
+        /// <see cref="BandSensorReadingEventArgs{SensorReading}"/>
         private async void OnBandSensorReadingChanged(object sender, BandSensorReadingEventArgs<SensorReading> readingEventArgs)
         {
             var sensorReading = readingEventArgs.SensorReading;
@@ -118,12 +118,8 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
                 return;
             }
 
-            Model.FromView = subjectViewService.CurrentView;
-            Model.AcquiredTime = ntpSyncService.LocalTimeNow;
-            Model.ActualTime = sensorReading.Timestamp.DateTime;
-            Model.SubjectId = subjectViewService.SubjectId;
-
             UpdateModelAndNotifyChange(in sensorReading);
+
             if (subjectViewService.SessionInProgress)
             {
                 logger.Information($"{{{sensorType.GetName()}}}", Model);
@@ -137,6 +133,11 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
 
         private void UpdateModelAndNotifyChange(in SensorReading sensorReading)
         {
+            Model.FromView = subjectViewService.CurrentView;
+            Model.AcquiredTime = ntpSyncService.LocalTimeNow;
+            Model.ActualTime = sensorReading.Timestamp.DateTime;
+            Model.SubjectId = subjectViewService.SubjectId;
+
             UpdateSensorModel(in sensorReading);
             NotifyPropertyChanged(nameof(Model));
         }

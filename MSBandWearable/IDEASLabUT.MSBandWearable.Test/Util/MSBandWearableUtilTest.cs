@@ -1,9 +1,8 @@
 ﻿using IDEASLabUT.MSBandWearable.Model;
-using IDEASLabUT.MSBandWearable.Model.Notification;
+using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System;
 using System.Threading.Tasks;
 
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;

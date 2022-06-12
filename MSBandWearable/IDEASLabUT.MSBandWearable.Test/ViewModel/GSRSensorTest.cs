@@ -16,7 +16,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <summary>
         /// Creates a new instance of <see cref="GSRSensorTest"/>
         /// </summary>
-        public GSRSensorTest() : base(sensorManager => sensorManager.Gsr, (logger, bandClientService, subjectViewService, ntpSyncService) => new GSRSensor(logger, bandClientService, subjectViewService, ntpSyncService))
+        public GSRSensorTest() : base(sensorManager => sensorManager.Gsr)
         {
         }
 
@@ -24,10 +24,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         public async Task OnGSRReadingChanged()
         {
             await MockSensorReadingChanged(When(reading => reading.Resistance, 1000));
-
-            var expectedModel = NewModel(value => value.Gsr = 1.0);
-
-            VerifySensorValueChanged(expectedModel);
+            VerifySensorValueChanged(NewModel(value => value.Gsr = 1.0));
         }
     }
 }

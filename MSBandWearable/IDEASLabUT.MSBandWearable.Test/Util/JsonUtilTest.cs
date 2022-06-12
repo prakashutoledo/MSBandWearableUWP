@@ -1,4 +1,5 @@
 ﻿using IDEASLabUT.MSBandWearable.Model;
+using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

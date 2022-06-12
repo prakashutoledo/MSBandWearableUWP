@@ -81,15 +81,28 @@ namespace IDEASLabUT.MSBandWearable.Util
         }
 
         /// <summary>
-        /// Creates a continuation task of type <see cref="Task{T}"/> by invoking given continuation function with current task
+        /// Creates a continuation task of type <see cref="Task{Y}"/> using given continuation function
         /// </summary>
-        /// <typeparam name="T">A type of task type parameter</typeparam>
-        /// <param name="currentTask">A current bool task to add continuation task</param>
+        /// <typeparam name="X">A type of task result parameter for input</typeparam>
+        /// <typeparam name="Y">A type of task result parameter to return</typeparam>
+        /// <param name="currentTask">A current task to add continuation task</param>
         /// <param name="continuationFunction">A continuation task supplier</param>
-        /// <returns>A task that can be awaited to get <see cref="{T}"/></returns>
-        public static Task<T> ContinueWithStatusSupplier<T>(this Task<bool> currentTask, Func<Task<bool>, Task<T>> continuationFunction)
+        /// <returns>A task that can be awaited to get <see cref="{Y}"/></returns>
+        public static Task<Y> ContinueWithSupplier<X, Y>(this Task<X> currentTask, Func<Task<X>, Task<Y>> continuationFunction)
         {
-            return currentTask.ContinueWith(continueTask => continuationFunction.Invoke(continueTask)).Unwrap();
+            return currentTask.ContinueWith(continuationFunction).Unwrap();
+        }
+
+        /// <summary>
+        /// Creates a continuation task of type <see cref="Task{Y}"/> using given continuation function
+        /// </summary>
+        /// <typeparam name="Y">A type of task result parameter to return</typeparam>
+        /// <param name="currentTask">A current task to add continuation task</param>
+        /// <param name="continuationFunction">A continuation task supplier</param>
+        /// <returns>A task that can be awaited</returns>
+        public static Task<Y> ContinueWithSupplier<Y>(this Task currentTask, Func<Task, Task<Y>> continuationFunction)
+        {
+            return currentTask.ContinueWith(continuationFunction).Unwrap();
         }
 
         /// <summary>

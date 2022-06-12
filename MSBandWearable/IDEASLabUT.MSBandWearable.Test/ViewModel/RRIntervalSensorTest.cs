@@ -16,18 +16,15 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <summary>
         /// Creates a new instance of <see cref="RRIntervalSensorTest"/>
         /// </summary>
-        public RRIntervalSensorTest() : base(sensorManager => sensorManager.RRInterval, (logger, bandClientService, subjectViewService, ntpSyncService) => new RRIntervalSensor(logger, bandClientService, subjectViewService, ntpSyncService))
+        public RRIntervalSensorTest() : base(sensorManager => sensorManager.RRInterval)
         {
         }
 
         [TestMethod]
         public async Task OnGSRReadingChanged()
         {
-            await MockSensorReadingChanged(When(reading => reading.Interval, 50.0));
-
-            var expectedModel = NewModel(value => value.Ibi = 50.0);
-
-            VerifySensorValueChanged(expectedModel);
+            await MockSensorReadingChanged(When(reading => reading.Interval, 50.0))
+            VerifySensorValueChanged(NewModel(value => value.Ibi = 50.0));
         }
     }
 }

@@ -6,16 +6,8 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// View model test for <see cref="SubjectViewModel"/>
     /// </summary>
     [TestClass]
-    public class SubjectViewModelTest : BaseViewModelTest
+    public class SubjectViewModelTest : BaseViewModelTest<SubjectViewModel>
     {
-        private SubjectViewModel viewModel;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            viewModel = new SubjectViewModel();
-            viewModel.PropertyChanged += OnPropertyChanged;
-        }
 
         [DataTestMethod]
         [DataRow("SubjectId")]
@@ -24,16 +16,16 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         [DataRow("MSBandSerialNumber")]
         public void ShouldHavePropertyChanged(string propertyName)
         {
-            var propertyInfo = viewModel.GetType().GetProperty(propertyName);
+            var propertyInfo = Subject.GetType().GetProperty(propertyName);
 
-            propertyInfo.SetValue(viewModel, "Fake Value");
+            propertyInfo.SetValue(Subject, "Fake Value");
             VerifyProperty(propertyName: propertyName, expectedCount: 1);
 
-            propertyInfo.SetValue(viewModel, "Fake Value");
+            propertyInfo.SetValue(Subject, "Fake Value");
             // Will not invoke property changed event as changed value is same as previous value
             VerifyProperty(propertyName: propertyName, expectedCount: 1);
 
-            propertyInfo.SetValue(viewModel, "New Fake Value");
+            propertyInfo.SetValue(Subject, "New Fake Value");
             VerifyProperty(propertyName: propertyName, expectedCount: 2);
         }
     }

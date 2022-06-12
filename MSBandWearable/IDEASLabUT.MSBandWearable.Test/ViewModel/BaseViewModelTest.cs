@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Util;
+﻿using IDEASLabUT.MSBandWearable.Test;
+using IDEASLabUT.MSBandWearable.Util;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// Base view model test providing property changed handler for all classes inheriting <see cref="BaseViewModel"/>
     /// </summary>
     [TestClass]
-    public class BaseViewModelTest : AwaitableTest
+    public class BaseViewModelTest<ViewModel> : BaseHyperMock<ViewModel> where ViewModel : BaseViewModel
     {
         private readonly IDictionary<string, int> propertyMap;
 
@@ -19,6 +20,12 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// Creates a new instance of <see cref="BaseViewModelTest"/>
         /// </summary>
         public BaseViewModelTest() => propertyMap = new Dictionary<string, int>();
+
+        [TestInitialize]
+        public void PropertySetup()
+        {
+            Subject.PropertyChanged += OnPropertyChanged;
+        }
 
         [TestCleanup]
         public void CleanupProperty()
