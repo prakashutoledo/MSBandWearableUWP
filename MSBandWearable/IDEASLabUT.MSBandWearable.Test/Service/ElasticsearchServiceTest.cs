@@ -38,5 +38,22 @@ namespace IDEASLabUT.MSBandWearable.Service
             MockFor<IConfigurationSection>(sectionMock => sectionMock.VerifyGet(section => section.Value, Once()));
             MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.BulkRequestAsync("https://fake-url", "{}", Param.IsAny<AuthenticationHeaderValue>()), Once()));
         }
+        
+        [TestMethod]
+        public void ConfigureShouldDoNothing()
+        {
+            Subject.Configure(null);
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.Dispose(), Never()));
+            MockFor<IConfiguration>(configurationMock => configurationMock.Verify(configuration => configuration.GetSection(Param.IsAny<string>()), Never()));
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.BulkRequestAsync(Param.IsAny<string>(), Param.IsAny<string>(), Param.IsAny<AuthenticationHeaderValue>()), Never()));
+        }
+
+        [TestMethod]
+        public void Dispose()
+        {
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Setup(restClient => restClient.Dispose()));
+            Subject.Dispose();
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.Dispose(), Once()));
+        }
     }
 }

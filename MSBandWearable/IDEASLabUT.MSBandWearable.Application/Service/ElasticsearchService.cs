@@ -76,7 +76,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         }
 
         /// <summary>
-        /// Destructor for elasticsearch rest service instance
+        /// Finalizer for elasticsearch rest service instance
         /// </summary>
         ~ElasticsearchService()
         {
