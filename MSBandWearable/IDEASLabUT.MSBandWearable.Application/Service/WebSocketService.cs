@@ -15,7 +15,7 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// <summary>
     /// A service class for managing webSocket connection details using <see cref="MessageWebSocket"/>
     /// </summary>
-    public class WebSocketService
+    public class WebSocketService : IWebSocketService
     {
         private static readonly Lazy<WebSocketService> Instance = new Lazy<WebSocketService>(() => new WebSocketService());
 

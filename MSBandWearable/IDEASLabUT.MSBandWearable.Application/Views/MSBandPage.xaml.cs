@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,7 +39,7 @@ namespace IDEASLabUT.MSBandWearable.Views
     {
         private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
         private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
-        private WebSocketService SocketService { get; } = WebSocketService.Singleton;
+        private IWebSocketService SocketService { get; } = WebSocketService.Singleton;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
         private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
