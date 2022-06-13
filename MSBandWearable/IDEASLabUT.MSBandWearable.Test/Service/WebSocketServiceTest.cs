@@ -71,12 +71,18 @@ namespace IDEASLabUT.MSBandWearable.Service
         [TestMethod]
         public void ShouldHaveMessagePostProcessor()
         {
+            Assert.AreEqual(0, Subject.GetMessagePostProcessors.Count, "Post processor is empty");
+
             Subject.AddMessagePostProcessor(E4Band, null);
             Assert.IsFalse(Subject.GetMessagePostProcessors.ContainsKey(E4Band));
 
             Func<object, Task> processor = _ => Task.CompletedTask;
             Subject.AddMessagePostProcessor(E4Band, processor);
             Assert.AreEqual(processor, Subject.GetMessagePostProcessors[E4Band]);
+
+            Func<object, Task> newProcessor = _ => Task.CompletedTask;
+            Subject.AddMessagePostProcessor(E4Band, newProcessor);
+            Assert.AreEqual(newProcessor, Subject.GetMessagePostProcessors[E4Band]);
         }
 
         [TestCleanup]

@@ -66,7 +66,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         }
 
         /// <summary>
-        /// Sets the message post processor from given payload type
+        /// Adds the message post processor from given payload type. If such processor exists for
+        /// given type, it will replace old processor with new processor value
         /// </summary>
         /// <param name="type">A type of payload to set message post processor</param>
         /// <param name="processor">A message post processor to set</param>
@@ -76,7 +77,12 @@ namespace IDEASLabUT.MSBandWearable.Service
             {
                 return;
             }
-            processors.Add(type, processor);
+
+            // Add new processor or replace existing existing processor
+            if (!processors.TryAdd(type, processor))
+            {
+                processors[type] = processor;
+            }
         }
 
         /// <summary>
