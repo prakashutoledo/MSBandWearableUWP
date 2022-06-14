@@ -1,0 +1,10 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.22">
+
+  <PropertyGroup>
+    <TargetFramework>uap10.0.19041</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj" SetTargetFramework="TargetFramework=uap10.0.19041"/>
+  </ItemGroup>
+</Project>

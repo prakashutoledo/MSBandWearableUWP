@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
+using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
+
 namespace IDEASLabUT.MSBandWearable.Util
 {
     public static class WebSocketUtil

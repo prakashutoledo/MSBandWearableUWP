@@ -1,5 +1,4 @@
 ﻿using IDEASLabUT.MSBandWearable.Model.Elasticsearch;
-using IDEASLabUT.MSBandWearable.Model.Notification;
 using IDEASLabUT.MSBandWearable.Service;
 
 using Microsoft.Extensions.Configuration;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 using Windows.ApplicationModel;

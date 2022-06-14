@@ -16,7 +16,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// <param name="webSocketUrl">A webSocket url to connect</param>
         /// <returns>A task that can be awaited</returns>
         Task ConnectAsync(string webSocketUrl);
-        
+
         /// <summary>
         /// A message received callback which will be called once websocket message is received
         /// </summary>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadAction;
-using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
+using static IDEASLabUT.MSBandWearable.UWPCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {

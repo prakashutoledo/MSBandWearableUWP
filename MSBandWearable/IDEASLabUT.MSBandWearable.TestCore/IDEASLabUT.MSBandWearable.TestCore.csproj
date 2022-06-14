@@ -1,0 +1,13 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.22">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;uap10.0.19041</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HyperMock.Universal" Version="2.1.0" Condition="'$(TargetFramework)' == 'uap10.0.19041'"/>
+    <PackageReference Include="HyperMock.Windows" Version="2.1.0" Condition="'$(TargetFramework)' == 'net48'"/>  
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.3"/>
+  </ItemGroup>
+
+</Project>

@@ -7,7 +7,7 @@ namespace IDEASLabUT.MSBandWearable.Converter
     /// <summary>
     /// A converter for converting MS Band temperature sensor value to max of 1 decimal place
     /// </summary>
-    public class TemperatureConverter : IValueConverter
+    public class TemperatureToString : IValueConverter
     {
         /// <summary>
         /// Converts the given heartrate value to given target type to 1 decimal place

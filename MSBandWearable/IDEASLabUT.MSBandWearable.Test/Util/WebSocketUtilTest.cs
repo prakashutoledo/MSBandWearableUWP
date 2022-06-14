@@ -54,14 +54,19 @@ namespace IDEASLabUT.MSBandWearable.Util
         [TestMethod]
         public async Task ShouldParseAndProcess()
         {
-            object receivedMessage = null;
+            EmpaticaE4Band receivedPayload = null;
+            async Task Receive(EmpaticaE4Band message) 
+            {
+                ApplyLatch(() => receivedPayload = message);
+                await Task.CompletedTask;
+            }
+
             var processors = new Dictionary<PayloadType, Func<object, Task>>
             {
                 {
-                    E4Band, processedMessage =>
+                    E4Band, async processedMessage => 
                     {
-                        ApplyLatch(() => receivedMessage = processedMessage);
-                        return Task.CompletedTask;
+                       await Receive((processedMessage as Message<EmpaticaE4Band>).Payload);
                     }
                 }
             };
@@ -71,33 +76,17 @@ namespace IDEASLabUT.MSBandWearable.Util
             WaitFor();
 
             Assert.IsTrue(status, "Message is successfully parsed and processed");
-            var expectedMessage = new EmpaticaE4BandMessage
+            var expectedPayload = new EmpaticaE4Band
             {
-                Payload = new EmpaticaE4Band
+                Device = new Device
                 {
-                    Device = new Device
-                    {
-                        Connected = true,
-                        SerialNumber = "Fake Serial Number"
-                    },
-                    FromView = "Fake View",
-                    SubjectId = "Fake Subject Id",
+                    Connected = true,
+                    SerialNumber = "Fake Serial Number"
                 },
-                PayloadType = E4Band,
-                Action = SendMessage
+                FromView = "Fake View",
+                SubjectId = "Fake Subject Id",
             };
-            VerifyMessage(expectedMessage, receivedMessage);
-        }
-
-        private void VerifyMessage(EmpaticaE4BandMessage expectedMessage, object actualMessage)
-        {
-            Assert.IsNotNull(actualMessage);
-            Assert.IsInstanceOfType(actualMessage, typeof(EmpaticaE4BandMessage));
-            var empaticaMessage = actualMessage as EmpaticaE4BandMessage;
-
-            Assert.AreEqual(expectedMessage.PayloadType, empaticaMessage.PayloadType, "Payload type should match");
-            Assert.AreEqual(expectedMessage.Action, empaticaMessage.Action, "Action should match");
-            AssertPayload(expectedMessage.Payload, empaticaMessage.Payload);
+            AssertPayload(expectedPayload, receivedPayload);
         }
 
         private void AssertPayload(EmpaticaE4Band expected, EmpaticaE4Band actual)

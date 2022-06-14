@@ -1,9 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Model;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 using Windows.ApplicationModel.Core;
@@ -11,10 +6,7 @@ using Windows.UI.Core;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
-    /// <summary>
-    /// Core utility class
-    /// </summary>
-    public static class MSBandWearableCoreUtil
+    public class CoreDispatcherUtil
     {
         /// <summary>
         /// Runs the given priority action in main core dispatcher thread asynchronously. Null action will not be invoked in core dispatcher thread
@@ -35,7 +27,6 @@ namespace IDEASLabUT.MSBandWearable.Util
                 action.Invoke();
                 return;
             }
-
             await coreDispatcher.RunAsync(coreDispatcherPriority, new DispatchedHandler(action));
         }
 
@@ -47,7 +38,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <param name="inputValue">An input value for given action</param>
         /// <param name="coreDispatcherPriority">A core dispatcher priority for invoked action which defaults to normal</param>
         /// <returns>A task that can be awaited</returns>
-        public static async Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal) where T : BaseEvent
+        public static async Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
         {
             await RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority);
         }

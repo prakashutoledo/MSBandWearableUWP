@@ -3,15 +3,15 @@ using Newtonsoft.Json.Serialization;
 
 using System;
 
-namespace IDEASLabUT.MSBandWearable.Util
+namespace IDEASLabUT.MSBandWearable.Extension
 {
     /// <summary>
     /// A utility class which sets default settings for <see cref="JsonConvert"/>
     /// and provides an extension method for json seriliazation and deseriliazation.
     /// </summary>
-    public static class JsonUtil
+    public static class JsonStringExtension
     {
-        static JsonUtil()
+        static JsonStringExtension()
         {
             // Default json converter settings to ignore null value, unknown properties resolving members in camel case
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings

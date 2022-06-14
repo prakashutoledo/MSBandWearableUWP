@@ -14,9 +14,9 @@
 
     <Page.Resources>
         <ResourceDictionary>
-            <converter:GSRConverter x:Key="GSRConverter" />
-            <converter:TemperatureConverter x:Key="TemperatureConverter" />
-            <converter:HeartRateConverter x:Key="HeartRateConverter" />
+            <converter:GsrToString x:Key="GSRConverter" />
+            <converter:TemperatureToString x:Key="TemperatureConverter" />
+            <converter:HeartRateToString x:Key="HeartRateConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Style\Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>

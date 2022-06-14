@@ -7,7 +7,7 @@ namespace IDEASLabUT.MSBandWearable.Converter
     /// <summary>
     /// A converter for converting MS Band HeartRate sensor value to show "--" for heartrate value <= 0 || >= 220
     /// </summary>
-    public class HeartRateConverter : IValueConverter
+    public class HeartRateToString : IValueConverter
     {
         /// <summary>
         /// Converts the given HeartRate value to given target type
@@ -20,8 +20,8 @@ namespace IDEASLabUT.MSBandWearable.Converter
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             return parameter.ToString() == "min"
-                ? ((double)value >= 220) ? "--" : value.ToString()
-                : ((double)value <= 0) ? "--" : value.ToString();
+                ? ((double) value >= 220) ? "--" : value.ToString()
+                : ((double) value <= 0) ? "--" : value.ToString();
         }
 
         /// <summary>

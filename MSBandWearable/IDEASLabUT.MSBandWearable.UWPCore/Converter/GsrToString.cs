@@ -7,7 +7,7 @@ namespace IDEASLabUT.MSBandWearable.Converter
     /// <summary>
     /// A converter for converting MS Band GSR sensor value to max of 5 decimal places
     /// </summary>
-    public class GSRConverter : IValueConverter
+    public class GsrToString : IValueConverter
     {
         /// <summary>
         /// Converts the given GSR value to given target type

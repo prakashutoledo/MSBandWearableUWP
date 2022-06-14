@@ -1,0 +1,11 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.22">
+
+  <PropertyGroup>
+    <TargetFramework>uap10.0.19041</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Band" Version="1.3.20628" />
+  </ItemGroup>
+
+</Project>

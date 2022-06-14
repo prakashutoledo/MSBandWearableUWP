@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Threading.Tasks;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
+using static IDEASLabUT.MSBandWearable.Util.CoreDispatcherUtil;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
@@ -13,8 +13,9 @@ namespace IDEASLabUT.MSBandWearable.Util
     /// Unit test of utility methods
     /// </summary>
     [TestClass]
-    public class MSBandWearableUtilTest : AwaitableTest
+    public class CoreDispatcherUtilTest : AwaitableTest
     {
+        
         [TestMethod]
         public async Task RunLaterInMainThread()
         {

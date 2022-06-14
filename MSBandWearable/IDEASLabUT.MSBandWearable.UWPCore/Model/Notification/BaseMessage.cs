@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-using static IDEASLabUT.MSBandWearable.Util.JsonUtil;
+using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {

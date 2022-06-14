@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,8 +24,8 @@ using Windows.UI.Xaml.Navigation;
 
 using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
 using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
+using static IDEASLabUT.MSBandWearable.Util.CoreDispatcherUtil;
 using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableCoreUtil;
 using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;
 
@@ -101,7 +102,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void SetMessagePostProcessor()
         {
-            SocketService.AddMessagePostProcessor(E4Band, OnEmpaticaE4BandMessageReceived);
+            SocketService.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, OnEmpaticaE4BandMessageReceived);
         }
 
         /// <summary>
@@ -210,11 +211,12 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <summary>
         /// A callback for Empatica E4 Band webSocket message received
         /// </summary>
-        /// <param name="message">A webSocket message containing Empatica E4 Band details</param>
+        /// <param name="empaticaE4Band">A webSocket message containing Empatica E4 Band details</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task OnEmpaticaE4BandMessageReceived(object message)
+        private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
         {
-            var empaticaE4Band = (message as EmpaticaE4BandMessage).Payload;
+            Trace.WriteLine("Received");
+            Trace.WriteLine(empaticaE4Band);
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
             SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
 
@@ -302,8 +304,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="navigationEventArgs">A navigation event arguments</param>
         protected override async void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
-            await Task.CompletedTask;
             base.OnNavigatedTo(navigationEventArgs);
+            await Task.CompletedTask;
         }
 
         /// <summary>

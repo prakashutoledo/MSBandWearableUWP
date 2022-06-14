@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 
 using static IDEASLabUT.MSBandWearable.Model.Notification.Utf8MessageWebSocket;
-using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
+using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 using static IDEASLabUT.MSBandWearable.Util.WebSocketUtil;
 
 namespace IDEASLabUT.MSBandWearable.Service
@@ -71,17 +71,19 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// </summary>
         /// <param name="type">A type of payload to set message post processor</param>
         /// <param name="processor">A message post processor to set</param>
-        public void AddMessagePostProcessor(PayloadType type, Func<object, Task> processor)
+        public void AddMessagePostProcessor<Payload>(PayloadType type, Func<Payload, Task> processor) where Payload : IPayload
         {
             if (processor == null)
             {
                 return;
             }
 
+            Func<object, Task> newProcessor = (message) => processor.Invoke((message as Message<Payload>).Payload);
             // Add new processor or replace existing existing processor
-            if (!processors.TryAdd(type, processor))
+
+            if (!processors.TryAdd(type, newProcessor))
             {
-                processors[type] = processor;
+                processors[type] = newProcessor;
             }
         }
 
