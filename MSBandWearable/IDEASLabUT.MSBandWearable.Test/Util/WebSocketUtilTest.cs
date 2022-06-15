@@ -1,5 +1,4 @@
 ﻿using IDEASLabUT.MSBandWearable.Model.Notification;
-using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadAction;
 using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
 using static IDEASLabUT.MSBandWearable.Util.WebSocketUtil;
 
@@ -17,7 +15,7 @@ namespace IDEASLabUT.MSBandWearable.Util
     /// Unit test for <see cref="WebSocketUtil"/>
     /// </summary>
     [TestClass]
-    public class WebSocketUtilTest : AwaitableTest
+    public class WebSocketUtilTest
     {
         [TestMethod]
         public void ValidateSupportedNotificationTypeMap()
@@ -55,9 +53,9 @@ namespace IDEASLabUT.MSBandWearable.Util
         public async Task ShouldParseAndProcess()
         {
             EmpaticaE4Band receivedPayload = null;
-            async Task Receive(EmpaticaE4Band message) 
+            async Task Receive(EmpaticaE4Band message)
             {
-                ApplyLatch(() => receivedPayload = message);
+                receivedPayload = message;
                 await Task.CompletedTask;
             }
 
@@ -73,8 +71,7 @@ namespace IDEASLabUT.MSBandWearable.Util
 
             var jsonMessage = "{\"payload\":{\"payloadType\":\"E4Band\",\"subjectId\":\"Fake Subject Id\",\"fromView\":\"Fake View\",\"device\":{\"serialNumber\":\"Fake Serial Number\",\"connected\":true}},\"action\":\"sendMessage\",\"payloadType\":\"E4Band\"}";
             var status = await ParseMessageAndProcess(jsonMessage, processors);
-            WaitFor();
-
+   
             Assert.IsTrue(status, "Message is successfully parsed and processed");
             var expectedPayload = new EmpaticaE4Band
             {

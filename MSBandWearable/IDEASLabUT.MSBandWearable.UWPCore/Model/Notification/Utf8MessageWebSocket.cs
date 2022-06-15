@@ -9,7 +9,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
     /// <summary>
     /// A message web socket which handles utf8 string webSocket message
     /// </summary>
-    public class Utf8MessageWebSocket : IUtf8MessageWebSocket
+    internal class Utf8MessageWebSocket : IUtf8MessageWebSocket
     {
         /// <summary>
         /// Supplies the new instance of <see cref="IUtf8MessageWebSocket"/>
@@ -17,6 +17,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         public static Func<IUtf8MessageWebSocket> SocketSupplier = () => new Utf8MessageWebSocket();
 
         private readonly MessageWebSocket messageWebSocket;
+        private Func<string, Task> onMessageReceived;
 
         /// <summary>
         /// Creates a new instance of <see cref="Utf8MessageWebSocket"/>
@@ -31,7 +32,11 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// <summary>
         /// A message received callback which will be called once websocket message is received
         /// </summary>
-        public Func<string, Task> OnMessageReceived { get; set; }
+        public Func<string, Task> OnMessageReceived 
+        {
+            get => onMessageReceived; 
+            set => onMessageReceived = value; 
+        }
 
         /// <summary>
         /// A websocket message writer to send utf-8 string message
@@ -67,11 +72,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
             {
                 dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
                 var message = dataReader.ReadString(dataReader.UnconsumedBufferLength);
-
-                if (OnMessageReceived != null)
-                {
-                    await OnMessageReceived.Invoke(message);
-                }
+                await onMessageReceived?.Invoke(message);
             }
         }
 

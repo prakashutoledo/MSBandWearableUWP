@@ -15,12 +15,12 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// <summary>
     /// A service class for managing webSocket connection details using <see cref="MessageWebSocket"/>
     /// </summary>
-    public class WebSocketService : IWebSocketService
+    public sealed class WebSocketService : IWebSocketService
     {
-        private static readonly Lazy<WebSocketService> Instance = new Lazy<WebSocketService>(() => new WebSocketService());
+        private static readonly Lazy<IWebSocketService> Instance = new Lazy<IWebSocketService>(() => new WebSocketService());
 
         // Lazy singleton pattern
-        public static WebSocketService Singleton => Instance.Value;
+        internal static IWebSocketService Singleton => Instance.Value;
 
         private IUtf8MessageWebSocket messageWebSocket;
         private readonly Dictionary<PayloadType, Func<object, Task>> processors;
@@ -46,7 +46,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task Connect(string webSocketUrl, Func<bool, Task> continueWith = null)
         {
             messageWebSocket = SocketSupplier.Invoke();
-            messageWebSocket.OnMessageReceived = message => ParseMessageAndProcess(message, GetMessagePostProcessors);
+            Task OnMessageReceived(string message) => ParseMessageAndProcess(in message, GetMessagePostProcessors);
+            messageWebSocket.OnMessageReceived = OnMessageReceived;
             await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWithStatusSupplier(continueWith);
         }
 
@@ -78,12 +79,12 @@ namespace IDEASLabUT.MSBandWearable.Service
                 return;
             }
 
-            Func<object, Task> newProcessor = (message) => processor.Invoke((message as Message<Payload>).Payload);
-            // Add new processor or replace existing existing processor
+            Task GenericProcessor(object message) => processor.Invoke((message as Message<Payload>).Payload);
 
-            if (!processors.TryAdd(type, newProcessor))
+            // Add new processor or replace existing existing processor
+            if (!processors.TryAdd(type, GenericProcessor))
             {
-                processors[type] = newProcessor;
+                processors[type] = GenericProcessor;
             }
         }
 

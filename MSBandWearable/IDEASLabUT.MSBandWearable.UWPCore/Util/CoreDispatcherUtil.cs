@@ -6,6 +6,9 @@ using Windows.UI.Core;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
+    /// <summary>
+    /// Core dispatcher thread utility class to provide action to run in core dispatcher thread
+    /// </summary>
     public class CoreDispatcherUtil
     {
         /// <summary>

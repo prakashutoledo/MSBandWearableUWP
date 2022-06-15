@@ -192,6 +192,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Common\IDEASLabUT.MSBandWearable.Common.csproj">
+      <Project>{421b333e-30fe-4245-830a-897b05c68a61}</Project>
+      <Name>IDEASLabUT.MSBandWearable.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Core\IDEASLabUT.MSBandWearable.Core.csproj">
       <Project>{11fc93b7-ba88-4ad7-b234-1fe3f24357b7}</Project>
       <Name>IDEASLabUT.MSBandWearable.Core</Name>

@@ -30,7 +30,7 @@ namespace IDEASLabUT.MSBandWearable.Service
             Utf8MessageWebSocket.SocketSupplier = () => MockValue<IUtf8MessageWebSocket>();
             continueWith = (status) =>
             {
-                ApplyLatch(() => actualStatus = status);
+                actualStatus = status;
                 return Task.CompletedTask;
             };
         }
@@ -57,7 +57,6 @@ namespace IDEASLabUT.MSBandWearable.Service
 
             actualStatus = false;
             await Subject.SendMessage(expectedMessage, continueWith);
-            WaitFor();
 
             randomAccessStream.Seek(0);
             using (var streamReader = new StreamReader(randomAccessStream.AsStreamForRead()))
@@ -71,7 +70,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         [TestMethod]
         public void ShouldHaveMessagePostProcessor()
         {
-           /*
+           
             Assert.AreEqual(0, Subject.GetMessagePostProcessors.Count, "Post processor is empty");
 
             Subject.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, null);
@@ -79,12 +78,12 @@ namespace IDEASLabUT.MSBandWearable.Service
 
             Func<EmpaticaE4Band, Task> processor = _ => Task.CompletedTask;
             Subject.AddMessagePostProcessor(E4Band, processor);
-            Assert.AreEqual(processor, Subject.GetMessagePostProcessors[E4Band]);
+            Assert.IsTrue(Subject.GetMessagePostProcessors.ContainsKey(E4Band));
 
             Func<EmpaticaE4Band, Task> newProcessor = _ => Task.CompletedTask;
+            var oldProcessor = Subject.GetMessagePostProcessors[E4Band];
             Subject.AddMessagePostProcessor(E4Band, newProcessor);
-            Assert.AreEqual(newProcessor, Subject.GetMessagePostProcessors[E4Band]);
-           */
+            Assert.AreNotEqual(newProcessor, Subject.GetMessagePostProcessors[E4Band]);
         }
 
         [TestCleanup]
@@ -103,7 +102,6 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
             MockFor<IUtf8MessageWebSocket>(mockMessage => mockMessage.Setup(message => message.ConnectAsync(fakeUrl)).Returns(task));
             await Subject.Connect(fakeUrl, continueWith);
-            WaitFor();
         }
 
         /// <summary>

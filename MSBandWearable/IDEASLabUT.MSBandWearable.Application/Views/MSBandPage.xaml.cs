@@ -40,7 +40,7 @@ namespace IDEASLabUT.MSBandWearable.Views
     {
         private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
         private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
-        private IWebSocketService SocketService { get; } = WebSocketService.Singleton;
+        private IWebSocketService WebSocketService { get; } = ServiceFactory.GetWebSocketService;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
         private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
@@ -102,7 +102,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void SetMessagePostProcessor()
         {
-            SocketService.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, OnEmpaticaE4BandMessageReceived);
+            WebSocketService.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, OnEmpaticaE4BandMessageReceived);
         }
 
         /// <summary>
@@ -112,8 +112,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="eventArgs">An event arguments</param>
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
         {
-            SocketService.Close();
-            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
+            WebSocketService.Close();
+            await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
         }
 
         /// <summary>
@@ -425,7 +425,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             });
 
             await NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
-            await SocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
+            await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
 
             GsrTimer.Start();
             WebSocketTimer.Start();

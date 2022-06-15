@@ -8,12 +8,12 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// <summary>
     /// A MS Band 2 client service to connect to band and subscribe available supported sensors using <see cref="IBandClientManager"/>
     /// </summary>
-    public class MSBandClientService : IBandClientService
+    public sealed class MSBandClientService : IBandClientService
     {
         private static readonly Lazy<MSBandClientService> Instance = new Lazy<MSBandClientService>(() => new MSBandClientService(BandClientManager.Instance));
 
         // Lazy singleton pattern
-        public static MSBandClientService Singleton => Instance.Value;
+        internal static MSBandClientService Singleton => Instance.Value;
 
         private readonly IBandClientManager bandClientManager;
 

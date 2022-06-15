@@ -1,4 +1,4 @@
-﻿namespace IDEASLabUT.MSBandWearable.Util
+﻿namespace IDEASLabUT.MSBandWearable.Extension
 {
     /// <summary>
     /// A utility class for string manipulation extension methods
