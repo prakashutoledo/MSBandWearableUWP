@@ -51,7 +51,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
             var jsonBody = await new StreamReader(contentStream).ReadToEndAsync();
-            return await elasticsearchRestClient.BulkRequestAsync(requestUri, jsonBody, new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetSection(ElasticsearchAuthenticationJsonKey).Value));
+            return await elasticsearchRestClient.BulkRequestAsync(
+                requestUri,
+                jsonBody,
+                new AuthenticationHeaderValue(BasicAuthorization, applicationProperties.GetSection(ElasticsearchAuthenticationJsonKey).Value)
+            );
         }
 
         /// <inheritdoc />

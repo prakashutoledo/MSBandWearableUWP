@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿/*
+ * Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+ */
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel

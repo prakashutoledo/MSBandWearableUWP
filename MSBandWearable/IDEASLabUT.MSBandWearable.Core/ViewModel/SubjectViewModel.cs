@@ -1,4 +1,7 @@
-﻿namespace IDEASLabUT.MSBandWearable.ViewModel
+﻿/*
+ * Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+ */
+namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
     /// View model for subject id running IOS application,

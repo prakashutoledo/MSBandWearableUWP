@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("IDEASLabUT.MSBandWearable.Extension")]
@@ -17,7 +16,5 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.Extension.Test")]
 
 [assembly: Guid("091b4e93-173a-40e1-ab7a-ff026d08022c")]

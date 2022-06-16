@@ -40,7 +40,7 @@ namespace IDEASLabUT.MSBandWearable.Views
     {
         private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
         private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
-        private IWebSocketService WebSocketService { get; } = ServiceFactory.GetWebSocketService;
+        private IWebSocketService WebSocketService { get; } = ServiceFactory.Singleton.GetWebSocketService;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
         private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
