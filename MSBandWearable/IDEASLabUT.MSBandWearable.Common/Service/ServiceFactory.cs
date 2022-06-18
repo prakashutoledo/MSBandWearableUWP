@@ -12,23 +12,20 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// </summary>
         private sealed class ServiceFactoryImpl : ServiceFactory
         {
-            private readonly IWebSocketService webSocketService;
-            private readonly IBandClientService bandClientService;
-
             /// <summary>
             /// Creates a new instance of <see cref="ServiceFactoryImpl"/>
             /// </summary>
             public ServiceFactoryImpl()
             {
-                webSocketService = WebSocketService.Singleton;
-                bandClientService = MSBandClientService.Singleton;
+                GetWebSocketService = WebSocketService.Singleton;
+                GetBandClientService = MSBandClientService.Singleton;
             }
 
             /// <inheritdoc/>
-            public override sealed IWebSocketService GetWebSocketService => webSocketService;
+            public sealed override IWebSocketService GetWebSocketService { get; }
 
             /// <inheritdoc/>
-            public override sealed IBandClientService GetBandClientService => bandClientService;
+            public override sealed IBandClientService GetBandClientService { get; }
         }
 
         private static readonly Lazy<ServiceFactory> serviceFactoryInstance;

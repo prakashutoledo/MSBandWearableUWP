@@ -14,42 +14,42 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// The current status of the connected MS Band 2
         /// </summary>
-        BandStatus BandStatus { get; set; }
+        BandStatus BandStatus { get; }
 
         /// <summary>
         /// The unique name of the connected MS Band 2
         /// </summary>
-        string BandName { get; set; }
+        string BandName { get; }
 
         /// <summary>
         /// An accelerometer sensor of the connected MS Band 2
         /// </summary>
-        AccelerometerSensor Accelerometer { get; set; }
+        AccelerometerSensor Accelerometer { get; }
 
         /// <summary>
         /// A gsr sensor of the connected MS Band 2
         /// </summary>
-        GSRSensor Gsr { get; set; }
+        GSRSensor Gsr { get; }
 
         /// <summary>
         /// A gyroscope sensor of the connected MS Band 2
         /// </summary>
-        GyroscopeSensor Gyroscope { get; set; }
+        GyroscopeSensor Gyroscope { get; }
 
         /// <summary>
         /// A heart rate sensor of the connected MS Band 2
         /// </summary>
-        HeartRateSensor HeartRate { get; set; }
+        HeartRateSensor HeartRate { get; }
 
         /// <summary>
         /// A temperature sensor of the connected MS Band 2
         /// </summary>
-        TemperatureSensor Temperature { get; set; }
+        TemperatureSensor Temperature { get; }
 
         /// <summary>
         /// A rr interval sensor of the connected MS Band 2
         /// </summary>
-        RRIntervalSensor RRInterval { get; set; }
+        RRIntervalSensor RRInterval { get; }
 
         /// Connects the given selected index from the available paired MS bands with given name
         /// </summary>

@@ -13,7 +13,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// A connected MS Band 2 client 
         /// </summary>
-        IBandClient BandClient { get; set; }
+        IBandClient BandClient { get; }
 
         /// <summary>
         /// Connects the given selected index from the available paired MS bands

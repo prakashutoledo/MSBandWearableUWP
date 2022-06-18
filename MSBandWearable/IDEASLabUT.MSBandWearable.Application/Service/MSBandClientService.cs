@@ -35,7 +35,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// A connected MS Band 2 client
         /// </summary>
-        public IBandClient BandClient { get; set; }
+        public IBandClient BandClient { get; private set; }
 
         /// <summary>
         /// Connects the given selected index from the available paired MS bands
@@ -44,8 +44,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(string bandName)
         {
-            var pairedBands = await bandClientManager.GetBandsAsync();
-            if (pairedBands == null)
+            var pairedBands = await bandClientManager.GetBandsAsync(true);
+            if (pairedBands == null || !pairedBands.Any())
             {
                 return;
             }
@@ -59,7 +59,15 @@ namespace IDEASLabUT.MSBandWearable.Service
             }
 
             var toConnect = pairedBands.FirstOrDefault(PairedBandConnectionPredicate);
-            BandClient = await bandClientManager.ConnectAsync(toConnect);
+
+            try
+            {
+                BandClient = await bandClientManager.ConnectAsync(toConnect);
+            }
+            catch(BandIOException bie)
+            {
+                await Task.FromException(bie);
+            }
         }
     }
 }

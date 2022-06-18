@@ -13,6 +13,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 using Windows.System;
@@ -38,6 +39,8 @@ namespace IDEASLabUT.MSBandWearable.Views
     /// </summary>
     public sealed partial class MSBandPage
     {
+        private static readonly SolidColorBrush ColorBrush = new SolidColorBrush();
+
         private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
         private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
         private IWebSocketService WebSocketService { get; } = ServiceFactory.Singleton.GetWebSocketService;
@@ -50,8 +53,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         public ChartValues<DateTimeModel> GsrDataPoint { get; } = new ChartValues<DateTimeModel>();
         public ChartValues<DateTimeModel> IbiDataPoint { get; } = new ChartValues<DateTimeModel>();
 
-        private double gsrValue;
-
         /// <summary>
         /// Initializes a new instance of <see cref="MSBandPage"/>
         /// </summary>
@@ -62,6 +63,12 @@ namespace IDEASLabUT.MSBandWearable.Views
             AddDispatchTimersTickIntervals();
             AddSensorValueChangedHandlers();
             SetMessagePostProcessor();
+            SetColorBrush();
+        }
+
+        private void SetColorBrush()
+        {
+            heartRatePath.Fill = ColorBrush;
         }
 
         /// <summary>
@@ -93,7 +100,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         private void AddSensorValueChangedHandlers()
         {
             BandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
-            BandManagerService.Gsr.SensorModelChanged = GsrSensorValueChanged;
             BandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
         }
 
@@ -124,12 +130,13 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="eventArgs">An event arguments</param>
         private async void GsrTimerOnTick(object sender, object eventArgs)
         {
+            
             await RunLaterInUIThread(() =>
             {
                 GsrDataPoint.Add(new DateTimeModel
                 {
                     DateTime = DateTime.Now.Ticks,
-                    Value = gsrValue
+                    Value = BandManagerService.Gsr.Model.Gsr
                 });
 
                 if (GsrDataPoint.Count > 20)
@@ -137,6 +144,7 @@ namespace IDEASLabUT.MSBandWearable.Views
                     GsrDataPoint.RemoveAt(0);
                 }
             });
+            
         }
 
         /// <summary>
@@ -162,29 +170,14 @@ namespace IDEASLabUT.MSBandWearable.Views
         }
 
         /// <summary>
-        /// An async callback for MSBand GSR sensor value change event to run in ui dispatch thread
-        /// </summary>
-        /// <param name="value">A new GSR event value</param>
-        /// <returns>A task that can be awaited</returns>
-        private async Task GsrSensorValueChanged(GSREvent value)
-        {
-            await RunLaterInUIThread(() =>
-            {
-                gsrValue = value.Gsr;
-            });
-        }
-
-        /// <summary>
         /// An async callback for MSBand heart rate sensor value change event to run in a ui dispatch thread
         /// </summary>
-        /// <param name="value">A new heart rate event value</param>
+        /// <param name="_">A new heart rate event value</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task HeartRateSensorValueChanged(HeartRateEvent value)
+        private async Task HeartRateSensorValueChanged(HeartRateEvent _)
         {
-            await RunLaterInUIThread(() =>
-            {
-                heartRatePath.Fill = new SolidColorBrush(Locked == BandManagerService.HeartRate.HeartRateStatus ? White : Transparent);
-            });
+            var heartRateStatus = BandManagerService.HeartRate.HeartRateStatus;
+            await RunLaterInUIThread(() => ColorBrush.Color = heartRateStatus == Locked ? White : Transparent);
         }
 
         /// <summary>
@@ -215,8 +208,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <returns>A task that can be awaited</returns>
         private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
         {
-            Trace.WriteLine("Received");
-            Trace.WriteLine(empaticaE4Band);
             SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
             SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
 
@@ -374,14 +365,13 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="changedEventArgs">A selected changed event arguments</param>
         private async void BandSelectionChanged(object sender, SelectionChangedEventArgs changedEventArgs)
         {
-            await ConnectBand(availableBandComboBox.SelectedValue.ToString());
+            await ConnectBand((sender as ComboBox).SelectedValue.ToString());
         }
 
         /// <summary>
         /// Connects the band with given index and name
         /// </summary>
         /// <param name="bandName">A name of selected band to connect</param>
-        /// <param name="selectedIndex">An index of selected band to connect</param>
         /// <returns>A task that can be awaited</returns>
         private async Task ConnectBand(string bandName)
         {
@@ -390,12 +380,25 @@ namespace IDEASLabUT.MSBandWearable.Views
             commandBar.IsEnabled = false;
 
             await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
-            // TODO
-            // Remove this clumsy catching exception
-            // Use band status to solve the issue
+            await BandManagerService.ConnectBand(bandName);
+
+            switch (BandManagerService.BandStatus)
+            {
+                case BandStatus.Connected:
+                    await StartDashboard();
+                    break;
+                case BandStatus.Subscribed:
+                    break;
+                case BandStatus.UnSubscribed:
+                    break;
+                case BandStatus.Error:
+                    break;
+                case BandStatus.UNKNOWN:
+                    break;
+            }
             try
             {
-                await BandManagerService.ConnectBand(bandName);
+                //await BandManagerService.ConnectBand(bandName);
             }
             catch (BandAccessDeniedException)
             {
@@ -421,7 +424,7 @@ namespace IDEASLabUT.MSBandWearable.Views
                 }
                 else
                 {
-                    await StartDashboard();
+                    //await StartDashboard();
                 }
             }
         }

@@ -55,67 +55,81 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// The current status of the connected MS Band 2
         /// </summary>
-        public BandStatus BandStatus { get; set; }
+        public BandStatus BandStatus { get; private set; }
 
         /// <summary>
         /// The unique name of the connected MS Band 2
         /// </summary>
-        public string BandName { get; set; }
+        public string BandName { get; private set; }
 
         /// <summary>
         /// An accelerometer sensor of the connected MS Band 2
         /// </summary>
-        public AccelerometerSensor Accelerometer { get; set; }
+        public AccelerometerSensor Accelerometer { get; }
 
         /// <summary>
         /// A gsr sensor of the connected MS Band 2
         /// </summary>
-        public GSRSensor Gsr { get; set; }
+        public GSRSensor Gsr { get; }
 
         /// <summary>
         /// A gyroscope sensor of the connected MS Band 2
         /// </summary>
-        public GyroscopeSensor Gyroscope { get; set; }
+        public GyroscopeSensor Gyroscope { get; }
 
         /// <summary>
         /// A heart rate sensor of the connected MS Band 2
         /// </summary>
-        public HeartRateSensor HeartRate { get; set; }
+        public HeartRateSensor HeartRate { get; }
 
         /// <summary>
         /// A temperature sensor of the connected MS Band 2
         /// </summary>
-        public TemperatureSensor Temperature { get; set; }
+        public TemperatureSensor Temperature { get; }
 
         /// <summary>
         /// A rr interval sensor of the connected MS Band 2
         /// </summary>
-        public RRIntervalSensor RRInterval { get; set; }
+        public RRIntervalSensor RRInterval { get; }
 
         /// Connects the given selected index from the available paired MS bands with given name
         /// </summary>
         /// <param name="selectedIndex">A selected index of a paired bands</param>
         /// <param name="bandName">A name of the band to connect</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task ConnectBand(string bandName)
+        public Task ConnectBand(string bandName)
         {
-            BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
-            await msBandService.ConnectBand(bandName)
-                .ContinueWithSupplier(connectTask =>  ToBandStatusTask(connectTask))
-                .ContinueWithAction(bandStatus => BandStatus = bandStatus);
+            if (bandName == null)
+            {
+                return Task.FromException(new ArgumentNullException(nameof(bandName)));
+            }
+
+            return msBandService.ConnectBand(bandName)
+                .ContinueWithSupplier(connectTask => ToBandStatusTask(connectTask))
+                .ContinueWithAction(bandStatus => BandStatus = bandStatus)
+                .ContinueWithAction(() => BandName = bandName);
         }
 
         /// <summary>
         /// Subscribe all available sensors of connected MS Band 2 client
         /// </summary>
         /// <returns>A task that can be awaited</returns>
-        public async Task SubscribeSensors()
+        public Task SubscribeSensors()
         {
-            await Task.WhenAll(Accelerometer.Subscribe(), Gsr.Subscribe(), Gyroscope.Subscribe(), HeartRate.Subscribe(), RRInterval.Subscribe(), Temperature.Subscribe())
-                    .ContinueWithStatus()
-                    .ContinueWithSupplier(subscribeTask => VibrateAndSubscriptionStatus(subscribeTask))
-                    .ContinueWithAction(bandStatus => BandStatus = bandStatus);
+            var subscriptionTasks = Task.WhenAll(
+                Accelerometer.Subscribe(),
+                Gsr.Subscribe(),
+                Gyroscope.Subscribe(),
+                HeartRate.Subscribe(),
+                RRInterval.Subscribe(),
+                Temperature.Subscribe()
+           );
+
+           return subscriptionTasks.ContinueWithStatus()
+                .ContinueWithSupplier(subscribeTask => VibrateAndSubscribe(subscribeTask))
+                .ContinueWithAction(bandStatus => BandStatus = bandStatus);
         }
+
 
         /// <summary>
         /// Find all the MS Band 2 clients which are paired using bluetooth
@@ -124,7 +138,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task<IEnumerable<string>> GetPairedBands()
         {
             var devices = await DeviceInformation.FindAllAsync(BluetoothDevice.GetDeviceSelectorFromPairingState(true));
-            return devices.Where(device => device.Name.StartsWith(MSBandNamePrefix)).Select(device => device.Name);
+            return devices.Select(device => device.Name).Where(deviceName => deviceName.StartsWith(MSBandNamePrefix));
         }
 
         private Task<BandStatus> ToBandStatusTask(Task task)
@@ -132,12 +146,12 @@ namespace IDEASLabUT.MSBandWearable.Service
             return Task.FromResult(task.IsCompletedWithSuccess() ? Connected : Error);
         }
 
-        private Task<BandStatus> VibrateAndSubscriptionStatus(Task<bool> subscriptionTask)
+        private Task<BandStatus> VibrateAndSubscribe(Task<bool> subscriptionTask)
         {
             if (subscriptionTask.IsCompletedWithSuccess() && subscriptionTask.Result)
             {
                 var notificationManager = msBandService.BandClient.NotificationManager;
-                return notificationManager.VibrateAsync(NotificationTwoTone).ContinueWith(task => Task.FromResult(Subscribed)).Unwrap();
+                return notificationManager.VibrateAsync(NotificationTwoTone).ContinueWithSupplier(task => Task.FromResult(Subscribed));
             }
             return Task.FromResult(Error);
         }

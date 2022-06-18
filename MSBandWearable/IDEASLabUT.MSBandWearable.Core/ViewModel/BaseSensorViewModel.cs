@@ -11,9 +11,9 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 
-using static Microsoft.Band.UserConsent;
 using static IDEASLabUT.MSBandWearable.Util.CoreDispatcherUtil;
-using System.Diagnostics;
+using static Microsoft.Band.UserConsent;
+using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
@@ -105,8 +105,34 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             }
 
             sensor.ReadingChanged += OnBandSensorReadingChanged;
-            var startReadingStatus =  await sensor.StartReadingsAsync();
-            return startReadingStatus;
+            return await sensor.StartReadingsAsync();
+        }
+
+        public Task<bool> Unsubscribe()
+        {
+            var sensor = GetBandSensor();
+            if (sensor == null)
+            {
+                return Task.FromResult(false);
+            }
+            return sensor.StopReadingsAsync().ContinueWithStatus();
+        }
+
+        private IBandSensor<SensorReading> GetBandSensor()
+        {
+            if (msBandService.BandClient == null)
+            {
+                return null;
+            }
+
+            var sensorManager = msBandService.BandClient.SensorManager;
+
+            if (sensorManager == null)
+            {
+                return null;
+            }
+
+            return bandSensorSupplier.Invoke(sensorManager);
         }
 
         /// <summary>
@@ -123,9 +149,17 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
                 return;
             }
 
-            await RunLaterInUIThread(() => UpdateModelAndNotifyChange(in sensorReading));
+            Model.FromView = subjectViewService.CurrentView;
+            Model.AcquiredTime = ntpSyncService.LocalTimeNow;
+            Model.ActualTime = sensorReading.Timestamp.DateTime;
+            Model.SubjectId = subjectViewService.SubjectId;
 
-            Trace.WriteLine(Model);
+            await RunLaterInUIThread(() =>
+            {
+                UpdateSensorModel(in sensorReading);
+                NotifyPropertyChanged(nameof(Model));
+            });
+
             if (subjectViewService.SessionInProgress)
             {
                 logger.Information($"{{{SensorType.GetName()}}}", Model);
@@ -135,16 +169,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             {
                 await SensorModelChanged.Invoke(Model);
             }
-        }
-
-        private void UpdateModelAndNotifyChange(in SensorReading sensorReading)
-        {
-            Model.FromView = subjectViewService.CurrentView;
-            Model.AcquiredTime = ntpSyncService.LocalTimeNow;
-            Model.ActualTime = sensorReading.Timestamp.DateTime;
-            Model.SubjectId = subjectViewService.SubjectId;
-            UpdateSensorModel(in sensorReading);
-            NotifyPropertyChanged(nameof(Model));
         }
     }
 }
