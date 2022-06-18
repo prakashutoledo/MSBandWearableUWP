@@ -1,4 +1,7 @@
-﻿namespace IDEASLabUT.MSBandWearable.Util
+﻿/*
+ * Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+ */
+namespace IDEASLabUT.MSBandWearable.Util
 {
     /// <summary>
     /// A utility class for string manipulation extension methods

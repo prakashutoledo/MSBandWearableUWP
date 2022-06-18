@@ -12,6 +12,8 @@ using System;
 using System.Threading.Tasks;
 
 using static Microsoft.Band.UserConsent;
+using static IDEASLabUT.MSBandWearable.Util.CoreDispatcherUtil;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
@@ -25,8 +27,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// <typeparam name="SensorReading">A parameter of type <see cref="IBandSensorReading"/></typeparam>
     public abstract class BaseSensorViewModel<SensorEvent, SensorReading> : BaseViewModel where SensorEvent : BaseEvent, new() where SensorReading : IBandSensorReading
     {
-        private readonly SensorEvent model;
-        private readonly SensorType sensorType;
         private readonly ILogger logger;
         private readonly ISubjectViewService subjectViewService;
         private readonly INtpSyncService ntpSyncService;
@@ -50,8 +50,8 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             this.subjectViewService = subjectViewService ?? throw new ArgumentNullException(nameof(subjectViewService));
             this.ntpSyncService = ntpSyncService ?? throw new ArgumentNullException(nameof(ntpSyncService));
             this.bandSensorSupplier = bandSensorSupplier ?? throw new ArgumentNullException(nameof(bandSensorSupplier));
-            this.sensorType = sensorType ?? throw new ArgumentNullException(nameof(sensorType));
-            model = new SensorEvent();
+            SensorType = sensorType ?? throw new ArgumentNullException(nameof(sensorType));
+            Model = new SensorEvent();
         }
 
         /// <summary>
@@ -64,16 +64,13 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <summary>
         /// A current sensor model holding data for MS Band 2 sensor
         /// </summary>
-        public SensorEvent Model
-        {
-            get => model;
-        }
+        public SensorEvent Model { get; }
 
         /// <summary>
         /// A current sensor type
         /// </summary>
-        public SensorType SensorType => sensorType;
-        
+        public SensorType SensorType { get; }
+
         /// <summary>
         /// A callback for a change in MS band 2 sensor reading
         /// </summary>
@@ -89,6 +86,11 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <returns>A task that can be awaited which determines if we can read sensor</returns>
         public async Task<bool> Subscribe()
         {
+            if (msBandService.BandClient == null)
+            {
+                return false;
+            }
+
             var sensorManager = msBandService.BandClient.SensorManager;
             if (sensorManager == null)
             {
@@ -121,11 +123,12 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
                 return;
             }
 
-            UpdateModelAndNotifyChange(in sensorReading);
+            await RunLaterInUIThread(() => UpdateModelAndNotifyChange(in sensorReading));
 
+            Trace.WriteLine(Model);
             if (subjectViewService.SessionInProgress)
             {
-                logger.Information($"{{{sensorType.GetName()}}}", Model);
+                logger.Information($"{{{SensorType.GetName()}}}", Model);
             }
 
             if (SensorModelChanged != null)
@@ -140,7 +143,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             Model.AcquiredTime = ntpSyncService.LocalTimeNow;
             Model.ActualTime = sensorReading.Timestamp.DateTime;
             Model.SubjectId = subjectViewService.SubjectId;
-
             UpdateSensorModel(in sensorReading);
             NotifyPropertyChanged(nameof(Model));
         }

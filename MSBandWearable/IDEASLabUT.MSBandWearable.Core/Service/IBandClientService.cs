@@ -1,4 +1,5 @@
-﻿using Microsoft.Band;
+﻿
+using Microsoft.Band;
 
 using System.Threading.Tasks;
 
@@ -17,8 +18,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// Connects the given selected index from the available paired MS bands
         /// </summary>
-        /// <param name="selectedIndex">A selected index of a paired bands</param>
+        /// <param name="bandName">A MS band name to connect</param>
         /// <returns>A task that can be awaited</returns>
-        Task ConnectBand(int selectedIndex);
+        Task ConnectBand(string bandName);
     }
 }

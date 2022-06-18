@@ -53,10 +53,9 @@ namespace IDEASLabUT.MSBandWearable.Service
 
         /// Connects the given selected index from the available paired MS bands with given name
         /// </summary>
-        /// <param name="selectedIndex">A selected index of a paired bands</param>
         /// <param name="bandName">A name of the band to connect</param>
         /// <returns>A task that can be awaited</returns>
-        Task ConnectBand(int selectedIndex, string bandName);
+        Task ConnectBand(string bandName);
 
         /// <summary>
         /// Subscribe all available sensors of connected MS Band 2

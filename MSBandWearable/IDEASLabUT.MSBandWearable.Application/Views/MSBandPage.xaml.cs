@@ -140,7 +140,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         }
 
         /// <summary>
-        /// An async callback for MSBand rr interval sensor value change to run in ui dispatch thread
+        /// An async callback for MSBand RR interval sensor value change to run in ui dispatch thread
         /// </summary>
         /// <param name="value">A new rrinterval event value</param>
         /// <returns>A task that can be awaited</returns>
@@ -270,7 +270,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="command">A ui command that has been inkoked</param>
         private async void CommandInvokedHandler(IUICommand command)
         {
-            switch ((int)command.Id)
+            switch ((int) command.Id)
             {
                 case 1:
                     _ = await Launcher.LaunchUriAsync(new Uri("ms-settings:bluetooth"));
@@ -305,6 +305,25 @@ namespace IDEASLabUT.MSBandWearable.Views
         protected override async void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             base.OnNavigatedTo(navigationEventArgs);
+            await Task.CompletedTask;
+            var test = new EmpaticaE4BandMessage
+            {
+                Payload = new EmpaticaE4Band
+                {
+                    Device = new Device
+                    {
+                        Connected = true,
+                        SerialNumber = "Fake Number1"
+                    },
+                    FromView = "Fake View11",
+                    SubjectId = "Fake Id"
+                },
+                PayloadType = E4Band,
+                Action = PayloadAction.SendMessage
+            };
+            Func<bool, Task> test1 = (_) => Task.CompletedTask;
+            await WebSocketService.Connect("wss://ws.postman-echo.com/raw", test1);
+            await WebSocketService.SendMessage(test, test1);
             await Task.CompletedTask;
         }
 
@@ -355,7 +374,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="changedEventArgs">A selected changed event arguments</param>
         private async void BandSelectionChanged(object sender, SelectionChangedEventArgs changedEventArgs)
         {
-            await ConnectBand(availableBandComboBox.SelectedValue.ToString(), availableBandComboBox.SelectedIndex);
+            await ConnectBand(availableBandComboBox.SelectedValue.ToString());
         }
 
         /// <summary>
@@ -364,17 +383,19 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="bandName">A name of selected band to connect</param>
         /// <param name="selectedIndex">An index of selected band to connect</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task ConnectBand(string bandName, int selectedIndex)
+        private async Task ConnectBand(string bandName)
         {
             var messageDialog = new MessageDialog(string.Empty);
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 
             await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
-
+            // TODO
+            // Remove this clumsy catching exception
+            // Use band status to solve the issue
             try
             {
-                await BandManagerService.ConnectBand(selectedIndex, bandName);
+                await BandManagerService.ConnectBand(bandName);
             }
             catch (BandAccessDeniedException)
             {
@@ -425,7 +446,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             });
 
             await NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
-            await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
+            //await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
 
             GsrTimer.Start();
             WebSocketTimer.Start();

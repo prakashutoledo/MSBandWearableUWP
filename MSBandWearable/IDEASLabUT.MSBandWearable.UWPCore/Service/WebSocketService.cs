@@ -45,6 +45,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task Connect(string webSocketUrl, Func<bool, Task> continueWith = null)
         {
+
             messageWebSocket = SocketSupplier.Invoke();
             Task OnMessageReceived(string message) => ParseMessageAndProcess(in message, GetMessagePostProcessors);
             messageWebSocket.OnMessageReceived = OnMessageReceived;

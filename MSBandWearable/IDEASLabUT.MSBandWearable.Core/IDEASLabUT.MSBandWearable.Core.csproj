@@ -170,7 +170,12 @@
       <Version>8.0.0-beta.9</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.UWPCore\IDEASLabUT.MSBandWearable.UWPCore.csproj">
+      <Project>{3b12c3a0-3a9b-40e2-814e-372cafa0012d}</Project>
+      <Name>IDEASLabUT.MSBandWearable.UWPCore</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

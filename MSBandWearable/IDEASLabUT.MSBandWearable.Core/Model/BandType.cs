@@ -34,6 +34,7 @@ namespace IDEASLabUT.MSBandWearable.Model
                 };
             });
 
+          
             descriptionMap = new Lazy<IReadOnlyDictionary<BandType, string>>(() => BandTypeMap.ToDictionary(entry => entry.Value, entry => entry.Key));
         }
 

@@ -97,10 +97,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <param name="selectedIndex">A selected index of a paired bands</param>
         /// <param name="bandName">A name of the band to connect</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task ConnectBand(int selectedIndex, string bandName)
+        public async Task ConnectBand(string bandName)
         {
             BandName = bandName ?? throw new ArgumentNullException(nameof(bandName));
-            await msBandService.ConnectBand(selectedIndex)
+            await msBandService.ConnectBand(bandName)
                 .ContinueWithSupplier(connectTask =>  ToBandStatusTask(connectTask))
                 .ContinueWithAction(bandStatus => BandStatus = bandStatus);
         }

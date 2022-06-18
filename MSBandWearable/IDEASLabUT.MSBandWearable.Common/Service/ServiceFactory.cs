@@ -24,8 +24,10 @@ namespace IDEASLabUT.MSBandWearable.Service
                 bandClientService = MSBandClientService.Singleton;
             }
 
+            /// <inheritdoc/>
             public override sealed IWebSocketService GetWebSocketService => webSocketService;
 
+            /// <inheritdoc/>
             public override sealed IBandClientService GetBandClientService => bandClientService;
         }
 

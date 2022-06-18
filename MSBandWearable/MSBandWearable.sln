@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDEASLabUT.MSBandWearable.E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDEASLabUT.MSBandWearable.Common", "IDEASLabUT.MSBandWearable.Common\IDEASLabUT.MSBandWearable.Common.csproj", "{421B333E-30FE-4245-830A-897B05C68A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDEASLabUT.MSBandWearable.ViewModel", "IDEASLabUT.MSBandWearable.ViewModel\IDEASLabUT.MSBandWearable.ViewModel.csproj", "{E8D00E55-8908-4F11-B26A-AFC7716AB316}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IDEASLabUT.MSBandWearable.ViewModel", "IDEASLabUT.MSBandWearable.ViewModel\IDEASLabUT.MSBandWearable.ViewModel.csproj", "{E8D00E55-8908-4F11-B26A-AFC7716AB316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

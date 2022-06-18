@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿/*
+ * Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+ */
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 using System;

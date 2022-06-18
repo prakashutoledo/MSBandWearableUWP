@@ -2,6 +2,8 @@
 
 using System;
 using System.Threading.Tasks;
+using System.Linq;
+using Windows.Devices.Enumeration;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -41,6 +43,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task ConnectBand(int selectedIndex)
         {
             var pairedBands = await bandClientManager.GetBandsAsync();
+            
             if (pairedBands == null)
             {
                 throw new NullReferenceException(nameof(pairedBands));
@@ -50,7 +53,8 @@ namespace IDEASLabUT.MSBandWearable.Service
             {
                 throw new ArgumentOutOfRangeException($"{nameof(selectedIndex)} should be between 0 and {pairedBands.Length} exclusive");
             }
-
+            var firstBand = pairedBands[selectedIndex];
+            var deviceInfo = firstBand.GetType().GetProperty("Peer").GetValue(firstBand) as DeviceInformation;
             BandClient = await bandClientManager.ConnectAsync(pairedBands[selectedIndex]);
         }
     }
