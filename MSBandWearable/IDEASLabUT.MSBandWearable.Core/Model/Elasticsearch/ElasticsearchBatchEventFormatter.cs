@@ -48,17 +48,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
         /// <exception cref="ArgumentNullException">If logEvents or output is null</exception>
         public override void Format(IEnumerable<string> logEvents, TextWriter output)
         {
-            if (logEvents == null)
-            {
-                throw new ArgumentNullException(nameof(logEvents));
-            }
-
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
-
-            if (!logEvents.Any())
+            if (logEvents == null || output == null || !logEvents.Any())
             {
                 return;
             }
@@ -74,7 +64,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
                     .Where(log => !string.IsNullOrWhiteSpace(log))
                     .Select(log => log.Trim());
 
-                if (!logs.Any() || logs.Count() != 2)
+                if (logs == null || !logs.Any() || logs.Count() != 2)
                 {
                     continue;
                 }

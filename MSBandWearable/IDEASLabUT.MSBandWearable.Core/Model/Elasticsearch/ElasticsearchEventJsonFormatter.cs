@@ -2,16 +2,17 @@
 using Serilog.Formatting;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using static IDEASLabUT.MSBandWearable.Model.SensorTypeExtension;
 
 namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
 {
     public class ElasticsearchEventJsonFormatter : ITextFormatter
     {
-        private const char DoubleQuoteChar = (char) 34;
-        private const string StringSplitChar = "\\";
+        private const char StringSplitChar = '\\';
+        private const string ElasticsearchIndexJson = "{\"index\":{\"_index\": \"{0}\"}}";
 
         /// <summary>
         /// Formats the given single Serilog event into elastisearch bulk api json data format and writes it into
@@ -34,9 +35,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
         /// </summary>
         /// <param name="logEvent">A log event which is going to be formatted into elasticsearch bulk api post json body</param>
         /// <param name="output">An output text writer to write the formatted log event</param>
-        /// <exception cref="ArgumentNullException">If logEvent or output is null</exception>
         /// <seealso cref="ElasticsearchBatchEventFormatter"/>
-        /// <exception cref="ArgumentNullException">If logEvent or output is null</exception>
         public void Format(LogEvent logEvent, TextWriter output)
         {
             if (logEvent == null)
@@ -49,31 +48,30 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
                 throw new ArgumentNullException(nameof(output));
             }
 
-            KeyValuePair<string, LogEventPropertyValue> eventPair = default;
-            try
-            {
-                eventPair = logEvent.Properties.First();
-            } 
-            catch(InvalidOperationException)
+            var properties = logEvent.Properties;
+            if (properties == null || !properties.Any())
             {
                 return;
             }
 
-            var sensorType = SensorTypeExtension.FromName(eventPair.Key);
+            var eventPair = logEvent.Properties.First();
+            
+            var sensorType = FromName(eventPair.Key);
             if (!sensorType.HasValue)
             {
                 // Unsupported elasticsearch index
                 return;
             }
 
-            output.Write($"{{\"index\":{{\"_index\": \"{sensorType.Value.GetName()}\"}}}}");
+            output.Write(string.Format(ElasticsearchIndexJson, eventPair.Key));
             output.Write(StringSplitChar);
 
-            // Serilog wierdly adds extra double quotes to the string data. So, we are trimming double quote character from start and end
-            // Serilog also adds backslash char(\) to every double quote character. We are replacing (\) with an empty character
-            // Actual string: "{\"accelerometerX\" : 1.9}"
-            // Formatted string: {"accelerometerX" : 1.0}
-            output.WriteLine(eventPair.Value.ToString().Replace(StringSplitChar, "").TrimStart(DoubleQuoteChar).TrimEnd(DoubleQuoteChar));
+            // Use ScalarValue in order to avoid formatted string represented by Serilog
+            if (!(eventPair.Value is ScalarValue scalarValue && scalarValue.Value is string rawValue))
+            {
+                return;
+            }
+            output.WriteLine(rawValue);
         }
     }
 }

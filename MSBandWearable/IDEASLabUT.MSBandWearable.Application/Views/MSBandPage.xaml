@@ -73,9 +73,9 @@
                                                FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=BandManagerService.HeartRate.Model.Bpm, Mode=OneWay}"></TextBlock>
                                 </Grid>
                                 <StackPanel Margin="20 0 0 0">
-                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=BandManagerService.HeartRate.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=BandManagerService.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
+                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=HeartRateModel.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=BandManagerService.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
                                     <TextBlock>RR Interval: <Run Text="{x:Bind Path=BandManagerService.RRInterval.Model.Ibi,Mode=OneWay}" /></TextBlock>
-                                    <TextBlock>Status: <Run Text="{x:Bind Path=BandManagerService.HeartRate.HeartRateStatus,Mode=OneWay}" /></TextBlock>
+                                    <TextBlock>Status: <Run Text="{x:Bind Path=HeartRateModel.HeartRateStatus,Mode=OneWay}" /></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

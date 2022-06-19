@@ -58,15 +58,21 @@ namespace IDEASLabUT.MSBandWearable.Service
                 return deviceInfo.Id.Contains(bandName.Split(' ').Last());
             }
 
-            var toConnect = pairedBands.FirstOrDefault(PairedBandConnectionPredicate);
+            var matchedBandInfo = pairedBands.FirstOrDefault(PairedBandConnectionPredicate);
+
+            if (matchedBandInfo == null)
+            {
+                await Task.FromException(new ArgumentNullException("No matching band with given bandName found"));
+                return;
+            }
 
             try
             {
-                BandClient = await bandClientManager.ConnectAsync(toConnect);
+                BandClient = await bandClientManager.ConnectAsync(matchedBandInfo);
             }
-            catch(BandIOException bie)
+            catch (Exception ex) when (ex is BandIOException || ex is BandAccessDeniedException || ex is BandException)
             {
-                await Task.FromException(bie);
+                await Task.FromException(ex);
             }
         }
     }

@@ -142,6 +142,7 @@
     <Compile Include="Util\TaskUtil.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\GSRSensor.cs" />
+    <Compile Include="ViewModel\HeartRateModel.cs" />
     <Compile Include="ViewModel\HeartRateSensor.cs" />
     <Compile Include="ViewModel\AccelerometerSensor.cs" />
     <Compile Include="ViewModel\BaseSensorViewModel.cs" />

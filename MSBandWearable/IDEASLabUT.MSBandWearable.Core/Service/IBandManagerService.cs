@@ -63,6 +63,13 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         Task SubscribeSensors();
 
+
+        /// <summary>
+        /// Unsubscribe all available sensors of connected MS Band 2
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
+        Task UnsubscribeSensors();
+
         /// <summary>
         /// Find all the MS Band 2 which are paired using bluetooth
         /// </summary>

@@ -86,18 +86,12 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         /// <returns>A task that can be awaited which determines if we can read sensor</returns>
         public async Task<bool> Subscribe()
         {
-            if (msBandService.BandClient == null)
+            var sensor = GetBandSensor();
+            if (sensor == null)
             {
                 return false;
             }
 
-            var sensorManager = msBandService.BandClient.SensorManager;
-            if (sensorManager == null)
-            {
-                return false;
-            }
-
-            var sensor = bandSensorSupplier.Invoke(sensorManager);
             var userConsent = sensor.GetCurrentUserConsent() == Granted || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
@@ -120,19 +114,18 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
 
         private IBandSensor<SensorReading> GetBandSensor()
         {
-            if (msBandService.BandClient == null)
+            if (msBandService.BandClient != null)
             {
-                return null;
+                var sensorManager = msBandService.BandClient.SensorManager;
+
+                if (sensorManager == null)
+                {
+                    return null;
+                }
+
+                return bandSensorSupplier.Invoke(sensorManager);
             }
-
-            var sensorManager = msBandService.BandClient.SensorManager;
-
-            if (sensorManager == null)
-            {
-                return null;
-            }
-
-            return bandSensorSupplier.Invoke(sensorManager);
+            return null;
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using Serilog;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -99,15 +100,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public Task ConnectBand(string bandName)
         {
-            if (bandName == null)
-            {
-                return Task.FromException(new ArgumentNullException(nameof(bandName)));
-            }
-
-            return msBandService.ConnectBand(bandName)
-                .ContinueWithSupplier(connectTask => ToBandStatusTask(connectTask))
-                .ContinueWithAction(bandStatus => BandStatus = bandStatus)
-                .ContinueWithAction(() => BandName = bandName);
+            var connectTask = bandName == null ? Task.FromException(new ArgumentNullException(nameof(bandName))) : msBandService.ConnectBand(bandName);
+            return connectTask
+                    .ContinueWithSupplier(previousTask => ToBandStatusTask(previousTask))
+                    .ContinueWithAction(bandStatus => BandStatus = bandStatus)
+                    .ContinueWithAction(() => BandName = bandName);
         }
 
         /// <summary>
@@ -123,11 +120,32 @@ namespace IDEASLabUT.MSBandWearable.Service
                 HeartRate.Subscribe(),
                 RRInterval.Subscribe(),
                 Temperature.Subscribe()
-           );
+            );
 
-           return subscriptionTasks.ContinueWithStatus()
-                .ContinueWithSupplier(subscribeTask => VibrateAndSubscribe(subscribeTask))
-                .ContinueWithAction(bandStatus => BandStatus = bandStatus);
+            return subscriptionTasks.ContinueWithStatus()
+                 .ContinueWithSupplier(subscribeTask => VibrateAndSubscribe(subscribeTask))
+                 .ContinueWithAction(bandStatus => BandStatus = bandStatus);
+        }
+
+
+        /// <summary>
+        /// Unsubscribe all available sensors of connected MS Band 2 client
+        /// </summary>
+        /// <returns>A task that can be awaited</returns>
+        public Task UnsubscribeSensors()
+        {
+            var unsubscribeTasks = Task.WhenAll(
+                Accelerometer.Subscribe(),
+                Gsr.Subscribe(),
+                Gyroscope.Subscribe(),
+                HeartRate.Subscribe(),
+                RRInterval.Subscribe(),
+                Temperature.Subscribe()
+            );
+
+            return unsubscribeTasks
+                .ContinueWithStatus()
+                .ContinueWithAction(() => BandStatus = UnSubscribed);
         }
 
 

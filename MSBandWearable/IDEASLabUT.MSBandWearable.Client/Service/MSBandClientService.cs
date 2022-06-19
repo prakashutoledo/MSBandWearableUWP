@@ -1,8 +1,9 @@
 ﻿using Microsoft.Band;
 
 using System;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+
 using Windows.Devices.Enumeration;
 
 namespace IDEASLabUT.MSBandWearable.Service
@@ -10,12 +11,13 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// <summary>
     /// A MS Band 2 client service to connect to band and subscribe available supported sensors using <see cref="IBandClientManager"/>
     /// </summary>
-    public sealed class MSBandClientService : IBandClientService
+    public class MSBandClientService : IBandClientService
     {
         private static readonly Lazy<MSBandClientService> Instance = new Lazy<MSBandClientService>(() => new MSBandClientService(BandClientManager.Instance));
+        private const string BluetoothDeviceInfoPeer = "Peer";
 
         // Lazy singleton pattern
-        internal static MSBandClientService Singleton => Instance.Value;
+        public static MSBandClientService Singleton => Instance.Value;
 
         private readonly IBandClientManager bandClientManager;
 
@@ -33,29 +35,39 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// A connected MS Band 2 client
         /// </summary>
-        public IBandClient BandClient { get; set; }
+        public IBandClient BandClient { get; private set; }
 
         /// <summary>
         /// Connects the given selected index from the available paired MS bands
         /// </summary>
         /// <param name="selectedIndex">A selected index of a paired bands</param>
         /// <returns>A task that can be awaited</returns>
-        public async Task ConnectBand(int selectedIndex)
+        public async Task ConnectBand(string bandName)
         {
-            var pairedBands = await bandClientManager.GetBandsAsync();
-            
-            if (pairedBands == null)
+            var pairedBands = await bandClientManager.GetBandsAsync(true);
+            if (pairedBands == null || !pairedBands.Any())
             {
-                throw new NullReferenceException(nameof(pairedBands));
+                return;
             }
 
-            if (selectedIndex < 0 || selectedIndex >= pairedBands.Length)
+            // This is a hack with the help of reflection to get device information from bandInfo
+            // Checks if the band bluetooth id ends with band name last split substring
+            bool PairedBandConnectionPredicate(IBandInfo bandInfo)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(selectedIndex)} should be between 0 and {pairedBands.Length} exclusive");
+                var deviceInfo = bandInfo.GetType().GetProperty(BluetoothDeviceInfoPeer).GetValue(bandInfo) as DeviceInformation;
+                return deviceInfo.Id.Contains(bandName.Split(' ').Last());
             }
-            var firstBand = pairedBands[selectedIndex];
-            var deviceInfo = firstBand.GetType().GetProperty("Peer").GetValue(firstBand) as DeviceInformation;
-            BandClient = await bandClientManager.ConnectAsync(pairedBands[selectedIndex]);
+
+            var toConnect = pairedBands.FirstOrDefault(PairedBandConnectionPredicate);
+
+            try
+            {
+                BandClient = await bandClientManager.ConnectAsync(toConnect);
+            }
+            catch (Exception ex) when (ex is BandIOException || ex is BandAccessDeniedException || ex is BandException)
+            {
+                await Task.FromException(ex);
+            }
         }
     }
 }

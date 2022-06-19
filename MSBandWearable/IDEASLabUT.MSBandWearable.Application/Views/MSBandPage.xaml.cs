@@ -45,6 +45,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
         private IWebSocketService WebSocketService { get; } = ServiceFactory.Singleton.GetWebSocketService;
         private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
+        private HeartRateModel HeartRateModel { get; } = new HeartRateModel();
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
         private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
         private DispatcherTimer WebSocketTimer { get; } = new DispatcherTimer();
@@ -172,12 +173,27 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <summary>
         /// An async callback for MSBand heart rate sensor value change event to run in a ui dispatch thread
         /// </summary>
-        /// <param name="_">A new heart rate event value</param>
+        /// <param name="heartRateEvent">A new heart rate event value</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task HeartRateSensorValueChanged(HeartRateEvent _)
+        private async Task HeartRateSensorValueChanged(HeartRateEvent heartRateEvent)
         {
-            var heartRateStatus = BandManagerService.HeartRate.HeartRateStatus;
-            await RunLaterInUIThread(() => ColorBrush.Color = heartRateStatus == Locked ? White : Transparent);
+            var heartRateStatus = heartRateEvent.HeartRateStatus;
+            var bpm = heartRateEvent.Bpm;
+
+            await RunLaterInUIThread(() => 
+            {
+                ColorBrush.Color = heartRateStatus == Locked ? White : Transparent;
+
+                if (bpm > HeartRateModel.MaxBpm)
+                {
+                    HeartRateModel.MaxBpm = bpm;
+                }
+
+                if (bpm < HeartRateModel.MinBpm)
+                {
+                    HeartRateModel.MinBpm = bpm;
+                }
+            });
         }
 
         /// <summary>
@@ -424,7 +440,7 @@ namespace IDEASLabUT.MSBandWearable.Views
                 }
                 else
                 {
-                    //await StartDashboard();
+                    await StartDashboard();
                 }
             }
         }

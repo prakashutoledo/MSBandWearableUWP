@@ -41,9 +41,9 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <param name="inputValue">An input value for given action</param>
         /// <param name="coreDispatcherPriority">A core dispatcher priority for invoked action which defaults to normal</param>
         /// <returns>A task that can be awaited</returns>
-        public static async Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
+        public static Task RunLaterInUIThread<T>(Action<T> action, T inputValue, CoreDispatcherPriority coreDispatcherPriority = CoreDispatcherPriority.Normal)
         {
-            await RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority);
+            return RunLaterInUIThread(() => action.Invoke(inputValue), coreDispatcherPriority);
         }
     }
 }
