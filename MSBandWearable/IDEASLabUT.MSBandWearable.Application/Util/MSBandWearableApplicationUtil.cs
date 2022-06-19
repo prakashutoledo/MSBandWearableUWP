@@ -57,7 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Util
                     period: TimeSpan.FromSeconds(8)
                 );
             });
-
+            
             LoggerInstance = new Lazy<ILogger>(() => LoggerFactory.CreateLogger());
         }
 

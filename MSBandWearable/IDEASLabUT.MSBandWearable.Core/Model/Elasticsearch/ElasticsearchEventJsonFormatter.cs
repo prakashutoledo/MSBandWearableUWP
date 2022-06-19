@@ -1,7 +1,6 @@
 ﻿using Serilog.Events;
 using Serilog.Formatting;
 
-using System;
 using System.IO;
 using System.Linq;
 
@@ -12,7 +11,8 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
     public class ElasticsearchEventJsonFormatter : ITextFormatter
     {
         private const char StringSplitChar = '\\';
-        private const string ElasticsearchIndexJson = "{\"index\":{\"_index\": \"{0}\"}}";
+        private const string ElasticsearchIndexJsonPrefix = "{\"index\":{\"_index\": \"";
+        private const string ElasticsearchIndexJsonPostfix = "\"}}";
 
         /// <summary>
         /// Formats the given single Serilog event into elastisearch bulk api json data format and writes it into
@@ -38,14 +38,9 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
         /// <seealso cref="ElasticsearchBatchEventFormatter"/>
         public void Format(LogEvent logEvent, TextWriter output)
         {
-            if (logEvent == null)
+            if (logEvent == null || output == null)
             {
-                throw new ArgumentNullException(nameof(logEvent));
-            }
-
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
+                return;
             }
 
             var properties = logEvent.Properties;
@@ -53,25 +48,20 @@ namespace IDEASLabUT.MSBandWearable.Model.Elasticsearch
             {
                 return;
             }
-
-            var eventPair = logEvent.Properties.First();
             
+            var eventPair = logEvent.Properties.First();
             var sensorType = FromName(eventPair.Key);
             if (!sensorType.HasValue)
             {
-                // Unsupported elasticsearch index
-                return;
+                return; // Unsupported elasticsearch index
             }
-
-            output.Write(string.Format(ElasticsearchIndexJson, eventPair.Key));
-            output.Write(StringSplitChar);
-
             // Use ScalarValue in order to avoid formatted string represented by Serilog
-            if (!(eventPair.Value is ScalarValue scalarValue && scalarValue.Value is string rawValue))
+            if (!(eventPair.Value is ScalarValue scalarValue && scalarValue.Value is string rawJsonEvent))
             {
                 return;
             }
-            output.WriteLine(rawValue);
+
+            output.WriteLine(string.Concat(ElasticsearchIndexJsonPrefix, eventPair.Key, ElasticsearchIndexJsonPostfix, StringSplitChar, rawJsonEvent));
         }
     }
 }

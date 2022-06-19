@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using static IDEASLabUT.MSBandWearable.Util.CoreDispatcherUtil;
 using static Microsoft.Band.UserConsent;
 using static IDEASLabUT.MSBandWearable.Util.TaskUtil;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
@@ -114,16 +115,11 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
 
         private IBandSensor<SensorReading> GetBandSensor()
         {
-            if (msBandService.BandClient != null)
+            var bandClient = msBandService.BandClient;
+            if (bandClient != null)
             {
-                var sensorManager = msBandService.BandClient.SensorManager;
-
-                if (sensorManager == null)
-                {
-                    return null;
-                }
-
-                return bandSensorSupplier.Invoke(sensorManager);
+                var sensorManager = bandClient.SensorManager;
+                return sensorManager == null ? null : bandSensorSupplier.Invoke(sensorManager);
             }
             return null;
         }

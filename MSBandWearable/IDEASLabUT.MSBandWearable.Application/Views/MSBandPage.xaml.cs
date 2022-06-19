@@ -401,7 +401,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             switch (BandManagerService.BandStatus)
             {
                 case BandStatus.Connected:
-                    await StartDashboard();
+                    //await StartDashboard();
                     break;
                 case BandStatus.Subscribed:
                     break;

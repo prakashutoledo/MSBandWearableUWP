@@ -3,6 +3,7 @@
 using Serilog;
 
 using System;
+using System.Threading.Tasks;
 
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -85,18 +86,24 @@ namespace IDEASLabUT.MSBandWearable
             messageDialog.Commands.Add(cancelCommand);
             var response = await messageDialog.ShowAsync();
 
+            TaskCompletionSource<object> loggerTaskSource = new TaskCompletionSource<object>();
             if (response == closeCommand)
             {
                 // Sets the global logger
                 // On application close request, flush the logger and close it
-                Log.Logger = Logger;
-                Log.CloseAndFlush();
+                await Task.Run(() =>
+                {
+                    Log.Logger = Logger;
+                    Log.CloseAndFlush();
+                    loggerTaskSource.SetResult(null);
+                });
+
+                _ = await loggerTaskSource.Task;
             }
             else
             {
                 closeRequestEventArgs.Handled = true;
             }
-
             deferral.Complete();
         }
 

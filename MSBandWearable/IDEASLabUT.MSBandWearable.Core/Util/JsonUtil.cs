@@ -16,14 +16,20 @@ namespace IDEASLabUT.MSBandWearable.Util
     {
         static JsonUtil()
         {
-            // Default json converter settings to ignore null value, unknown properties resolving members in camel case
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            JsonSerializerSettings DefaultJsonSerializerSettings()
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
+                return new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+            }
+
+            // Default json converter settings to ignore null value, unknown properties and resolving C# properties in camel case
+            JsonConvert.DefaultSettings = DefaultJsonSerializerSettings;
         }
+
 
         /// <summary>
         /// Json string extension to deserialize back into object of given type <see cref="{T}"/>
