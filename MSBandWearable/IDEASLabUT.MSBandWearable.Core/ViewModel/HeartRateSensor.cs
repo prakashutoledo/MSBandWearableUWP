@@ -15,10 +15,6 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// </summary>
     public class HeartRateSensor : BaseSensorViewModel<HeartRateEvent, IBandHeartRateReading>
     {
-        private double maxBpm = 0;
-        private double minBpm = 220;
-        private HeartRateQuality heartRateStatus;
-
         /// <summary>
         /// Initializes a new instance of <see cref="HeartRateSensor"/>
         /// </summary>
@@ -31,51 +27,13 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         }
 
         /// <summary>
-        /// A maximum heartrate value which also raise property changed event while setting to new values
-        /// </summary>
-        public double MaxBpm
-        {
-            get => maxBpm;
-            set => UpdateAndNotify(ref maxBpm, value);
-        }
-
-        /// <summary>
-        /// A minimum heartrate value which also raise property changed event while setting to new values
-        /// </summary>
-        public double MinBpm
-        {
-            get => minBpm;
-            set => UpdateAndNotify(ref minBpm, value);
-        }
-
-        /// <summary>
-        /// A heartrate quality value which also raise property changed event while setting to new values
-        /// </summary>
-        public HeartRateQuality HeartRateStatus
-        {
-            get => heartRateStatus;
-            set => UpdateAndNotify(ref heartRateStatus, value);
-        }
-
-        /// <summary>
         /// Updates the underlying model value
         /// </summary>
         /// <param name="heartRateReading">An updated heartRate reading value to be reflected to model changed</param>
         protected override void UpdateSensorModel(in IBandHeartRateReading heartRateReading)
         {
-            double bpm = Model.Bpm = heartRateReading.HeartRate;
+            Model.Bpm = heartRateReading.HeartRate;
             Model.HeartRateStatus = heartRateReading.Quality;
-            HeartRateStatus = heartRateReading.Quality;
-
-            if (bpm > MaxBpm)
-            {
-                MaxBpm = bpm;
-            }
-
-            if (bpm < MinBpm)
-            {
-                MinBpm = bpm;
-            }
         }
     }
 }

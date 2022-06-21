@@ -1,0 +1,13 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.22">
+
+  <PropertyGroup>
+    <TargetFramework>uap10.0.19041</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Service\" />
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ElasticsearchClient\IDEASLabUT.MSBandWearable.ElasticsearchClient.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
+  </ItemGroup>
+
+</Project>

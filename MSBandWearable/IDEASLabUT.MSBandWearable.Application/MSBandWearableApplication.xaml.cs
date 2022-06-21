@@ -82,17 +82,19 @@ namespace IDEASLabUT.MSBandWearable
             var cancelCommand = new UICommand("Cancel");
             var closeCommand = new UICommand("Close");
 
-            messageDialog.Commands.Add(closeCommand);
-            messageDialog.Commands.Add(cancelCommand);
+            var commands = messageDialog.Commands;
+            commands.Add(closeCommand);
+            commands.Add(cancelCommand);
+
             var response = await messageDialog.ShowAsync();
 
-            TaskCompletionSource<object> loggerTaskSource = new TaskCompletionSource<object>();
             if (response == closeCommand)
             {
-                // Sets the global logger
-                // On application close request, flush the logger and close it
+                var loggerTaskSource = new TaskCompletionSource<object>();
                 await Task.Run(() =>
                 {
+                    // Sets the global logger
+                    // On application close request, flush the logger and close it
                     Log.Logger = Logger;
                     Log.CloseAndFlush();
                     loggerTaskSource.SetResult(null);

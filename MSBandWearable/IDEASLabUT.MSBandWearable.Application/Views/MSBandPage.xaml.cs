@@ -13,7 +13,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 
 using Windows.System;
@@ -44,8 +43,9 @@ namespace IDEASLabUT.MSBandWearable.Views
         private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
         private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
         private IWebSocketService WebSocketService { get; } = ServiceFactory.Singleton.GetWebSocketService;
-        private SubjectViewModel SubjectAndView { get; } = new SubjectViewModel();
-        private HeartRateModel HeartRateModel { get; } = new HeartRateModel();
+
+        private ViewModelFactory ViewModelFactory { get; } = ViewModelFactory.Singleton;
+
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
         private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
         private DispatcherTimer WebSocketTimer { get; } = new DispatcherTimer();
@@ -102,6 +102,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         {
             BandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
             BandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
+            BandManagerService.Gsr.SensorModelChanged = GsrValueChanged;
         }
 
         /// <summary>
@@ -175,25 +176,33 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         /// <param name="heartRateEvent">A new heart rate event value</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task HeartRateSensorValueChanged(HeartRateEvent heartRateEvent)
+        private async Task HeartRateSensorValueChanged(HeartRateEvent _)
         {
-            var heartRateStatus = heartRateEvent.HeartRateStatus;
-            var bpm = heartRateEvent.Bpm;
+            var heartRateStatus = BandManagerService.HeartRate.Model.HeartRateStatus;
+            var bpm = BandManagerService.HeartRate.Model.Bpm;
+            var heartRateModel = ViewModelFactory.GetHeartRateModel;
 
-            await RunLaterInUIThread(() => 
+            await RunLaterInUIThread(() =>
             {
                 ColorBrush.Color = heartRateStatus == Locked ? White : Transparent;
-
-                if (bpm > HeartRateModel.MaxBpm)
+                heartRateModel.Bpm = bpm;
+                if (bpm > heartRateModel.MaxBpm)
                 {
-                    HeartRateModel.MaxBpm = bpm;
+                    heartRateModel.MaxBpm = bpm;
                 }
 
-                if (bpm < HeartRateModel.MinBpm)
+                if (bpm < heartRateModel.MinBpm)
                 {
-                    HeartRateModel.MinBpm = bpm;
+                    heartRateModel.MinBpm = bpm;
                 }
             });
+        }
+
+        private async Task GsrValueChanged(GSREvent _)
+        {
+            var gsrModel = ViewModelFactory.GetGSRModel;
+            var gsr = BandManagerService.Gsr.Model.Gsr;
+            await RunLaterInUIThread(() => gsrModel.Gsr = gsr);
         }
 
         /// <summary>
@@ -229,12 +238,13 @@ namespace IDEASLabUT.MSBandWearable.Views
 
             await RunLaterInUIThread(() =>
             {
-                SubjectAndView.CurrentView = empaticaE4Band.FromView;
-                SubjectAndView.SubjectId = empaticaE4Band.SubjectId;
+                var subjectViewModel = ViewModelFactory.GetSubjectViewModel;
+                subjectViewModel.CurrentView = empaticaE4Band.FromView;
+                subjectViewModel.SubjectId = empaticaE4Band.SubjectId;
 
                 if (empaticaE4Band.Device.Connected)
                 {
-                    SubjectAndView.E4SerialNumber = empaticaE4Band.Device.SerialNumber;
+                    subjectViewModel.E4SerialNumber = empaticaE4Band.Device.SerialNumber;
                 }
             });
         }
@@ -331,6 +341,8 @@ namespace IDEASLabUT.MSBandWearable.Views
             Func<bool, Task> test1 = (_) => Task.CompletedTask;
             await WebSocketService.Connect("wss://ws.postman-echo.com/raw", test1);
             await WebSocketService.SendMessage(test, test1);
+            Trace.WriteLine(ServiceFactory.Singleton.GetPropertiesService.GetProperty("elasticsearch:authenticationKey"));
+            Trace.WriteLine(ServiceFactory.Singleton.GetPropertiesService.GetProperty("elasticsearch:uri"));
             await Task.CompletedTask;
         }
 
@@ -460,7 +472,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             await RunLaterInUIThread(() =>
             {
                 commandBar.Visibility = Visibility.Visible;
-                SubjectAndView.MSBandSerialNumber = BandManagerService.BandName;
+                ViewModelFactory.GetSubjectViewModel.MSBandSerialNumber = BandManagerService.BandName;
                 UpdateCommandBar();
             });
 

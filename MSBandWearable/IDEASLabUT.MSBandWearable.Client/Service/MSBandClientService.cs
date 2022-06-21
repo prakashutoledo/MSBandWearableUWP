@@ -13,8 +13,13 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// </summary>
     public class MSBandClientService : IBandClientService
     {
-        private static readonly Lazy<MSBandClientService> Instance = new Lazy<MSBandClientService>(() => new MSBandClientService(BandClientManager.Instance));
+        private static readonly Lazy<MSBandClientService> Instance;
         private const string BluetoothDeviceInfoPeer = "Peer";
+
+        static MSBandClientService()
+        {
+            Instance = new Lazy<MSBandClientService>(() => new MSBandClientService(BandClientManager.Instance));
+        }
 
         // Lazy singleton pattern
         public static MSBandClientService Singleton => Instance.Value;

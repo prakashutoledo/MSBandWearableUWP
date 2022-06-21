@@ -12,7 +12,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// <summary>
         /// A heart rate beats per minute value
         /// </summary>
-        public double Bpm { get; set; }
+        public int Bpm { get; set; }
 
         [JsonIgnore]
         public HeartRateQuality HeartRateStatus { get; set; }

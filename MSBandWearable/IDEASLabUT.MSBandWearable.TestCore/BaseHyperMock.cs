@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using static System.Reflection.BindingFlags;
+using static HyperMock.MockBehavior;
 
 namespace IDEASLabUT.MSBandWearable.Test
 {
@@ -18,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.Test
     /// <typeparam name="T">A type of subject under test</typeparam>
     public abstract class BaseHyperMock<T> : AwaitableTest where T : class
     {
-        private readonly IDictionary<Type, Mock> mocks;
+        private readonly IDictionary<Type, Mock> mockByType;
 
         protected T Subject
         {
@@ -30,7 +31,11 @@ namespace IDEASLabUT.MSBandWearable.Test
         /// </summary>
         protected BaseHyperMock()
         {
-            mocks = new Dictionary<Type, Mock>();
+            mockByType = new Dictionary<Type, Mock>();
+        }
+
+        public virtual void OverrideMockSetup()
+        {
         }
 
         [TestInitialize]
@@ -38,12 +43,18 @@ namespace IDEASLabUT.MSBandWearable.Test
         {
             // Looks for both public and private constructor
             var subjectConstructor = typeof(T).GetConstructors(Instance | Public | NonPublic).First();
-            foreach(var parameter in subjectConstructor.GetParameters())
+            foreach (var parameter in subjectConstructor.GetParameters())
             {
                 var parameterType = parameter.ParameterType;
-                mocks.Add(parameterType, Mock.Create(parameterType));
+                // Look for public static method 'Create'
+                var createMock = typeof(Mock).GetMethod("Create", Public | Static, null, new Type[] { typeof(MockBehavior) }, null);
+                // Make generic method Create<T>
+                var genericCreateMockMethod = createMock.MakeGenericMethod(parameterType);
+                var mockParameter = (Mock) genericCreateMockMethod.Invoke(null, new object[] { Loose });
+                mockByType.Add(parameterType, mockParameter);
             }
-            Subject = subjectConstructor.Invoke(mocks.Values.Select(mock => mock.Object).ToArray()) as T;
+            OverrideMockSetup();
+            Subject = subjectConstructor.Invoke(mockByType.Values.Select(mock => mock.Object).ToArray()) as T;
         }
 
         /// <summary>
@@ -66,11 +77,11 @@ namespace IDEASLabUT.MSBandWearable.Test
         protected Mock<R> GetOrCreateMock<R>()
         {
             var type = typeof(R);
-            if (!mocks.ContainsKey(type))
+            if (!mockByType.ContainsKey(type))
             {
-                mocks.Add(type, Mock.Create<R>());
+                mockByType.Add(type, Mock.Create<R>());
             }
-            return mocks[type] as Mock<R>;
+            return (Mock<R>) mockByType[type];
         }
 
         /// <summary>
@@ -81,13 +92,14 @@ namespace IDEASLabUT.MSBandWearable.Test
         /// <param name="mockAction">A mock action to invoke</param>
         protected void MockFor<R>(Action<Mock<R>> mockAction)
         {
+            var test = GetOrCreateMock<R>();
             mockAction?.Invoke(GetOrCreateMock<R>());
         }
 
         [TestCleanup]
         public void MockCleanUp()
         {
-            mocks.Clear();
+            mockByType.Clear();
         }
     }
 }

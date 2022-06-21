@@ -19,13 +19,17 @@ namespace IDEASLabUT.MSBandWearable.Service
             {
                 GetWebSocketService = WebSocketService.Singleton;
                 GetBandClientService = MSBandClientService.Singleton;
+                GetPropertiesService = PropertiesService.Singleton;
             }
 
             /// <inheritdoc/>
             public sealed override IWebSocketService GetWebSocketService { get; }
 
             /// <inheritdoc/>
-            public override sealed IBandClientService GetBandClientService { get; }
+            public sealed override IBandClientService GetBandClientService { get; }
+
+            /// <inheritdoc/>
+            public sealed override IPropertiesService GetPropertiesService { get; }
         }
 
         private static readonly Lazy<ServiceFactory> serviceFactoryInstance;
@@ -49,5 +53,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// Gets the implementation instance of <see cref="IBandClientService"/>
         /// </summary>
         public abstract IBandClientService GetBandClientService { get; }
+
+        /// <summary>
+        /// Gets the implementation instance of <see cref="IPropertiesService"/>
+        /// </summary>
+        public abstract IPropertiesService GetPropertiesService { get; }
     }
 }
