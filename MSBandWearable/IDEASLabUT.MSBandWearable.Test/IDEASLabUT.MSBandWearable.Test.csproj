@@ -127,20 +127,17 @@
     <Compile Include="Service\ElasticsearchServiceTest.cs" />
     <Compile Include="Service\SubjectViewServiceTest.cs" />
     <Compile Include="Service\WebSocketServiceTest.cs" />
-    <Compile Include="Util\JsonUtilTest.cs" />
     <Compile Include="Util\CoreDispatcherUtilTest.cs" />
-    <Compile Include="Util\StringUtilTest.cs" />
-    <Compile Include="Util\TaskUtilTest.cs" />
     <Compile Include="Util\WebSocketUtilTest.cs" />
-    <Compile Include="ViewModel\AccelerometerSensorTest.cs" />
-    <Compile Include="ViewModel\BaseSensorTest.cs" />
+    <Compile Include="Sensor\AccelerometerSensorTest.cs" />
+    <Compile Include="Sensor\BaseSensorTest.cs" />
     <Compile Include="ViewModel\BaseViewModelTest.cs" />
-    <Compile Include="ViewModel\GSRSensorTest.cs" />
-    <Compile Include="ViewModel\GyroscopeSensorTest.cs" />
-    <Compile Include="ViewModel\HeartRateSensorTest.cs" />
-    <Compile Include="ViewModel\RRIntervalSensorTest.cs" />
+    <Compile Include="Sensor\GSRSensorTest.cs" />
+    <Compile Include="Sensor\GyroscopeSensorTest.cs" />
+    <Compile Include="Sensor\HeartRateSensorTest.cs" />
+    <Compile Include="Sensor\RRIntervalSensorTest.cs" />
     <Compile Include="ViewModel\SubjectViewModelTest.cs" />
-    <Compile Include="ViewModel\TemperatureSensorTest.cs" />
+    <Compile Include="Sensor\TemperatureSensorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="MSBandWearableTestApplication.xaml">
@@ -172,13 +169,25 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Application\IDEASLabUT.MSBandWearable.Application.csproj" SetTargetFramework="TargetFramework=netstandard2.0">
-      <Project>{3717ea5f-bb74-44f8-986f-31641c7d6180}</Project>
-      <Name>IDEASLabUT.MSBandWearable.Application</Name>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ApplicationProperties\IDEASLabUT.MSBandWearable.ApplicationProperties.csproj">
+      <Project>{8818d0c0-7b68-4478-b14e-8685ce8bedd0}</Project>
+      <Name>IDEASLabUT.MSBandWearable.ApplicationProperties</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Core\IDEASLabUT.MSBandWearable.Core.csproj">
-      <Project>{11fc93b7-ba88-4ad7-b234-1fe3f24357b7}</Project>
-      <Name>IDEASLabUT.MSBandWearable.Core</Name>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Client\IDEASLabUT.MSBandWearable.Client.csproj">
+      <Project>{5ce86562-bf9f-4626-8cc3-53ec0e4ec41a}</Project>
+      <Name>IDEASLabUT.MSBandWearable.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ElasticsearchLogger\IDEASLabUT.MSBandWearable.ElasticsearchLogger.csproj">
+      <Project>{4084efa1-dea4-4ecf-b84b-9cded68cea1e}</Project>
+      <Name>IDEASLabUT.MSBandWearable.ElasticsearchLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Notification\IDEASLabUT.MSBandWearable.Notification.csproj">
+      <Project>{a8c05dd2-dd57-4a43-b00e-e2bbc0ec7acf}</Project>
+      <Name>IDEASLabUT.MSBandWearable.Notification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.NTPSync\IDEASLabUT.MSBandWearable.NTPSync.csproj">
+      <Project>{18aa8cac-2d39-4c03-b6b5-7a449d59538c}</Project>
+      <Name>IDEASLabUT.MSBandWearable.NTPSync</Name>
     </ProjectReference>
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.TestCore\IDEASLabUT.MSBandWearable.TestCore.csproj" SetTargetFramework="TargetFramework=uap10.0.19041">
       <Project>{C3F32437-DBB7-4780-B3B0-B1D12094B5D9}</Project>
@@ -187,6 +196,14 @@
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.UWPCore\IDEASLabUT.MSBandWearable.UWPCore.csproj">
       <Project>{3b12c3a0-3a9b-40e2-814e-372cafa0012d}</Project>
       <Name>IDEASLabUT.MSBandWearable.UWPCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.WearableCore\IDEASLabUT.MSBandWearable.WearableCore.csproj">
+      <Project>{83d371b1-438f-45d9-b310-54bed828f891}</Project>
+      <Name>IDEASLabUT.MSBandWearable.WearableCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ElasticsearchClient\IDEASLabUT.MSBandWearable.ElasticsearchClient.csproj" SetTargetFramework="TargetFramework=uap10.0.19041">
+      <Project>{DF646EC3-BBBB-44B0-8DCD-C2A5E1EFFB7B}</Project>
+      <Name>IDEASLabUT.MSBandWearable.ElasticsearchClient</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

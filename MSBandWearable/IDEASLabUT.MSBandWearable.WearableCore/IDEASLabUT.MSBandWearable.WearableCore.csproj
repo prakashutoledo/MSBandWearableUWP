@@ -1,16 +1,14 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.22">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>uap10.0.19041</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.Sinks.Http" Version="8.0.0-beta.9" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.NTPSync\IDEASLabUT.MSBandWearable.NTPSync.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ElasticsearchLogger\IDEASLabUT.MSBandWearable.ElasticsearchLogger.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Client\IDEASLabUT.MSBandWearable.Client.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj" SetTargetFramework="TargetFramework=net48" />
-  </ItemGroup>
-
 </Project>

@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 [assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.Common")]
+[assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.ElasticsearchLogger")]
 [assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.Test")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

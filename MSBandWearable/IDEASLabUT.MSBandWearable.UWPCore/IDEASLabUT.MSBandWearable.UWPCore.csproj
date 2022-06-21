@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="GuerrillaNtp" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
   </ItemGroup>
 </Project>

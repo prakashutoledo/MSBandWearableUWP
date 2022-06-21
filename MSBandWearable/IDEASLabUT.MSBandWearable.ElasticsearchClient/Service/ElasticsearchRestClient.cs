@@ -1,12 +1,10 @@
 ﻿using IDEASLabUT.MSBandWearable.Model;
 
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-
-using static System.Net.Http.HttpMethod;
-using static System.Text.Encoding;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -15,19 +13,20 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// </summary>
     public sealed class ElasticsearchRestClient : IElasticsearchRestClient
     {
-        private static readonly Lazy<ElasticsearchRestClient> Instance;
+        private static readonly Lazy<ElasticsearchRestClient> ElasticsearchRestClientInstance;
+        private static readonly MediaTypeHeaderValue MediaTypeJson;
 
         static ElasticsearchRestClient()
         {
-            Instance = new Lazy<ElasticsearchRestClient>(() => new ElasticsearchRestClient(new HttpClientSupplier()));
+            ElasticsearchRestClientInstance = new Lazy<ElasticsearchRestClient>(() => new ElasticsearchRestClient(new HttpClientSupplier()));
+            MediaTypeJson = new MediaTypeHeaderValue("application/json");
         }
 
         // Lazy singleton pattern
-        internal static ElasticsearchRestClient Singleton => Instance.Value;
-
-        private const string JsonContentType = "application/json";
+        internal static ElasticsearchRestClient Singleton => ElasticsearchRestClientInstance.Value;
 
         private readonly HttpClient httpClient;
+        private bool disposedValue;
 
         /// <summary>
         /// Initializes a new instance of <see cref="ElasticsearchRestClient"/>
@@ -40,53 +39,64 @@ namespace IDEASLabUT.MSBandWearable.Service
             {
                 throw new ArgumentNullException(nameof(httpClientSupplier));
             }
+
             httpClient = httpClientSupplier.Supply();
+        }
+
+        /// <summary>
+        /// Add default authentication header for every request to underlying http client
+        /// </summary>
+        /// <param name="authenticationHeaderValue">An authentication header value to set</param>
+        public void SetDefaultAuthenticationHeader(AuthenticationHeaderValue authenticationHeaderValue)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = authenticationHeaderValue;
         }
 
         /// <summary>
         /// Performs bulk POST request for given bulk request body with given authentication header to given base elasticsearch url
         /// </summary>
         /// <param name="baseElasticsearchURI">A base elasticsearch uri to perform bulk request</param>
-        /// <param name="bulkRequestBody">A bulk POST request body</param>
-        /// <param name="authenticationHeaderValue">A header value with authentication details</param>
+        /// <param name="bulkRequestBody">A bulk POST request body stream</param>
         /// <returns>A http response message task that can be awaited</returns>
         /// <exception cref="ArgumentNullException">If baseElasticsearchURI, requestBody or authenticationHeaderValue is null or empty</exception>
-        public async Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, string requestBody, AuthenticationHeaderValue authenticationHeaderValue)
+        public Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, Stream bulkRequestBody)
         {
-            if (string.IsNullOrEmpty(baseElasticsearchURI))
+            if (string.IsNullOrWhiteSpace(baseElasticsearchURI))
             {
                 throw new ArgumentNullException(nameof(baseElasticsearchURI));
             }
 
-            if (string.IsNullOrEmpty(requestBody))
+            if (bulkRequestBody == null)
             {
-                throw new ArgumentNullException(nameof(requestBody));
+                throw new ArgumentNullException(nameof(bulkRequestBody));
             }
 
-            if (authenticationHeaderValue == null)
-            {
-                throw new ArgumentNullException(nameof(authenticationHeaderValue));
-            }
-
-            HttpResponseMessage response;
-            var elasticsearchURI = $"{baseElasticsearchURI}/_bulk";
-            using (var bulkPostRequest = new HttpRequestMessage(Post, elasticsearchURI))
-            using (var bulkRequestContent = new StringContent(requestBody, UTF8, JsonContentType))
-            {
-                bulkRequestContent.Headers.ContentType = new MediaTypeHeaderValue(JsonContentType);
-                bulkPostRequest.Headers.Authorization = authenticationHeaderValue;
-                bulkPostRequest.Content = bulkRequestContent;
-                response = await httpClient.SendAsync(bulkPostRequest);
-            }
-            return response;
+            var streamContent = new StreamContent(bulkRequestBody);
+            streamContent.Headers.ContentType = MediaTypeJson;
+            return httpClient.PostAsync($"{baseElasticsearchURI}/_bulk", streamContent);
         }
 
-        /// <summary>
-        /// Dispose the underlying <see cref="HttpClient"/>
-        /// </summary>
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    httpClient.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
         public void Dispose()
         {
-            httpClient.Dispose();
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~ElasticsearchRestClient()
+        {
+            Dispose(disposing: false);
         }
     }
 }

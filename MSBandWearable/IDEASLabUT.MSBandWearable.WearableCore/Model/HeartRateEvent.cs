@@ -1,4 +1,8 @@
-﻿namespace IDEASLabUT.MSBandWearable.Model
+﻿using Microsoft.Band.Sensors;
+
+using Newtonsoft.Json;
+
+namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// POCO holding MS Band 2 heart rate sensor event details
@@ -8,6 +12,9 @@
         /// <summary>
         /// A heart rate beats per minute value
         /// </summary>
-        public double Bpm { get; set; }
+        public int Bpm { get; set; }
+
+        [JsonIgnore]
+        public HeartRateQuality HeartRateStatus { get; set; }
     }
 }

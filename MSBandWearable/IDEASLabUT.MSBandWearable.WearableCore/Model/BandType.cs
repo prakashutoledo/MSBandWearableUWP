@@ -23,6 +23,7 @@ namespace IDEASLabUT.MSBandWearable.Model
     {
         private static readonly Lazy<IReadOnlyDictionary<string, BandType>> bandTypeMap;
         private static readonly Lazy<IReadOnlyDictionary<BandType, string>> descriptionMap;
+
         static BandTypeExtension()
         {
             bandTypeMap = new Lazy<IReadOnlyDictionary<string, BandType>>(() =>
@@ -34,7 +35,8 @@ namespace IDEASLabUT.MSBandWearable.Model
                 };
             });
 
-            descriptionMap = new Lazy<IReadOnlyDictionary<BandType, string>>(() => BandTypeMap.ToDictionary(entry => entry.Value, entry => entry.Key));
+          
+            descriptionMap = new Lazy<IReadOnlyDictionary<BandType, string>>(() => BandTypeMap.ToDictionary(bandTypeEntry => bandTypeEntry.Value, bandTypeEntry => bandTypeEntry.Key));
         }
 
         private static IReadOnlyDictionary<string, BandType> BandTypeMap => bandTypeMap.Value;

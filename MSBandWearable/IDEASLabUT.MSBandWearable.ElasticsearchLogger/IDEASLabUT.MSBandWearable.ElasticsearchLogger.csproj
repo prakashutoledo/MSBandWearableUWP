@@ -6,8 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Service\" />
+    <PackageReference Include="Serilog.Sinks.Http" Version="8.0.0-beta.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ElasticsearchClient\IDEASLabUT.MSBandWearable.ElasticsearchClient.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ApplicationProperties\IDEASLabUT.MSBandWearable.ApplicationProperties.csproj" SetTargetFramework="TargetFramework=uap10.0.19041" />
   </ItemGroup>
 
 </Project>

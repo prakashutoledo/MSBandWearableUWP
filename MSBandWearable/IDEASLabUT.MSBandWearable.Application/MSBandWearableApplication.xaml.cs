@@ -13,8 +13,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
-
 /// <summary>
 /// <author>Prakash Khadka</author>
 /// <mailto>prakashkhadka@aol.com</mailto>
@@ -43,8 +41,7 @@ namespace IDEASLabUT.MSBandWearable
         /// <param name="eventArgs">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs eventArgs)
         {
-            var rootFrame = Window.Current.Content as Frame;
-            if (rootFrame == null)
+            if (!(Window.Current.Content is Frame rootFrame))
             {
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
@@ -95,9 +92,9 @@ namespace IDEASLabUT.MSBandWearable
                 {
                     // Sets the global logger
                     // On application close request, flush the logger and close it
-                    Log.Logger = Logger;
-                    Log.CloseAndFlush();
-                    loggerTaskSource.SetResult(null);
+                    //Log.Logger = Ser;
+                    //Log.CloseAndFlush();
+                    //loggerTaskSource.SetResult(null);
                 });
 
                 _ = await loggerTaskSource.Task;

@@ -32,19 +32,19 @@ namespace IDEASLabUT.MSBandWearable.Extension
         public async Task ShouldContinueWithAction()
         {
             bool changed = false;
-            Action continuationAction = () => changed = true;
+            void ContinuationAction() => changed = true;
 
-            await Task.FromCanceled(new CancellationToken(true)).ContinueWithAction(continuationAction);
+            await Task.FromCanceled(new CancellationToken(true)).ContinueWithAction(ContinuationAction);
             Assert.IsFalse(changed, "Action hasn't been invoked as task is cancelled");
 
-            await Task.FromException(new Exception()).ContinueWithAction(continuationAction);
+            await Task.FromException(new Exception()).ContinueWithAction(ContinuationAction);
             Assert.IsFalse(changed, "Action hasn't been invoked as task is halted with exception");
 
-            await Task.FromResult(true).ContinueWithAction(continuationAction);
+            await Task.FromResult(true).ContinueWithAction(ContinuationAction);
             Assert.IsTrue(changed, "Action has been invoked as task from result is completed succesfully");
             changed = false;
 
-            await Task.CompletedTask.ContinueWithAction(continuationAction);
+            await Task.CompletedTask.ContinueWithAction(ContinuationAction);
             Assert.IsTrue(changed, "Action has been invoked as task is completed succesfully");
         }
 
@@ -52,19 +52,19 @@ namespace IDEASLabUT.MSBandWearable.Extension
         public async Task ShouldContinueWithActionWithInput()
         {
             bool changed = false;
-            Action<bool> continuationAction = result => changed = result;
+            void ContinuationAction(bool result) => changed = result;
 
-            await Task.FromCanceled<bool>(new CancellationToken(true)).ContinueWithAction(continuationAction);
+            await Task.FromCanceled<bool>(new CancellationToken(true)).ContinueWithAction(ContinuationAction);
             Assert.IsFalse(changed, "Action hasn't been invoked as task is cancelled");
 
-            await Task.FromException<bool>(new Exception()).ContinueWithAction(continuationAction);
+            await Task.FromException<bool>(new Exception()).ContinueWithAction(ContinuationAction);
             Assert.IsFalse(changed, "Action hasn't been invoked as task is halted with exception");
 
-            await Task.FromResult(true).ContinueWithAction(continuationAction);
+            await Task.FromResult(true).ContinueWithAction(ContinuationAction);
             Assert.IsTrue(changed, "Action has been invoked as task from result is completed succesfully");
             changed = false;
 
-            await Task.FromResult(false).ContinueWithAction(continuationAction);
+            await Task.FromResult(false).ContinueWithAction(ContinuationAction);
             Assert.IsFalse(changed, "Action has been invoked as task from false is completed succesfully");
         }
 
@@ -102,24 +102,24 @@ namespace IDEASLabUT.MSBandWearable.Extension
             int changedCount = 0;
             bool changed = false;
 
-            Func<bool, Task> continuationFunction = result =>
+            Task ContinuationFunction(bool result)
             {
                 changedCount++;
                 changed = result;
                 return Task.CompletedTask;
-            };
+            }
 
-            await Task.CompletedTask.ContinueWithStatusSupplier(continuationFunction);
+            await Task.CompletedTask.ContinueWithStatusSupplier(ContinuationFunction);
             Assert.IsTrue(changed, "Continuation function is invoked with result set to true");
             Assert.AreEqual(1, changedCount, "Continuation function is invoked with changed count increment to 1");
 
             changed = false;
-            await Task.FromCanceled(new CancellationToken(true)).ContinueWithStatusSupplier(continuationFunction);
+            await Task.FromCanceled(new CancellationToken(true)).ContinueWithStatusSupplier(ContinuationFunction);
             Assert.IsFalse(changed, "Continuation function is invoked with result set to false");
             Assert.AreEqual(2, changedCount, "Continuation function is invoked with changed count increment to 2");
 
             changed = false;
-            await Task.FromException(new Exception()).ContinueWithStatusSupplier(continuationFunction);
+            await Task.FromException(new Exception()).ContinueWithStatusSupplier(ContinuationFunction);
             Assert.IsFalse(changed, "Continuation function is invoked with result set to false");
             Assert.AreEqual(3, changedCount, "Continuation function is invoked with changed count increment to 1");
         }
@@ -128,17 +128,17 @@ namespace IDEASLabUT.MSBandWearable.Extension
         public async Task ShouldContinueWithStatusSupplierGeneric()
         {
             int changedCount = 0;
-            Func<Task<bool>, Task<bool>> continuationFunction = task =>
+            Task<bool> ContinuationFunction(Task<bool> task)
             {
                 changedCount++;
                 return Task.FromResult(task.Result);
-            };
+            }
 
-            var result = await Task.FromResult(true).ContinueWithSupplier(continuationFunction);
+            var result = await Task.FromResult(true).ContinueWithSupplier(ContinuationFunction);
             Assert.IsTrue(result, "Continuation function is invoked with result set to true");
             Assert.AreEqual(1, changedCount, "Continuation function is invoked which increment changed count to 1");
 
-            result = await Task.FromResult(false).ContinueWithSupplier(continuationFunction);
+            result = await Task.FromResult(false).ContinueWithSupplier(ContinuationFunction);
             Assert.IsFalse(result, "Continuation function is invoked with result set to false");
             Assert.AreEqual(2, changedCount, "Continuation function is invoked which increment changed count to 2");
         }

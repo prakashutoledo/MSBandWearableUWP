@@ -22,7 +22,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         }
 
         // Lazy singleton pattern
-        public static MSBandClientService Singleton => Instance.Value;
+        internal static MSBandClientService Singleton => Instance.Value;
 
         private readonly IBandClientManager bandClientManager;
 

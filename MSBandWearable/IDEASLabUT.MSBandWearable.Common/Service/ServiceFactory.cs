@@ -18,18 +18,32 @@ namespace IDEASLabUT.MSBandWearable.Service
             public ServiceFactoryImpl()
             {
                 GetWebSocketService = WebSocketService.Singleton;
-                GetBandClientService = MSBandClientService.Singleton;
                 GetPropertiesService = PropertiesService.Singleton;
+                GetNtpSyncService = NtpSyncService.Singleton;
+                GetSubjectViewService = SubjectViewService.Singleton;
+                GetBandManagerService = MSBandManagerService.Singleton;
             }
 
             /// <inheritdoc/>
             public sealed override IWebSocketService GetWebSocketService { get; }
 
             /// <inheritdoc/>
-            public sealed override IBandClientService GetBandClientService { get; }
-
-            /// <inheritdoc/>
             public sealed override IPropertiesService GetPropertiesService { get; }
+
+            /// <summary>
+            /// Gets the implementation instance of <see cref="INtpSyncService"/>
+            /// </summary>
+            public sealed override INtpSyncService GetNtpSyncService { get; }
+
+            /// <summary>
+            /// Gets the implementation instance of <see cref="ISubjectViewService"/>
+            /// </summary>
+            public sealed override ISubjectViewService GetSubjectViewService { get; }
+
+            /// <summary>
+            /// Gets the implementation instance of <see cref="IBandManagerService"/>
+            /// </summary>
+            public sealed override IBandManagerService GetBandManagerService { get; }
         }
 
         private static readonly Lazy<ServiceFactory> serviceFactoryInstance;
@@ -50,13 +64,23 @@ namespace IDEASLabUT.MSBandWearable.Service
         public abstract IWebSocketService GetWebSocketService { get; }
 
         /// <summary>
-        /// Gets the implementation instance of <see cref="IBandClientService"/>
-        /// </summary>
-        public abstract IBandClientService GetBandClientService { get; }
-
-        /// <summary>
         /// Gets the implementation instance of <see cref="IPropertiesService"/>
         /// </summary>
         public abstract IPropertiesService GetPropertiesService { get; }
+
+        /// <summary>
+        /// Gets the implementation instance of <see cref="INtpSyncService"/>
+        /// </summary>
+        public abstract INtpSyncService GetNtpSyncService { get; }
+
+        /// <summary>
+        /// Gets the implementation instance of <see cref="ISubjectViewService"/>
+        /// </summary>
+        public abstract ISubjectViewService GetSubjectViewService { get; }
+
+        /// <summary>
+        /// Gets the implementation instance of <see cref="IBandManagerService"/>
+        /// </summary>
+        public abstract IBandManagerService GetBandManagerService { get; }
     }
 }

@@ -25,7 +25,6 @@ using Windows.UI.Xaml.Navigation;
 using static IDEASLabUT.MSBandWearable.Model.Notification.PayloadType;
 using static IDEASLabUT.MSBandWearable.MSBandWearableApplicationGlobals;
 using static IDEASLabUT.MSBandWearable.Util.CoreDispatcherUtil;
-using static IDEASLabUT.MSBandWearable.Util.MSBandWearableApplicationUtil;
 using static Microsoft.Band.Sensors.HeartRateQuality;
 using static Windows.UI.Colors;
 
@@ -39,11 +38,7 @@ namespace IDEASLabUT.MSBandWearable.Views
     public sealed partial class MSBandPage
     {
         private static readonly SolidColorBrush ColorBrush = new SolidColorBrush();
-
-        private IBandManagerService BandManagerService { get; } = MSBandManagerService.Singleton;
-        private ISubjectViewService SubjectAndViewService { get; } = SubjectViewService.Singleton;
-        private IWebSocketService WebSocketService { get; } = ServiceFactory.Singleton.GetWebSocketService;
-
+        private ServiceFactory ServiceFactory { get; } = ServiceFactory.Singleton;
         private ViewModelFactory ViewModelFactory { get; } = ViewModelFactory.Singleton;
 
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
@@ -100,9 +95,11 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void AddSensorValueChangedHandlers()
         {
-            BandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
-            BandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
-            BandManagerService.Gsr.SensorModelChanged = GsrValueChanged;
+            var bandManagerService = ServiceFactory.GetBandManagerService;
+
+            bandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
+            bandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
+            bandManagerService.Gsr.SensorModelChanged = GsrValueChanged;
         }
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void SetMessagePostProcessor()
         {
-            WebSocketService.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, OnEmpaticaE4BandMessageReceived);
+            ServiceFactory.GetWebSocketService.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, OnEmpaticaE4BandMessageReceived);
         }
 
         /// <summary>
@@ -120,8 +117,9 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="eventArgs">An event arguments</param>
         private async void WebSocketTimerOnTick(object sender, object eventArgs)
         {
-            WebSocketService.Close();
-            await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
+            var websocketService = ServiceFactory.GetWebSocketService;
+            websocketService.Close();
+            await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey));
         }
 
         /// <summary>
@@ -132,13 +130,13 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="eventArgs">An event arguments</param>
         private async void GsrTimerOnTick(object sender, object eventArgs)
         {
-            
+            var gsr = ServiceFactory.GetBandManagerService.Gsr.Model.Gsr;
             await RunLaterInUIThread(() =>
             {
                 GsrDataPoint.Add(new DateTimeModel
                 {
                     DateTime = DateTime.Now.Ticks,
-                    Value = BandManagerService.Gsr.Model.Gsr
+                    Value = gsr
                 });
 
                 if (GsrDataPoint.Count > 20)
@@ -152,16 +150,16 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <summary>
         /// An async callback for MSBand RR interval sensor value change to run in ui dispatch thread
         /// </summary>
-        /// <param name="value">A new rrinterval event value</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task IbiSensorValueChanged(RRIntervalEvent value)
+        private async Task IbiSensorValueChanged()
         {
+            var ibi = ServiceFactory.GetBandManagerService.RRInterval.Model.Ibi;
             await RunLaterInUIThread(() =>
             {
                 IbiDataPoint.Add(new DateTimeModel
                 {
                     DateTime = DateTime.Now.Ticks,
-                    Value = value.Ibi
+                    Value = ibi
                 });
 
                 if (IbiDataPoint.Count > 20)
@@ -174,17 +172,19 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <summary>
         /// An async callback for MSBand heart rate sensor value change event to run in a ui dispatch thread
         /// </summary>
-        /// <param name="heartRateEvent">A new heart rate event value</param>
         /// <returns>A task that can be awaited</returns>
-        private async Task HeartRateSensorValueChanged(HeartRateEvent _)
+        private async Task HeartRateSensorValueChanged()
         {
-            var heartRateStatus = BandManagerService.HeartRate.Model.HeartRateStatus;
-            var bpm = BandManagerService.HeartRate.Model.Bpm;
+            var heartRateEvent = ServiceFactory.GetBandManagerService.HeartRate.Model;
+            var heartRateStatus = heartRateEvent.HeartRateStatus;
+            var bpm = heartRateEvent.Bpm;
+
             var heartRateModel = ViewModelFactory.GetHeartRateModel;
 
             await RunLaterInUIThread(() =>
             {
                 ColorBrush.Color = heartRateStatus == Locked ? White : Transparent;
+                heartRateModel.HeartRateStatus = heartRateStatus == Locked;
                 heartRateModel.Bpm = bpm;
                 if (bpm > heartRateModel.MaxBpm)
                 {
@@ -198,10 +198,10 @@ namespace IDEASLabUT.MSBandWearable.Views
             });
         }
 
-        private async Task GsrValueChanged(GSREvent _)
+        private async Task GsrValueChanged()
         {
             var gsrModel = ViewModelFactory.GetGSRModel;
-            var gsr = BandManagerService.Gsr.Model.Gsr;
+            var gsr = ServiceFactory.GetBandManagerService.Gsr.Model.Gsr;
             await RunLaterInUIThread(() => gsrModel.Gsr = gsr);
         }
 
@@ -233,12 +233,13 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <returns>A task that can be awaited</returns>
         private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
         {
-            SubjectAndViewService.CurrentView = empaticaE4Band.FromView;
-            SubjectAndViewService.SubjectId = empaticaE4Band.SubjectId;
+            var subjectViewService = ServiceFactory.GetSubjectViewService;
+            subjectViewService.CurrentView = empaticaE4Band.FromView;
+            subjectViewService.SubjectId = empaticaE4Band.SubjectId;
 
+            var subjectViewModel = ViewModelFactory.GetSubjectViewModel;
             await RunLaterInUIThread(() =>
             {
-                var subjectViewModel = ViewModelFactory.GetSubjectViewModel;
                 subjectViewModel.CurrentView = empaticaE4Band.FromView;
                 subjectViewModel.SubjectId = empaticaE4Band.SubjectId;
 
@@ -258,7 +259,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             commandBar.Visibility = Visibility.Collapsed;
             await HideAllGridsWithMessage("Loading Paired Bands", true);
             await Task.Delay(200);
-            var availableBandNames = await BandManagerService.GetPairedBands();
+            var availableBandNames = await ServiceFactory.GetBandManagerService.GetPairedBands();
             if (!availableBandNames.Any())
             {
                 var messageDialog = new MessageDialog("No Paired Bands Available!");
@@ -338,11 +339,10 @@ namespace IDEASLabUT.MSBandWearable.Views
                 PayloadType = E4Band,
                 Action = PayloadAction.SendMessage
             };
-            Func<bool, Task> test1 = (_) => Task.CompletedTask;
-            await WebSocketService.Connect("wss://ws.postman-echo.com/raw", test1);
-            await WebSocketService.SendMessage(test, test1);
-            Trace.WriteLine(ServiceFactory.Singleton.GetPropertiesService.GetProperty("elasticsearch:authenticationKey"));
-            Trace.WriteLine(ServiceFactory.Singleton.GetPropertiesService.GetProperty("elasticsearch:uri"));
+            Task Test1(bool _) => Task.CompletedTask;
+            var webSockerService = ServiceFactory.GetWebSocketService;
+            await webSockerService.Connect("wss://ws.postman-echo.com/raw", Test1);
+            await webSockerService.SendMessage(test, Test1);
             await Task.CompletedTask;
         }
 
@@ -356,15 +356,15 @@ namespace IDEASLabUT.MSBandWearable.Views
             var symbolIcon = new SymbolIcon(Symbol.Pause);
             var label = "Pause Session";
             var sessionInProgress = true;
-
-            if (SubjectAndViewService.SessionInProgress)
+            var subjectViewService = ServiceFactory.GetSubjectViewService;
+            if (subjectViewService.SessionInProgress)
             {
                 symbolIcon = new SymbolIcon(Symbol.Play);
                 label = "Resume Session";
                 sessionInProgress = false;
             }
 
-            SubjectAndViewService.SessionInProgress = sessionInProgress;
+            subjectViewService.SessionInProgress = sessionInProgress;
             await RunLaterInUIThread(() =>
             {
                 startOrStopSessionButtton.Icon = symbolIcon;
@@ -408,9 +408,9 @@ namespace IDEASLabUT.MSBandWearable.Views
             commandBar.IsEnabled = false;
 
             await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
-            await BandManagerService.ConnectBand(bandName);
-
-            switch (BandManagerService.BandStatus)
+            var bandManagerService = ServiceFactory.GetBandManagerService;
+            await bandManagerService.ConnectBand(bandName);
+            switch (bandManagerService.BandStatus)
             {
                 case BandStatus.Connected:
                     //await StartDashboard();
@@ -466,17 +466,18 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <returns>A task that can be awaited</returns>
         private async Task StartDashboard()
         {
-            await HideAllGridsWithMessage($"Preparing Dashboard for Microsoft Band ({BandManagerService.BandName})...");
-            await BandManagerService.SubscribeSensors();
+            var bandManagerService = ServiceFactory.GetBandManagerService;
+            await HideAllGridsWithMessage($"Preparing Dashboard for Microsoft Band ({bandManagerService.BandName})...");
+            await bandManagerService.SubscribeSensors();
 
             await RunLaterInUIThread(() =>
             {
                 commandBar.Visibility = Visibility.Visible;
-                ViewModelFactory.GetSubjectViewModel.MSBandSerialNumber = BandManagerService.BandName;
+                ViewModelFactory.GetSubjectViewModel.MSBandSerialNumber = bandManagerService.BandName;
                 UpdateCommandBar();
             });
 
-            await NtpSyncService.Singleton.SyncTimestamp(ApplicationProperties.GetValue<string>(NtpPoolUriJsonKey));
+            await ServiceFactory.GetNtpSyncService.SyncTimestamp(ServiceFactory.GetPropertiesService.GetProperty(NtpPoolUriJsonKey));
             //await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
 
             GsrTimer.Start();
@@ -488,7 +489,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void UpdateCommandBar()
         {
-            switch (BandManagerService.BandStatus)
+            switch (ServiceFactory.GetBandManagerService.BandStatus)
             {
                 case BandStatus.Connected:
                     return;

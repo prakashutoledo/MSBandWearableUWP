@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2022 IDEASLab @ University of Toledo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.Common")]
+[assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.WearableCore")]
 [assembly: InternalsVisibleTo("IDEASLabUT.MSBandWearable.Test")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

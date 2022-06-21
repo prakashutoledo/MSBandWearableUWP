@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Threading;
+
+using static System.Threading.Interlocked;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// A service class for current experiment subject, view and session details
     /// </summary>
-    public sealed class SubjectViewService : ISubjectViewService
+    public class SubjectViewService : ISubjectViewService
     {
         private static readonly Lazy<SubjectViewService> Instance = new Lazy<SubjectViewService>(() => new SubjectViewService());
         private static string subjectId = "Not Available";
@@ -30,7 +31,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public string SubjectId 
         {
             get => subjectId;
-            set => Interlocked.Exchange(ref subjectId, value);
+            set => Exchange(ref subjectId, value);
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public string CurrentView
         {
             get => currentView;
-            set => Interlocked.Exchange(ref currentView, value);
+            set => Exchange(ref currentView, value);
         }
 
         /// <summary>
@@ -48,7 +49,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         public bool SessionInProgress
         {
             get => (bool) sessionInProgress;
-            set => Interlocked.Exchange(ref sessionInProgress, value);
+            set => Exchange(ref sessionInProgress, value);
         }
     }
 }

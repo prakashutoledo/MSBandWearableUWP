@@ -73,8 +73,8 @@
                                                FontSize="28" Margin="0 0 0 8" Foreground="Black" FontWeight="SemiBold" Text="{x:Bind Path=ViewModelFactory.GetHeartRateModel.Bpm, Mode=OneWay}"></TextBlock>
                                 </Grid>
                                 <StackPanel Margin="20 0 0 0">
-                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=ViewModelFactory.HeartRateModel.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=BandManagerService.HeartRate.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
-                                    <TextBlock>RR Interval: <Run Text="{x:Bind Path=BandManagerService.RRInterval.Model.Ibi,Mode=OneWay}" /></TextBlock>
+                                    <TextBlock xml:space="preserve">Min: <Run Text="{x:Bind Path=ViewModelFactory.GetHeartRateModel.MinBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter}, ConverterParameter=min}" />   Max: <Run Text="{x:Bind Path=ViewModelFactory.GetHeartRateModel.MaxBpm,Mode=OneWay,Converter={StaticResource HeartRateConverter},ConverterParameter=max}" /></TextBlock>
+                                    <TextBlock>RR Interval: <Run Text="{x:Bind Path=ViewModelFactory.GetRRIntervalModel.Ibi,Mode=OneWay}" /></TextBlock>
                                     <TextBlock>Status: <Run Text="{x:Bind Path=ViewModelFactory.GetHeartRateModel.HeartRateStatus,Mode=OneWay}" /></TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -97,7 +97,7 @@
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">TEMP</TextBlock>
                                     </Border>
                                     <TextBlock FontSize="52" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0 0 0 18"
-                                               Text="{x:Bind Path=BandManagerService.Temperature.Model.Temperature,Mode=OneWay,Converter={StaticResource TemperatureConverter}}"></TextBlock>
+                                               Text="{x:Bind Path=ViewModelFactory.GetTemperatureModel.Temperature,Mode=OneWay,Converter={StaticResource TemperatureConverter}}"></TextBlock>
                                     <TextBlock FontSize="34" VerticalAlignment="Center" Margin="5 0 0 0">°C</TextBlock>
                                 </StackPanel>
                             </StackPanel>
@@ -111,7 +111,7 @@
                                     <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">Name</TextBlock>
                                     </Border>
-                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.MSBandSerialNumber,Mode=OneWay}"></TextBlock>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=ViewModelFactory.GetSubjectViewModel.MSBandSerialNumber,Mode=OneWay}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -131,7 +131,7 @@
                                     <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">ID</TextBlock>
                                     </Border>
-                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.SubjectId,Mode=OneWay}"></TextBlock>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=ViewModelFactory.GetSubjectViewModel.SubjectId,Mode=OneWay}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -144,7 +144,7 @@
                                     <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">Name</TextBlock>
                                     </Border>
-                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.CurrentView,Mode=OneWay}"></TextBlock>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=ViewModelFactory.GetSubjectViewModel.CurrentView,Mode=OneWay}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>
@@ -157,7 +157,7 @@
                                     <Border Background="White" CornerRadius="3" Margin="0 0 0 0" Padding="5 0 0 0" Height="20">
                                         <TextBlock FontSize="20" VerticalAlignment="Center" Foreground="Black" Padding="0 0 0 3">Name</TextBlock>
                                     </Border>
-                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=SubjectAndView.E4SerialNumber,Mode=OneWay}"></TextBlock>
+                                    <TextBlock FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="5 0 0 0" Text="{x:Bind Path=ViewModelFactory.GetSubjectViewModel.E4SerialNumber,Mode=OneWay}"></TextBlock>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

@@ -6,7 +6,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// View model test for <see cref="SubjectViewModel"/>
     /// </summary>
     [TestClass]
-    public class SubjectViewModelTest : BaseViewModelTest<SubjectViewModel>
+    public class SubjectViewModelTest : BaseHyperMock<SubjectViewModel>
     {
 
         [DataTestMethod]

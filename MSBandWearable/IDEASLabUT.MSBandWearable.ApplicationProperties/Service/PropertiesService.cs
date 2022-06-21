@@ -11,18 +11,18 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// <summary>
     /// Service class which helps to provide application properties value based on the provided key
     /// </summary>
-    public class PropertiesService : IPropertiesService
+    public sealed class PropertiesService : IPropertiesService
     {
         private static readonly Lazy<IPropertiesService> PropertiesServiceInstance;
 
         static PropertiesService()
         {
-            PropertiesServiceInstance = new Lazy<IPropertiesService>(() => new PropertiesService(Builder()));
+            PropertiesServiceInstance = new Lazy<IPropertiesService>(() => new PropertiesService(PropertiesConfigurationBuilder()));
         }
 
         internal static IPropertiesService Singleton => PropertiesServiceInstance.Value;
 
-        private static IConfiguration Builder()
+        private static IConfiguration PropertiesConfigurationBuilder()
         {
             // We are already using NewtonSoft for JSON seriliazation and deserialization. Thus, this is the
             // only reason we are not using default `System.Text.Json` configuration. And, also `System.Text.Json`
@@ -45,6 +45,8 @@ namespace IDEASLabUT.MSBandWearable.Service
             // private initialization
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
+
+        public IConfiguration GetProperties => configuration;
 
         /// <summary>
         /// Get the value for given property key

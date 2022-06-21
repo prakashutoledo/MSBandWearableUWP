@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using static IDEASLabUT.MSBandWearable.Model.SensorType;
-using static IDEASLabUT.MSBandWearable.MSBandWearableCoreGlobals;
+using static IDEASLabUT.MSBandWearable.WearableCoreGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Model
 {

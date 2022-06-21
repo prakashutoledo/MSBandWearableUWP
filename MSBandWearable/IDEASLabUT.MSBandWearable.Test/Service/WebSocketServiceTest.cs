@@ -1,6 +1,5 @@
 ﻿using IDEASLabUT.MSBandWearable.Model.Notification;
 using IDEASLabUT.MSBandWearable.Test;
-using IDEASLabUT.MSBandWearable.Util;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -62,7 +61,7 @@ namespace IDEASLabUT.MSBandWearable.Service
             using (var streamReader = new StreamReader(randomAccessStream.AsStreamForRead()))
             {
                 var actualMessage = await streamReader.ReadToEndAsync();
-                Assert.AreEqual(expectedMessage.ToJson(), actualMessage, "Raw json message should match");
+                Assert.AreEqual(expectedMessage.ToString(), actualMessage, "Raw json message should match");
                 Assert.IsTrue(actualStatus, "Send message task is succesfull");
             }
         }
@@ -76,14 +75,14 @@ namespace IDEASLabUT.MSBandWearable.Service
             Subject.AddMessagePostProcessor<EmpaticaE4Band>(E4Band, null);
             Assert.IsFalse(Subject.GetMessagePostProcessors.ContainsKey(E4Band));
 
-            Func<EmpaticaE4Band, Task> processor = _ => Task.CompletedTask;
-            Subject.AddMessagePostProcessor(E4Band, processor);
+            Task Processor(EmpaticaE4Band _) => Task.CompletedTask;
+            Subject.AddMessagePostProcessor(E4Band, (Func<EmpaticaE4Band, Task>) Processor);
             Assert.IsTrue(Subject.GetMessagePostProcessors.ContainsKey(E4Band));
 
-            Func<EmpaticaE4Band, Task> newProcessor = _ => Task.CompletedTask;
+            Task NewProcessor(EmpaticaE4Band _) => Task.CompletedTask;
             var oldProcessor = Subject.GetMessagePostProcessors[E4Band];
-            Subject.AddMessagePostProcessor(E4Band, newProcessor);
-            Assert.AreNotEqual(newProcessor, Subject.GetMessagePostProcessors[E4Band]);
+            Subject.AddMessagePostProcessor(E4Band, (Func<EmpaticaE4Band, Task>) NewProcessor);
+            Assert.AreNotEqual((Func<EmpaticaE4Band, Task>) NewProcessor, Subject.GetMessagePostProcessors[E4Band]);
         }
 
         [TestCleanup]

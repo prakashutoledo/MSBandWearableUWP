@@ -1,15 +1,15 @@
 ﻿namespace IDEASLabUT.MSBandWearable
 {
-    internal static class WearableCoreGlobals
+    internal class WearableCoreGlobals
     {
-        public const string AccelerometerSensorName = "accelerometer";
-        public const string GSRSensorName = "gsr";
-        public const string GyroscopeSensorName = "gyroscope";
-        public const string HeartRateSensorName = "heartrate";
-        public const string RRIntervalSensorName = "ibi";
-        public const string TemperatureSensorName = "temperature";
+        internal const string AccelerometerSensorName = "accelerometer";
+        internal const string GSRSensorName = "gsr";
+        internal const string GyroscopeSensorName = "gyroscope";
+        internal const string HeartRateSensorName = "heartrate";
+        internal const string RRIntervalSensorName = "ibi";
+        internal const string TemperatureSensorName = "temperature";
 
-        public const string MSBandDescription = "MSBAND";
-        public const string E4BandDescription = "E4BAND";
+        internal const string MSBandDescription = "MSBAND";
+        internal const string E4BandDescription = "E4BAND";
     }
 }
