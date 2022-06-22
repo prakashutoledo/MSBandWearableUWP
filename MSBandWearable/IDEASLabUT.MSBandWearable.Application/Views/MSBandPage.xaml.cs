@@ -42,7 +42,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         private ViewModelFactory ViewModelFactory { get; } = ViewModelFactory.Singleton;
 
         private ObservableCollection<string> AvailableBands { get; } = new ObservableCollection<string>();
-        private DispatcherTimer GsrTimer { get; } = new DispatcherTimer();
         private DispatcherTimer WebSocketTimer { get; } = new DispatcherTimer();
 
         // These chart values properties should be public for data binding line series chart
@@ -84,8 +83,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// </summary>
         private void AddDispatchTimersTickIntervals()
         {
-            GsrTimer.Interval = TimeSpan.FromSeconds(1);
-            GsrTimer.Tick += GsrTimerOnTick;
             WebSocketTimer.Interval = TimeSpan.FromMinutes(5);
             WebSocketTimer.Tick += WebSocketTimerOnTick;
         }
@@ -96,10 +93,10 @@ namespace IDEASLabUT.MSBandWearable.Views
         private void AddSensorValueChangedHandlers()
         {
             var bandManagerService = ServiceFactory.GetBandManagerService;
-
             bandManagerService.HeartRate.SensorModelChanged = HeartRateSensorValueChanged;
             bandManagerService.RRInterval.SensorModelChanged = IbiSensorValueChanged;
             bandManagerService.Gsr.SensorModelChanged = GsrValueChanged;
+            bandManagerService.Temperature.SensorModelChanged = TemperatureValueChanged;
         }
 
         /// <summary>
@@ -120,31 +117,6 @@ namespace IDEASLabUT.MSBandWearable.Views
             var websocketService = ServiceFactory.GetWebSocketService;
             websocketService.Close();
             await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey));
-        }
-
-        /// <summary>
-        /// An on tick callback for gsr dispatch timer for binding current gsr value to gsr data point line series in a ui
-        /// dispatch thread
-        /// </summary>
-        /// <param name="sender">The sender of current timer on tick event</param>
-        /// <param name="eventArgs">An event arguments</param>
-        private async void GsrTimerOnTick(object sender, object eventArgs)
-        {
-            var gsr = ServiceFactory.GetBandManagerService.Gsr.Model.Gsr;
-            await RunLaterInUIThread(() =>
-            {
-                GsrDataPoint.Add(new DateTimeModel
-                {
-                    DateTime = DateTime.Now.Ticks,
-                    Value = gsr
-                });
-
-                if (GsrDataPoint.Count > 20)
-                {
-                    GsrDataPoint.RemoveAt(0);
-                }
-            });
-            
         }
 
         /// <summary>
@@ -218,6 +190,14 @@ namespace IDEASLabUT.MSBandWearable.Views
                     GsrDataPoint.RemoveAt(0);
                 }
             });
+        }
+
+        private async Task TemperatureValueChanged()
+        {
+            var temperatureModel = ViewModelFactory.GetTemperatureModel;
+            var temperature = ServiceFactory.GetBandManagerService.Temperature.Model.Temperature;
+
+            await RunLaterInUIThread(() => temperatureModel.Temperature = temperature);
         }
 
         /// <summary>
@@ -492,10 +472,8 @@ namespace IDEASLabUT.MSBandWearable.Views
                 UpdateCommandBar();
             });
 
-            //await ServiceFactory.GetNtpSyncService.SyncTimestamp(ServiceFactory.GetPropertiesService.GetProperty(NtpPoolUriJsonKey));
+            await ServiceFactory.GetNtpSyncService.SyncTimestamp(ServiceFactory.GetPropertiesService.GetProperty(NtpPoolUriJsonKey));
             //await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
-
-            GsrTimer.Start();
             WebSocketTimer.Start();
         }
 

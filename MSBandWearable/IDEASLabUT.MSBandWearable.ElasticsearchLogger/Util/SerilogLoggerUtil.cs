@@ -2,8 +2,8 @@
 using IDEASLabUT.MSBandWearable.Service;
 
 using Serilog;
+
 using System;
-using System.Diagnostics;
 using System.IO;
 
 using Windows.Storage;
@@ -25,7 +25,7 @@ namespace IDEASLabUT.MSBandWearable.Util
                 return new LoggerConfiguration().WriteTo.DurableHttpUsingFileSizeRolledBuffers(
                     requestUri: propertiesService.GetProperty(ElasticsearchUriJsonKey),
                     bufferBaseFileName: Path.Combine(ApplicationData.Current.LocalFolder.Path, propertiesService.GetProperty(LoggerFileUriJsonKey)),
-                    batchPostingLimit: 30,
+                    batchPostingLimit: 200,
                     textFormatter: new ElasticsearchEventJsonFormatter(),
                     batchFormatter: new ElasticsearchBatchEventFormatter(null),
                     httpClient: ElasticsearchLoggerHttpClient.Singleton,
@@ -33,8 +33,6 @@ namespace IDEASLabUT.MSBandWearable.Util
                     configuration: propertiesService.GetProperties
                 );
             });
-
-            Trace.WriteLine(ApplicationData.Current.LocalFolder.Path);
 
             LoggerInstance = new Lazy<ILogger>(() => LoggerFactory.CreateLogger());
         }
