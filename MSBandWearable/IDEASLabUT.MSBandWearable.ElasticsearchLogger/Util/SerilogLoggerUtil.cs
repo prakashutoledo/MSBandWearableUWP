@@ -29,7 +29,7 @@ namespace IDEASLabUT.MSBandWearable.Util
                     batchFormatter: new ElasticsearchBatchEventFormatter(null),
                     httpClient: ElasticsearchLoggerHttpClient.Singleton,
                     period: TimeSpan.FromSeconds(8),
-                    configuration: null
+                    configuration: propertiesService.GetProperties
                 );
             });
 
@@ -44,6 +44,6 @@ namespace IDEASLabUT.MSBandWearable.Util
         /// <summary>
         /// Gets the instantiated lazy singleton logger instance
         /// </summary>
-        public static ILogger Logger => LoggerInstance.Value;
+        internal static ILogger Logger => LoggerInstance.Value;
     }
 }

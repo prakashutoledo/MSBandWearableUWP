@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,6 +44,11 @@ namespace IDEASLabUT.MSBandWearable.Service
         public DateTime LocalTimeNow => DateTime.Now + CorrectionOffset;
 
         /// <summary>
+        /// Provides the synchronization status 
+        /// </summary>
+        public bool Synced { get; private set; }
+
+        /// <summary>
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
         /// </summary>
         /// <param name="poolAddress">A ntp pool to get the correction offset</param>
@@ -52,15 +58,24 @@ namespace IDEASLabUT.MSBandWearable.Service
             // Only used the first address from the given pool
             var ipAddresses = await Dns.GetHostAddressesAsync(poolAddress).ConfigureAwait(false);
 
-            if (ipAddresses == null || ipAddresses.Length == 0)
+            if (ipAddresses == null || !ipAddresses.Any())
             {
                 return;
             }
 
             using (var ntpClient = new NtpClient(ipAddresses.First()))
             {
-                CorrectionOffset = ntpClient.GetCorrectionOffset();
-                Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
+                try
+                {
+                    CorrectionOffset = ntpClient.GetCorrectionOffset();
+                    Synced = true;
+                    Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
+                }
+                catch (Exception exception) when (exception is NtpException || exception is SocketException)
+                {
+                    Synced = false;
+                    Trace.WriteLine($"Unable to synce to '{poolAddress}'.");
+                }
             }
         }
     }

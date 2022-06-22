@@ -18,6 +18,8 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// </summary>
         DateTime LocalTimeNow { get; }
 
+        bool Synced { get; }
+
         /// <summary>
         /// Sunchronized the datetime for this application to given ntp pool by finding the datetime correction offset
         /// </summary>

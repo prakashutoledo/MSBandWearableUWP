@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Views;
+﻿using IDEASLabUT.MSBandWearable.Service;
+using IDEASLabUT.MSBandWearable.Views;
 
 using Serilog;
 
@@ -92,9 +93,9 @@ namespace IDEASLabUT.MSBandWearable
                 {
                     // Sets the global logger
                     // On application close request, flush the logger and close it
-                    //Log.Logger = Ser;
-                    //Log.CloseAndFlush();
-                    //loggerTaskSource.SetResult(null);
+                    Log.Logger = ServiceFactory.Singleton.GetLogger;
+                    Log.CloseAndFlush();
+                    loggerTaskSource.SetResult(null);
                 });
 
                 _ = await loggerTaskSource.Task;

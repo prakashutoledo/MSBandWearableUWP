@@ -1,4 +1,8 @@
-﻿using System;
+﻿using IDEASLabUT.MSBandWearable.Util;
+
+using Serilog;
+
+using System;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -22,6 +26,7 @@ namespace IDEASLabUT.MSBandWearable.Service
                 GetNtpSyncService = NtpSyncService.Singleton;
                 GetSubjectViewService = SubjectViewService.Singleton;
                 GetBandManagerService = MSBandManagerService.Singleton;
+                GetLogger = SerilogLoggerUtil.Logger;
             }
 
             /// <inheritdoc/>
@@ -44,6 +49,11 @@ namespace IDEASLabUT.MSBandWearable.Service
             /// Gets the implementation instance of <see cref="IBandManagerService"/>
             /// </summary>
             public sealed override IBandManagerService GetBandManagerService { get; }
+
+            /// <summary>
+            /// Gets the implementation of <see cref="ILogger"/>
+            /// </summary>
+            public sealed override ILogger GetLogger { get; }
         }
 
         private static readonly Lazy<ServiceFactory> serviceFactoryInstance;
@@ -82,5 +92,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// Gets the implementation instance of <see cref="IBandManagerService"/>
         /// </summary>
         public abstract IBandManagerService GetBandManagerService { get; }
+
+        /// <summary>
+        /// Gets the implementation of <see cref="ILogger"/>
+        /// </summary>
+        public abstract ILogger GetLogger { get; }
     }
 }
