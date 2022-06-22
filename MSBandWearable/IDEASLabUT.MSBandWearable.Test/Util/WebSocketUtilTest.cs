@@ -53,18 +53,18 @@ namespace IDEASLabUT.MSBandWearable.Util
         public async Task ShouldParseAndProcess()
         {
             EmpaticaE4Band receivedPayload = null;
-            async Task Receive(EmpaticaE4Band message)
+            Task Receive(EmpaticaE4Band message)
             {
                 receivedPayload = message;
-                await Task.CompletedTask;
+                return Task.CompletedTask;
             }
 
             var processors = new Dictionary<PayloadType, Func<object, Task>>
             {
                 {
-                    E4Band, async processedMessage => 
+                    E4Band, processedMessage => 
                     {
-                       await Receive((processedMessage as Message<EmpaticaE4Band>).Payload);
+                        return Receive((processedMessage as Message<EmpaticaE4Band>).Payload);
                     }
                 }
             };

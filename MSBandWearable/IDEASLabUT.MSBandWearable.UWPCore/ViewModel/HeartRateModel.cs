@@ -19,7 +19,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         private int bpm;
         private int maxBpm = 0;
         private int minBpm = 220;
-        private object heartRateStatus;
+        private object heartRateStatus = false;
 
         private HeartRateModel() : base()
         {

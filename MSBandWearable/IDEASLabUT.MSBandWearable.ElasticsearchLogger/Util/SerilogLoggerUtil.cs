@@ -3,6 +3,7 @@ using IDEASLabUT.MSBandWearable.Service;
 
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 using Windows.Storage;
@@ -32,6 +33,8 @@ namespace IDEASLabUT.MSBandWearable.Util
                     configuration: propertiesService.GetProperties
                 );
             });
+
+            Trace.WriteLine(ApplicationData.Current.LocalFolder.Path);
 
             LoggerInstance = new Lazy<ILogger>(() => LoggerFactory.CreateLogger());
         }

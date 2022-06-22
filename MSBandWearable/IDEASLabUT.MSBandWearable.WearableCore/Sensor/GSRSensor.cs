@@ -8,6 +8,8 @@ using Microsoft.Band.Sensors;
 
 using Serilog;
 
+using System;
+using System.Linq;
 namespace IDEASLabUT.MSBandWearable.Sensor
 {
     /// <summary>
@@ -15,9 +17,21 @@ namespace IDEASLabUT.MSBandWearable.Sensor
     /// </summary>
     public class GSRSensor : BaseSensor<GSREvent, IBandGsrReading>
     {
-        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, logger, msBandService, subjectViewService, ntpSyncService, bandSensorManager => bandSensorManager.Gsr)
+        public GSRSensor(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService) : base(SensorType.GSR, logger, msBandService, subjectViewService, ntpSyncService, GetGsrSensor)
         {
         }
+
+        private static IBandSensor<IBandGsrReading> GetGsrSensor(IBandSensorManager bandSensorManager)
+        {
+            var gsr = bandSensorManager.Gsr;
+            if (gsr != null)
+            {
+                gsr.ReportingInterval = gsr.SupportedReportingIntervals.Last();
+            }
+            return gsr;
+        }
+
+
 
         /// <summary>
         /// Updates the underlying model value

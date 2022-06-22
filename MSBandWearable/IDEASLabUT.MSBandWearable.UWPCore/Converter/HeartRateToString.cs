@@ -20,8 +20,8 @@ namespace IDEASLabUT.MSBandWearable.Converter
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             return parameter.ToString() == "min"
-                ? ((double) value >= 220) ? "--" : value.ToString()
-                : ((double) value <= 0) ? "--" : value.ToString();
+                ? ((int) value >= 220) ? "--" : value.ToString()
+                : ((int) value <= 0) ? "--" : value.ToString();
         }
 
         /// <summary>

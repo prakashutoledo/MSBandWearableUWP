@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using Windows.Devices.Enumeration;
@@ -57,8 +58,10 @@ namespace IDEASLabUT.MSBandWearable.Service
 
             // This is a hack with the help of reflection to get device information from bandInfo
             // Checks if the band bluetooth id ends with band name last split substring
+            //Microsoft.Band.Store.BluetoothDeviceInfo
             bool PairedBandConnectionPredicate(IBandInfo bandInfo)
             {
+                
                 var deviceInfo = bandInfo.GetType().GetProperty(BluetoothDeviceInfoPeer).GetValue(bandInfo) as DeviceInformation;
                 return deviceInfo.Id.Contains(bandName.Split(' ').Last());
             }

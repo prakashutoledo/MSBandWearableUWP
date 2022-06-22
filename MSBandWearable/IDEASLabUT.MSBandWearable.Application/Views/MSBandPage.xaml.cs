@@ -154,8 +154,10 @@ namespace IDEASLabUT.MSBandWearable.Views
         private async Task IbiSensorValueChanged()
         {
             var ibi = ServiceFactory.GetBandManagerService.RRInterval.Model.Ibi;
+            var ibiModel = ViewModelFactory.GetRRIntervalModel;
             await RunLaterInUIThread(() =>
             {
+                ibiModel.Ibi = ibi;
                 IbiDataPoint.Add(new DateTimeModel
                 {
                     DateTime = DateTime.Now.Ticks,
@@ -183,7 +185,7 @@ namespace IDEASLabUT.MSBandWearable.Views
 
             await RunLaterInUIThread(() =>
             {
-                ColorBrush.Color = heartRateStatus == Locked ? White : Transparent;
+                ColorBrush.Color = White;
                 heartRateModel.HeartRateStatus = heartRateStatus == Locked;
                 heartRateModel.Bpm = bpm;
                 if (bpm > heartRateModel.MaxBpm)
@@ -202,7 +204,20 @@ namespace IDEASLabUT.MSBandWearable.Views
         {
             var gsrModel = ViewModelFactory.GetGSRModel;
             var gsr = ServiceFactory.GetBandManagerService.Gsr.Model.Gsr;
-            await RunLaterInUIThread(() => gsrModel.Gsr = gsr);
+            await RunLaterInUIThread(() =>
+            {
+                gsrModel.Gsr = gsr;
+                GsrDataPoint.Add(new DateTimeModel
+                {
+                    DateTime = DateTime.Now.Ticks,
+                    Value = gsr
+                });
+
+                if (GsrDataPoint.Count > 20)
+                {
+                    GsrDataPoint.RemoveAt(0);
+                }
+            });
         }
 
         /// <summary>
@@ -469,7 +484,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             var bandManagerService = ServiceFactory.GetBandManagerService;
             await HideAllGridsWithMessage($"Preparing Dashboard for Microsoft Band ({bandManagerService.BandName})...");
             await bandManagerService.SubscribeSensors();
-
+            //await bandManagerService.Gsr.Subscribe();
             await RunLaterInUIThread(() =>
             {
                 commandBar.Visibility = Visibility.Visible;
@@ -477,7 +492,7 @@ namespace IDEASLabUT.MSBandWearable.Views
                 UpdateCommandBar();
             });
 
-            await ServiceFactory.GetNtpSyncService.SyncTimestamp(ServiceFactory.GetPropertiesService.GetProperty(NtpPoolUriJsonKey));
+            //await ServiceFactory.GetNtpSyncService.SyncTimestamp(ServiceFactory.GetPropertiesService.GetProperty(NtpPoolUriJsonKey));
             //await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
 
             GsrTimer.Start();
@@ -492,7 +507,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             switch (ServiceFactory.GetBandManagerService.BandStatus)
             {
                 case BandStatus.Connected:
-                    return;
+                    //return;
                 case BandStatus.Subscribed:
                     syncGrid.Visibility = Visibility.Collapsed;
                     startOrStopSessionButtton.IsEnabled = true;

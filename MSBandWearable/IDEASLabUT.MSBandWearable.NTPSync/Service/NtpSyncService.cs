@@ -1,5 +1,7 @@
 ﻿using GuerrillaNtp;
 
+using IDEASLabUT.MSBandWearable.Model;
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -15,17 +17,20 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// </summary>
     public class NtpSyncService : INtpSyncService
     {
-        private static readonly Lazy<NtpSyncService> Instance = new Lazy<NtpSyncService>(() => new NtpSyncService());
+        private static readonly Lazy<NtpSyncService> Instance = new Lazy<NtpSyncService>(() => new NtpSyncService(new NtpClientSupplier()));
         private static object correctionOffset = TimeSpan.Zero;
 
         // Lazy singleton pattern
         internal static NtpSyncService Singleton => Instance.Value;
 
+        private readonly INtpClientSupplier ntpClientSupplier;
+
         /// <summary>
         /// Initializes a new instance of <see cref="NtpSyncService"/>
         /// </summary>
-        private NtpSyncService()
+        private NtpSyncService(INtpClientSupplier ntpClientSupplier)
         {
+            this.ntpClientSupplier = ntpClientSupplier;
             // private initialization
         }
 
@@ -55,27 +60,22 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task SyncTimestamp(string poolAddress)
         {
-            // Only used the first address from the given pool
-            var ipAddresses = await Dns.GetHostAddressesAsync(poolAddress).ConfigureAwait(false);
-
-            if (ipAddresses == null || !ipAddresses.Any())
+            try
             {
-                return;
+                using (var ntpClient = await ntpClientSupplier.Supply(poolAddress))
+                {
+                    await Task.Run(() =>
+                    {
+                        CorrectionOffset = ntpClient.GetCorrectionOffset();
+                        Synced = true;
+                        Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
+                    }).ConfigureAwait(false);
+                }
             }
-
-            using (var ntpClient = new NtpClient(ipAddresses.First()))
+            catch (Exception)
             {
-                try
-                {
-                    CorrectionOffset = ntpClient.GetCorrectionOffset();
-                    Synced = true;
-                    Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
-                }
-                catch (Exception exception) when (exception is NtpException || exception is SocketException)
-                {
-                    Synced = false;
-                    Trace.WriteLine($"Unable to synce to '{poolAddress}'.");
-                }
+                Synced = false;
+                Trace.WriteLine($"Unable to sync to '{poolAddress}'.");
             }
         }
     }

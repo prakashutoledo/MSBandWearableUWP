@@ -125,6 +125,7 @@
       <DependentUpon>MSBandWearableTestApplication.xaml</DependentUpon>
     </Compile>
     <Compile Include="Service\ElasticsearchServiceTest.cs" />
+    <Compile Include="Service\NtpSyncServiceTest.cs" />
     <Compile Include="Service\SubjectViewServiceTest.cs" />
     <Compile Include="Service\WebSocketServiceTest.cs" />
     <Compile Include="Util\CoreDispatcherUtilTest.cs" />

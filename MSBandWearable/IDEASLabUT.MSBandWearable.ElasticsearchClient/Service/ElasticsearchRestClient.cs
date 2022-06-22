@@ -59,7 +59,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <param name="bulkRequestBody">A bulk POST request body stream</param>
         /// <returns>A http response message task that can be awaited</returns>
         /// <exception cref="ArgumentNullException">If baseElasticsearchURI, requestBody or authenticationHeaderValue is null or empty</exception>
-        public Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, Stream bulkRequestBody)
+        public async Task<HttpResponseMessage> BulkRequestAsync(string baseElasticsearchURI, Stream bulkRequestBody)
         {
             if (string.IsNullOrWhiteSpace(baseElasticsearchURI))
             {
@@ -73,7 +73,7 @@ namespace IDEASLabUT.MSBandWearable.Service
 
             var streamContent = new StreamContent(bulkRequestBody);
             streamContent.Headers.ContentType = MediaTypeJson;
-            return httpClient.PostAsync($"{baseElasticsearchURI}/_bulk", streamContent);
+            return await httpClient.PostAsync($"{baseElasticsearchURI}/_bulk", streamContent);
         }
 
         private void Dispose(bool disposing)

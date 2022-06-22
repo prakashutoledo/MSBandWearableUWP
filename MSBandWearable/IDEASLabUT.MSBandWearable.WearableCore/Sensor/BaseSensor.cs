@@ -10,9 +10,10 @@ using Serilog;
 
 using System;
 using System.Threading.Tasks;
-
+using System.Linq;
 using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 using static Microsoft.Band.UserConsent;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Sensor
 {
@@ -90,7 +91,6 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             {
                 return false;
             }
-
             var userConsent = sensor.GetCurrentUserConsent() == Granted || await sensor.RequestUserConsentAsync();
             if (!userConsent)
             {
