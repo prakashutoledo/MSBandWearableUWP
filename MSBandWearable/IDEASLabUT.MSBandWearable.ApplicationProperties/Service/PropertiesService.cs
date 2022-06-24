@@ -24,13 +24,10 @@ namespace IDEASLabUT.MSBandWearable.Service
 
         private static IConfiguration PropertiesConfigurationBuilder()
         {
-            // We are already using NewtonSoft for JSON seriliazation and deserialization. Thus, this is the
-            // only reason we are not using default `System.Text.Json` configuration. And, also `System.Text.Json`
-            // is having problem with code analysis issue in UWP project
             return new ConfigurationBuilder()
                 .SetBasePath(Package.Current.InstalledLocation.Path) // This is a key here, UWP appx package location
-                .AddNewtonsoftJsonFile(path: ApplicationPropertiesFileName, optional: false, reloadOnChange: false)
-                .AddNewtonsoftJsonFile(path: LocalApplicationPropertiesFileName, optional: true, reloadOnChange: false)
+                .AddJsonFile(path: ApplicationPropertiesFileName, optional: false, reloadOnChange: false)
+                .AddJsonFile(path: LocalApplicationPropertiesFileName, optional: true, reloadOnChange: false)
                 .Build();
         }
 

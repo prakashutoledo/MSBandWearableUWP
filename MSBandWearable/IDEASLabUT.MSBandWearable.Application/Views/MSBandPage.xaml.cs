@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Model;
+﻿using IDEASLabUT.MSBandWearable.Application.Json;
+using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Model.Notification;
 using IDEASLabUT.MSBandWearable.Service;
 using IDEASLabUT.MSBandWearable.ViewModel;
@@ -7,7 +8,8 @@ using LiveCharts;
 using LiveCharts.Configurations;
 
 using Microsoft.Band;
-using Microsoft.Extensions.Configuration;
+
+using Newtonsoft.Json;
 
 using System;
 using System.Collections.ObjectModel;
@@ -402,9 +404,13 @@ namespace IDEASLabUT.MSBandWearable.Views
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 
+            var dateTime = DateTime.Now;
+            Trace.WriteLine(dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'FFFFFFFZ"));
             await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
             var bandManagerService = ServiceFactory.GetBandManagerService;
+    
             await bandManagerService.ConnectBand(bandName);
+            await bandManagerService.Gsr.Subscribe();
             switch (bandManagerService.BandStatus)
             {
                 case BandStatus.Connected:

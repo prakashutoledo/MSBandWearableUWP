@@ -1,15 +1,15 @@
 ﻿using IDEASLabUT.MSBandWearable.Model.Notification;
 
-using Newtonsoft.Json;
-
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {
     /// <summary>
     /// A custom json enum converter for <see cref="PayloadType"/>
     /// </summary>
-    internal class PayloadTypeConverter : JsonConverter
+    internal class PayloadTypeConverter : JsonConverter<PayloadType>
     {
         /// <inheritdoc />
         public override bool CanConvert(Type objectType)
@@ -18,30 +18,21 @@ namespace IDEASLabUT.MSBandWearable.Json
         }
 
         /// <inheritdoc />
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override PayloadType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
-
-            var payloadType =  PayloadTypeExtension.FromDescription(reader.Value.ToString());
+            var payloadType = PayloadTypeExtension.FromDescription(reader.GetString());
             if (payloadType.HasValue)
             {
                 return payloadType.Value;
             }
-            return null;
+
+            throw new ArgumentException("Unable to convert the given string into Payload Type");
         }
 
         /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, PayloadType value, JsonSerializerOptions options)
         {
-            string description = null;
-            if (value is PayloadType payloadType)
-            {
-                description = payloadType.GetDescription();
-            }
-            writer.WriteValue(description);
+            writer.WriteStringValue(value.GetDescription());
         }
     }
 }

@@ -1,47 +1,36 @@
 ﻿using IDEASLabUT.MSBandWearable.Model;
 
-using Newtonsoft.Json;
-
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {
     /// <summary>
     /// A custom json enum converter for <see cref="BandType"/>
     /// </summary>
-    internal class BandTypeConverter : JsonConverter
+    internal class BandTypeConverter : JsonConverter<BandType>
     {
-        /// <inheritdoc />
-        public override bool CanConvert(Type objectType)
+        public override bool CanConvert(Type typeToConvert)
         {
-            return typeof(BandType).IsAssignableFrom(objectType);
+            return typeof(BandType).IsAssignableFrom(typeToConvert);
         }
 
-        /// <inheritdoc />
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override BandType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonToken.Null)
+            var bandType = BandTypeExtension.FromDescription(reader.GetString());
+
+            if (bandType.HasValue)
             {
-                return null;
+                return bandType.Value;
             }
 
-            var payloadType = BandTypeExtension.FromDescription(reader.Value.ToString());
-            if (payloadType.HasValue)
-            {
-                return payloadType.Value;
-            }
-            return null;
+            throw new ArgumentNullException("Cannot convert to band type");
         }
 
-        /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, BandType value, JsonSerializerOptions options)
         {
-            string description = null;
-            if (value is BandType payloadType)
-            {
-                description = payloadType.GetDescription();
-            }
-            writer.WriteValue(description);
+            writer.WriteStringValue(value.GetDescription());
         }
     }
 }

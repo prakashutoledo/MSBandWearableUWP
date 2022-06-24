@@ -1,6 +1,6 @@
 ﻿using Microsoft.Band.Sensors;
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace IDEASLabUT.MSBandWearable.Model
 {

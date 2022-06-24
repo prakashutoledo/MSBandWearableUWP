@@ -14,6 +14,7 @@ using IDEASLabUT.MSBandWearable.Util;
 using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 using static IDEASLabUT.MSBandWearable.Model.BandStatus;
 using static Microsoft.Band.Notifications.VibrationType;
+using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
@@ -23,7 +24,7 @@ namespace IDEASLabUT.MSBandWearable.Service
     public class MSBandManagerService : IBandManagerService
     {
         private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(SerilogLoggerUtil.Logger, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
-        private const string MSBandNamePrefix = "MSFT Band 2";
+        private const string MSBandNamePrefix = "Prakash Band";
 
         // Lazy singleton pattern
         internal static MSBandManagerService Singleton => Instance.Value;
@@ -96,10 +97,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <param name="selectedIndex">A selected index of a paired bands</param>
         /// <param name="bandName">A name of the band to connect</param>
         /// <returns>A task that can be awaited</returns>
-        public Task ConnectBand(string bandName)
+        public async Task ConnectBand(string bandName)
         {
             var connectTask = bandName == null ? Task.FromException(new ArgumentNullException(nameof(bandName))) : msBandService.ConnectBand(bandName);
-            return connectTask
+            await  connectTask
                     .ContinueWithSupplier(previousTask => ToBandStatusTask(previousTask))
                     .ContinueWithAction(bandStatus => BandStatus = bandStatus)
                     .ContinueWithAction(() => BandName = bandName);

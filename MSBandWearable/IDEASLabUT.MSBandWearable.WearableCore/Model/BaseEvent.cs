@@ -1,6 +1,6 @@
 ﻿using IDEASLabUT.MSBandWearable.Json;
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 using System;
 

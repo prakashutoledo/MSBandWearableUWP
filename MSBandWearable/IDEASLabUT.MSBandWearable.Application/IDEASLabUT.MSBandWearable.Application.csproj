@@ -116,6 +116,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Json\DateTimeConverter.cs" />
     <Compile Include="MSBandWearableApplicationGlobals.cs" />
     <Compile Include="MSBandWearableApplication.xaml.cs">
       <DependentUpon>MSBandWearableApplication.xaml</DependentUpon>
@@ -205,6 +206,7 @@
       <Name>IDEASLabUT.MSBandWearable.WearableCore</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -37,6 +37,7 @@ namespace IDEASLabUT.MSBandWearable.Util
             }
 
             var baseMessage = message.FromJson<BaseMessage>();
+            
             if (baseMessage == null || !baseMessage.PayloadType.HasValue)
             {
                 return Task.FromResult(false);

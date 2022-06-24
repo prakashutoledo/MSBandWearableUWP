@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using System;
+using System.Text.Json;
 
-using System;
+using static System.Text.Json.JsonNamingPolicy;
+using static System.Text.Json.Serialization.JsonIgnoreCondition;
 
 namespace IDEASLabUT.MSBandWearable.Extension
 {
@@ -11,16 +12,23 @@ namespace IDEASLabUT.MSBandWearable.Extension
     /// </summary>
     public static class JsonStringExtension
     {
+        private static readonly Lazy<JsonSerializerOptions> JsonSerializerOptions;
+
         static JsonStringExtension()
         {
-            // Default json converter settings to ignore null value, unknown properties resolving members in camel case
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            JsonSerializerOptions = new Lazy<JsonSerializerOptions>(() =>
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
+                return new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = CamelCase,
+                    DictionaryKeyPolicy = CamelCase,
+                    DefaultIgnoreCondition = WhenWritingNull,
+                    WriteIndented = false
+                };
+            });
         }
+
+        private static JsonSerializerOptions DefaultJsonSerializerOptions => JsonSerializerOptions.Value;
 
         /// <summary>
         /// Json string extension to deserialize back into object of given type <see cref="{T}"/>
@@ -30,7 +38,8 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A serialized object of type T from given json string</returns>
         public static T FromJson<T>(this string json) where T : class
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            //return JsonConvert.DeserializeObject<T>(json);
+            return JsonSerializer.Deserialize<T>(json, DefaultJsonSerializerOptions);
         }
 
         /// <summary>
@@ -41,7 +50,8 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A serialized object from given json string</returns>
         public static object FromJson(this string json, in Type toType)
         {
-            return JsonConvert.DeserializeObject(json, toType);
+            //return JsonConvert.DeserializeObject(json, toType);
+            return JsonSerializer.Deserialize(json, toType, DefaultJsonSerializerOptions);
         }
 
         /// <summary>
@@ -52,7 +62,8 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A serialized json string representation</returns>
         public static string ToJson<T>(this T value)
         {
-            return JsonConvert.SerializeObject(value);
+            //return JsonConvert.SerializeObject(value);
+            return JsonSerializer.Serialize(value, DefaultJsonSerializerOptions);
         }
     }
 }

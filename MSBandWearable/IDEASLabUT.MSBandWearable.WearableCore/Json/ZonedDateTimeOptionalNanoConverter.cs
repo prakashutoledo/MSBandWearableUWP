@@ -1,62 +1,31 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-using System;
-
-using static IDEASLabUT.MSBandWearable.Extension.StringExtension;
+using static System.Text.Json.JsonTokenType;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {
     /// <summary>
     /// A custom json nano seconds <see cref="DateTime"/> or <see cref="DateTimeOffset"/> converter
     /// </summary>
-    internal class ZonedDateTimeOptionalNanoConverter : JsonConverter
+    internal class ZonedDateTimeOptionalNanoConverter : JsonConverter<DateTime>
     {
-        private static readonly string DateTimeFormatter = "yyyy-MM-dd'T'HH:mm:ss.ffffffzzz";
+        private const string DateTimeFormatter = "yyyy-MM-dd'T'HH:mm:ss.ffffffzzz";
 
-        /// <inheritdoc />
-        public override bool CanConvert(Type objectType)
+        public override bool CanConvert(Type typeToConvert)
         {
-            if (typeof(DateTime).IsAssignableFrom(objectType))
-            {
-                return true;
-            }
-
-            return typeof(DateTimeOffset).IsAssignableFrom(objectType);
+            return typeof(DateTime).IsAssignableFrom(typeToConvert);
         }
 
-        /// <inheritdoc />
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
-
-            reader.DateFormatString = DateTimeFormatter;
-            return reader.Value;
+            return reader.TokenType == Null ? default : DateTime.ParseExact(reader.GetString(), DateTimeFormatter, null);
         }
 
-        /// <inheritdoc />
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            DateTime writerDateTime;
-            if (value is DateTime dateTime)
-            {
-                writerDateTime = dateTime;
-            }
-            else if (value is DateTimeOffset dateTimeOffset)
-            {
-                writerDateTime = dateTimeOffset.DateTime;
-            }
-            else
-            {
-                throw new Exception("Cannot convert to datetime string");
-            }
-
-            // this will remove colon (:) character from timezone value to match elasticsearch datetime format and writes the formatted string
-            // Actual String   : 2022-04-10T11:23:37.009619-04:00
-            // Formated String : 2022-04-10T11:23:37.009619-0400
-            writer.WriteValue(writerDateTime.ToString(DateTimeFormatter).RemoveNthCharacterFromLast(3));
+            writer.WriteStringValue(value.ToString(DateTimeFormatter));
         }
     }
 }
