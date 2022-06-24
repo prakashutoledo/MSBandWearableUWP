@@ -24,7 +24,7 @@ namespace IDEASLabUT.MSBandWearable.Service
     public class MSBandManagerService : IBandManagerService
     {
         private static readonly Lazy<MSBandManagerService> Instance = new Lazy<MSBandManagerService>(() => new MSBandManagerService(SerilogLoggerUtil.Logger, MSBandClientService.Singleton, SubjectViewService.Singleton, NtpSyncService.Singleton));
-        private const string MSBandNamePrefix = "Prakash Band";
+        private const string MSBandNamePrefix = "MSFT Band 2";
 
         // Lazy singleton pattern
         internal static MSBandManagerService Singleton => Instance.Value;

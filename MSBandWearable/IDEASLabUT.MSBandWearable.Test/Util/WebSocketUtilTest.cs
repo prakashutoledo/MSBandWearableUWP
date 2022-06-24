@@ -35,7 +35,6 @@ namespace IDEASLabUT.MSBandWearable.Util
         }
 
         [DataTestMethod]
-        [DataRow("", E4Band)]
         [DataRow("{}", E4Band)]
         [DataRow("{\"payloadType\": \"MSBand\"}", MSBand)]
         [DataRow("{\"payloadType\": \"E4Band\"}", MSBand)]

@@ -63,7 +63,7 @@ namespace IDEASLabUT.MSBandWearable.Extension
         public static string ToJson<T>(this T value)
         {
             //return JsonConvert.SerializeObject(value);
-            return JsonSerializer.Serialize(value, DefaultJsonSerializerOptions);
+            return JsonSerializer.Serialize<object>(value, DefaultJsonSerializerOptions);
         }
     }
 }

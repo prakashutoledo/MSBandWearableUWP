@@ -43,9 +43,11 @@ namespace IDEASLabUT.MSBandWearable.Service
             );
         }
 
-        public Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
+        public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
-            return elasticsearchRestClient.BulkRequestAsync(requestUri, contentStream);
+            var response = await elasticsearchRestClient.BulkRequestAsync(requestUri, contentStream);
+            Trace.WriteLine(await response.Content.ReadAsStringAsync());
+            return response;
         }
 
         private void Dispose(bool disposing)

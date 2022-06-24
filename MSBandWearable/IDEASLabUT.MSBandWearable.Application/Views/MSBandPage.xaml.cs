@@ -227,6 +227,10 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <returns>A task that can be awaited</returns>
         private async Task OnEmpaticaE4BandMessageReceived(EmpaticaE4Band empaticaE4Band)
         {
+            if (empaticaE4Band == null)
+            {
+                return;
+            }
             var subjectViewService = ServiceFactory.GetSubjectViewService;
             subjectViewService.CurrentView = empaticaE4Band.FromView;
             subjectViewService.SubjectId = empaticaE4Band.SubjectId;
@@ -407,7 +411,6 @@ namespace IDEASLabUT.MSBandWearable.Views
             var bandManagerService = ServiceFactory.GetBandManagerService;
     
             await bandManagerService.ConnectBand(bandName);
-            await bandManagerService.Gsr.Subscribe();
             switch (bandManagerService.BandStatus)
             {
                 case BandStatus.Connected:

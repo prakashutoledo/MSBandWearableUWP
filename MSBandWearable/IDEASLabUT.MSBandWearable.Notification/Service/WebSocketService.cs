@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 using Windows.Networking.Sockets;
@@ -47,7 +48,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         {
 
             messageWebSocket = SocketSupplier.Invoke();
-            Task OnMessageReceived(string message) => ParseMessageAndProcess(in message, GetMessagePostProcessors);
+            async Task OnMessageReceived(string message)
+            {
+                await ParseMessageAndProcess(message, GetMessagePostProcessors);
+            }
             messageWebSocket.OnMessageReceived = OnMessageReceived;
             await messageWebSocket.ConnectAsync(webSocketUrl).ContinueWithStatusSupplier(continueWith);
         }
@@ -61,6 +65,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task SendMessage<Payload>(Message<Payload> message, Func<bool, Task> continueWith = null) where Payload : IPayload
         {
+            Trace.WriteLine(message.ToString());
             var dataWriter = messageWebSocket.MessageWriter;
             _ = await dataWriter.FlushAsync();
             _ = dataWriter.WriteString(message.ToString());
