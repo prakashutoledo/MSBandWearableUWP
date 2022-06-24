@@ -1,5 +1,4 @@
-﻿using IDEASLabUT.MSBandWearable.Application.Json;
-using IDEASLabUT.MSBandWearable.Model;
+﻿using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Model.Notification;
 using IDEASLabUT.MSBandWearable.Service;
 using IDEASLabUT.MSBandWearable.ViewModel;
@@ -8,8 +7,6 @@ using LiveCharts;
 using LiveCharts.Configurations;
 
 using Microsoft.Band;
-
-using Newtonsoft.Json;
 
 using System;
 using System.Collections.ObjectModel;
