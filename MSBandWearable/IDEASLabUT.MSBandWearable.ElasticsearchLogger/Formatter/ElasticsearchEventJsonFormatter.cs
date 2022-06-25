@@ -6,11 +6,12 @@ using System.Linq;
 
 namespace IDEASLabUT.MSBandWearable.Formatter
 {
+    /// <summary>
+    /// A serilog single event formatter
+    /// </summary>
     internal class ElasticsearchEventJsonFormatter : ITextFormatter
     {
         private const char StringSplitChar = '\\';
-        private const string ElasticsearchIndexJsonPrefix = "{\"index\":{\"_index\": \"";
-        private const string ElasticsearchIndexJsonPostfix = "\"}}";
 
         /// <summary>
         /// Formats the given single Serilog event into elastisearch bulk api json data format and writes it into
@@ -51,10 +52,11 @@ namespace IDEASLabUT.MSBandWearable.Formatter
             // Use ScalarValue in order to avoid formatted string represented by Serilog
             if (!(eventPair.Value is ScalarValue scalarValue && scalarValue.Value is string rawJsonEvent))
             {
+                // Currently we don't support any other value bar Scalar value
                 return;
             }
 
-            output.WriteLine(string.Concat(ElasticsearchIndexJsonPrefix, eventPair.Key, ElasticsearchIndexJsonPostfix, StringSplitChar, rawJsonEvent));
+            output.WriteLine(string.Concat(eventPair.Key, StringSplitChar, rawJsonEvent));
         }
     }
 }

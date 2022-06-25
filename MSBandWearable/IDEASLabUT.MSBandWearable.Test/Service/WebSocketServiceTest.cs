@@ -57,6 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Service
             actualStatus = false;
             await Subject.SendMessage(expectedMessage, continueWith);
 
+            // seek the stream position to 0
             randomAccessStream.Seek(0);
             using (var streamReader = new StreamReader(randomAccessStream.AsStreamForRead()))
             {

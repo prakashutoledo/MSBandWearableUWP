@@ -9,7 +9,7 @@
   },
   "webSocket": {
     "connection": {
-      "uri": "wss://2wutjv5l5m.execute-api.us-east-2.amazonaws.com/production"
+      "uri": "wss://ws.postman-echo.com/raw"
     }
   },
   "ntp": {

@@ -1,13 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 
+using static System.IO.SeekOrigin;
 using static System.Text.Json.JsonNamingPolicy;
 using static System.Text.Json.Serialization.JsonIgnoreCondition;
 
 namespace IDEASLabUT.MSBandWearable.Extension
 {
     /// <summary>
-    /// A utility class which sets default settings for <see cref="JsonConvert"/>
+    /// A utility class which sets default options for <see cref="JsonSerializer"/>
     /// and provides an extension method for json seriliazation and deseriliazation.
     /// </summary>
     public static class JsonStringExtension
@@ -18,6 +21,9 @@ namespace IDEASLabUT.MSBandWearable.Extension
         {
             JsonSerializerOptions = new Lazy<JsonSerializerOptions>(() =>
             {
+                // Use camel case contract resolver for property
+                // Ignore null values which deserializing
+                // Definetely not write with indentation, which is the last thing we want here
                 return new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = CamelCase,
@@ -38,7 +44,6 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A serialized object of type T from given json string</returns>
         public static T FromJson<T>(this string json) where T : class
         {
-            //return JsonConvert.DeserializeObject<T>(json);
             return JsonSerializer.Deserialize<T>(json, DefaultJsonSerializerOptions);
         }
 
@@ -50,7 +55,6 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A serialized object from given json string</returns>
         public static object FromJson(this string json, in Type toType)
         {
-            //return JsonConvert.DeserializeObject(json, toType);
             return JsonSerializer.Deserialize(json, toType, DefaultJsonSerializerOptions);
         }
 
@@ -62,8 +66,24 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A serialized json string representation</returns>
         public static string ToJson<T>(this T value)
         {
-            //return JsonConvert.SerializeObject(value);
             return JsonSerializer.Serialize<object>(value, DefaultJsonSerializerOptions);
+        }
+
+        /// <summary>
+        /// An extension which serializes object to utf-8 json representation asynchronously
+        /// </summary>
+        /// <typeparam name="T">A type of extension paramater</typeparam>
+        /// <param name="value">A value to be serialized</param>
+        /// <returns>A task that can be awaited</returns>
+        public static async Task<string> ToJsonAsync<T>(this T value)
+        {
+            var memoryStream = new MemoryStream();
+            await JsonSerializer.SerializeAsync<object>(memoryStream, value, DefaultJsonSerializerOptions).ConfigureAwait(false);
+            _ = memoryStream.Seek(0, Begin);
+            using (var streamReader = new StreamReader(memoryStream))
+            {
+                return await streamReader.ReadToEndAsync().ConfigureAwait(false);
+            }
         }
     }
 }

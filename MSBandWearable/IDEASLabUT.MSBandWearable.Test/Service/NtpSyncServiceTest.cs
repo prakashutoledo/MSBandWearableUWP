@@ -5,13 +5,10 @@ using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System.Net;
-using System.Threading.Tasks;
-
 using System.Linq;
-using Windows.Services.Maps;
+using System.Net;
 using System.Net.Sockets;
-using System;
+using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {

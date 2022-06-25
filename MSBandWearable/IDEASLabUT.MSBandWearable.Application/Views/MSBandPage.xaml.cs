@@ -115,7 +115,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         {
             var websocketService = ServiceFactory.GetWebSocketService;
             websocketService.Close();
-            await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey));
+            Task CotinueTask(bool _) => Task.CompletedTask;
+            await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey), CotinueTask);
         }
 
         /// <summary>
@@ -477,9 +478,10 @@ namespace IDEASLabUT.MSBandWearable.Views
                 ViewModelFactory.GetSubjectViewModel.MSBandSerialNumber = bandManagerService.BandName;
                 UpdateCommandBar();
             });
-
-            await ServiceFactory.GetNtpSyncService.SyncTimestamp(ServiceFactory.GetPropertiesService.GetProperty(NtpPoolUriJsonKey));
-            //await WebSocketService.Connect(ApplicationProperties.GetValue<string>(WebSocketConnectionUriJsonKey));
+            var propertiesService = ServiceFactory.GetPropertiesService;
+            await ServiceFactory.GetNtpSyncService.SyncTimestamp(propertiesService.GetProperty(NtpPoolUriJsonKey));
+            Task ContinueTask(bool _) => Task.CompletedTask;
+            await ServiceFactory.GetWebSocketService.Connect(propertiesService.GetProperty(WebSocketConnectionUriJsonKey), ContinueTask);
             WebSocketTimer.Start();
         }
 

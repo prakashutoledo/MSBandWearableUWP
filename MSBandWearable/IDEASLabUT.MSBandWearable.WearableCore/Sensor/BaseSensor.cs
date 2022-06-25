@@ -10,10 +10,10 @@ using Serilog;
 
 using System;
 using System.Threading.Tasks;
-using System.Linq;
+
 using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 using static Microsoft.Band.UserConsent;
-using System.Diagnostics;
+using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
 
 namespace IDEASLabUT.MSBandWearable.Sensor
 {
@@ -101,14 +101,14 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             return await sensor.StartReadingsAsync();
         }
 
-        public Task<bool> Unsubscribe()
+        public async Task<bool> Unsubscribe()
         {
             var sensor = GetBandSensor();
             if (sensor == null)
             {
-                return Task.FromResult(false);
+                return false;
             }
-            return sensor.StopReadingsAsync().ContinueWithStatus();
+            return await sensor.StopReadingsAsync().ContinueWithStatus();
         }
 
         private IBandSensor<SensorReading> GetBandSensor()
@@ -145,12 +145,14 @@ namespace IDEASLabUT.MSBandWearable.Sensor
 
             if (subjectViewService.SessionInProgress)
             {
-                logger.Information($"{{{SensorType.GetName()}}}", Model);
+                var jsonModel = await Model.ToJsonAsync().ConfigureAwait(false);
+                // Fire and forget this task
+                await Task.Run(() => logger.Information($"{{{SensorType.GetName()}}}", jsonModel)).ConfigureAwait(false);
             }
 
             if (SensorModelChanged != null)
             {
-                await SensorModelChanged.Invoke();
+                await SensorModelChanged.Invoke().ConfigureAwait(false);
             }
         }
     }

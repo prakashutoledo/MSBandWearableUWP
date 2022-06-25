@@ -26,8 +26,6 @@ namespace IDEASLabUT.MSBandWearable.Service
         public async Task ShouldPostAsync()
         {
             Stream stream = new MemoryStream(Encoding.UTF8.GetBytes("{}"));
-            //MockFor<IConfigurationSection>(sectionMock => sectionMock.SetupGet(section => section.Value).Returns("Fake-Password"));
-            //MockFor<IConfiguration>(configurationMock => configurationMock.Setup(configuration => configuration.GetSection("elasticsearch:authenticationKey")).Returns(MockValue<IConfigurationSection>()));
             var response = new HttpResponseMessage(HttpStatusCode.Created);
             MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Setup(restClient => restClient.BulkRequestAsync("https://fake-url", stream)).Returns(Task.FromResult(response)));
             

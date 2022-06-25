@@ -1,6 +1,5 @@
 ﻿using Serilog.Sinks.Http.BatchFormatters;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +8,14 @@ using static Serilog.Sinks.Http.ByteSize;
 
 namespace IDEASLabUT.MSBandWearable.Formatter
 {
+    /// <summary>
+    /// A serilog batch event formatter for creating post body for Elasticsearch bulk api a newline delimited JSON (NDJSON)
+    /// </summary>
     internal class ElasticsearchBatchEventFormatter : BatchFormatter
     {
         private const char StringSplitChar = '\\';
+        private const string ElasticsearchIndexJsonPrefix = "{\"index\":{\"_index\": \"";
+        private const string ElasticsearchIndexJsonPostfix = "\"}}";
 
         /// <summary>
         /// Initializes a new instance of <see cref="ElasticsearchBatchEventFormatter"/>
@@ -25,10 +29,10 @@ namespace IDEASLabUT.MSBandWearable.Formatter
         /// Formats the given enumeration of log events to an Elasticsearch bulk request json request data and gets
         /// written into given output text writer. Each events are in the format of 
         /// <code>
-        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 1.9}
-        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 4.9}
-        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 0.9}
-        /// {"index" : {"_index" : "accelerometer"}}\{"accelerometerX" : 2.1}
+        /// accelerometer\{"accelerometerX" : 1.9}
+        /// accelerometer\{"accelerometerX" : 4.9}
+        /// accelerometer\{"accelerometerX" : 0.9}
+        /// accelerometer\{"accelerometerX" : 2.1}
         /// </code>
         /// This gets formatted by splitting string for character `\` to create two json strings as shown below 
         /// <code>
@@ -68,7 +72,7 @@ namespace IDEASLabUT.MSBandWearable.Formatter
                     continue;
                 }
 
-                output.WriteLine(logs.First());
+                output.WriteLine(string.Concat(ElasticsearchIndexJsonPrefix, logs.First(), ElasticsearchIndexJsonPostfix));
                 output.WriteLine(logs.Last());
             }
         }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System.Threading.Tasks;
+
 namespace IDEASLabUT.MSBandWearable.Extension
 {
     /// <summary>
@@ -11,6 +13,11 @@ namespace IDEASLabUT.MSBandWearable.Extension
         private class SomeClass
         {
             public string Value { get; set; }
+        }
+
+        private class DerivedClass : SomeClass
+        {
+            public string DerivedValue { get; set; }
         }
 
         [TestMethod]
@@ -41,6 +48,21 @@ namespace IDEASLabUT.MSBandWearable.Extension
             Assert.IsNotNull(someObject, "Deserialized value is not null");
             Assert.IsInstanceOfType(someObject, typeof(SomeClass), "Object is of type SomeClass");
             Assert.AreEqual((someObject as SomeClass).Value, "Any Value1", "Test properties should match");
+        }
+
+        [TestMethod]
+        public async Task ShouldSerializedAsync()
+        {
+            SomeClass someClass = new DerivedClass
+            {
+                Value = "Some Value",
+                DerivedValue = "Some Derived Value"
+            };
+
+            var expectedJson = "{\"derivedValue\":\"Some Derived Value\",\"value\":\"Some Value\"}";
+
+            var actualJson = await someClass.ToJsonAsync();
+            Assert.AreEqual(expectedJson, actualJson, "Expected json value should match actual value");
         }
     }
 }

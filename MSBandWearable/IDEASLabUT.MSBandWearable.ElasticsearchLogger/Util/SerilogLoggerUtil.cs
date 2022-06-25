@@ -4,6 +4,7 @@ using IDEASLabUT.MSBandWearable.Service;
 using Serilog;
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 using Windows.Storage;
@@ -12,6 +13,9 @@ using static IDEASLabUT.MSBandWearable.ElasticsearchLoggerGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
+    /// <summary>
+    /// A utility class for configuring serilog
+    /// </summary>
     internal static class SerilogLoggerUtil
     {
         private static readonly Lazy<LoggerConfiguration> LoggerConfigurationInstance;
@@ -34,6 +38,7 @@ namespace IDEASLabUT.MSBandWearable.Util
                 );
             });
 
+            Trace.WriteLine(ApplicationData.Current.LocalFolder.Path);
             LoggerInstance = new Lazy<ILogger>(() => LoggerFactory.CreateLogger());
         }
 

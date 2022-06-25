@@ -3,7 +3,6 @@
 using Serilog.Sinks.Http;
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -13,6 +12,9 @@ using static IDEASLabUT.MSBandWearable.ElasticsearchLoggerGlobals;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
+    /// <summary>
+    /// A serilog <see cref="IHttpClient"/> implementation for logging data into elasticsearch
+    /// </summary>
     public sealed class ElasticsearchLoggerHttpClient : IHttpClient
     {
         private const string BasicAuthorization = "Basic";
@@ -28,11 +30,17 @@ namespace IDEASLabUT.MSBandWearable.Service
         private bool disposedValue;
         private readonly IElasticsearchRestClient elasticsearchRestClient;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="ElasticsearchLoggerHttpClient"/>
+        /// </summary>
+        /// <param name="elasticsearchRestClient">An elasticsearch rest client to set</param>
+        /// <exception cref="ArgumentNullException">If elasticsearch rest client is null</exception>
         private ElasticsearchLoggerHttpClient(IElasticsearchRestClient elasticsearchRestClient)
         {
             this.elasticsearchRestClient = elasticsearchRestClient ?? throw new ArgumentNullException(nameof(elasticsearchRestClient));
         }
 
+        /// <inheritdoc/>
         public void Configure(IConfiguration configuration)
         {
             elasticsearchRestClient.SetDefaultAuthenticationHeader(
@@ -43,13 +51,16 @@ namespace IDEASLabUT.MSBandWearable.Service
             );
         }
 
+        /// <inheritdoc/>
         public async Task<HttpResponseMessage> PostAsync(string requestUri, Stream contentStream)
         {
-            var response = await elasticsearchRestClient.BulkRequestAsync(requestUri, contentStream);
-            Trace.WriteLine(await response.Content.ReadAsStringAsync());
-            return response;
+            return await elasticsearchRestClient.BulkRequestAsync(requestUri, contentStream);
         }
 
+        /// <summary>
+        /// Dispose the underlying <see cref="IElasticsearchRestClient"/> based on given disposing flag
+        /// </summary>
+        /// <param name="disposing">A disposing flag to check if rest client needs to be disposed or not</param>
         private void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -63,12 +74,18 @@ namespace IDEASLabUT.MSBandWearable.Service
             }
         }
 
+        /// <summary>
+        /// Dispose the underlying <see cref="IElasticsearchRestClient"/>
+        /// </summary>
         public void Dispose()
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Finalizer for <see cref="ElasticsearchLoggerHttpClient"/>
+        /// </summary>
         ~ElasticsearchLoggerHttpClient()
         {
             Dispose(false);

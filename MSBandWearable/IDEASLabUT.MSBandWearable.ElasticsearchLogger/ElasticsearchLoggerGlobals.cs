@@ -1,5 +1,8 @@
 ﻿namespace IDEASLabUT.MSBandWearable
 {
+    /// <summary>
+    /// A global constant for assembly IDEASLabUT.MSBandWearable.ElasticsearchLogger
+    /// </summary>
     internal static class ElasticsearchLoggerGlobals
     {
         internal const string ElasticsearchUriJsonKey = "elasticsearch:uri";

@@ -76,6 +76,19 @@ namespace IDEASLabUT.MSBandWearable.Service
             return httpClient.PostAsync($"{baseElasticsearchURI}/_bulk", streamContent);
         }
 
+        /// <summary>
+        /// Dispose the underlying <see cref="HttpClient"/>
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Dispose the underlying <see cref="HttpClient"/> based on given disposing flag
+        /// </summary>
+        /// <param name="disposing">A disposing flag to check if HttpClient needs to be disposed or not</param>
         private void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -88,12 +101,9 @@ namespace IDEASLabUT.MSBandWearable.Service
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
+        /// <summary>
+        /// Finalizer for <see cref="ElasticsearchRestClient"/>
+        /// </summary>
         ~ElasticsearchRestClient()
         {
             Dispose(disposing: false);
