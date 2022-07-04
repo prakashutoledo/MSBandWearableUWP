@@ -91,14 +91,26 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             {
                 return false;
             }
-            var userConsent = sensor.GetCurrentUserConsent() == Granted || await sensor.RequestUserConsentAsync();
+
+            var currentUserConsent = sensor.GetCurrentUserConsent();
+            if (currentUserConsent == Declined)
+            {
+                return false;
+            }
+
+            var userConsent = true;
+            if (currentUserConsent == NotSpecified)
+            {
+                userConsent = await sensor.RequestUserConsentAsync().ConfigureAwait(false);
+            }
+
             if (!userConsent)
             {
                 return false;
             }
 
             sensor.ReadingChanged += OnBandSensorReadingChanged;
-            return await sensor.StartReadingsAsync();
+            return await sensor.StartReadingsAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> Unsubscribe()
@@ -108,7 +120,7 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             {
                 return false;
             }
-            return await sensor.StopReadingsAsync().ContinueWithStatus();
+            return await sensor.StopReadingsAsync().ContinueWithStatus().ConfigureAwait(false);
         }
 
         private IBandSensor<SensorReading> GetBandSensor()
@@ -146,7 +158,6 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             if (subjectViewService.SessionInProgress)
             {
                 var jsonModel = await Model.ToJsonAsync().ConfigureAwait(false);
-                // Fire and forget this task
                 await Task.Run(() => logger.Information($"{{{SensorType.GetName()}}}", jsonModel)).ConfigureAwait(false);
             }
 

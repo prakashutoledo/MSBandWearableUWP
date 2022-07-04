@@ -4,9 +4,6 @@ using IDEASLabUT.MSBandWearable.Model;
 
 using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,9 +63,18 @@ namespace IDEASLabUT.MSBandWearable.Service
                 {
                     await Task.Run(() =>
                     {
-                        CorrectionOffset = ntpClient.GetCorrectionOffset();
-                        Synced = true;
-                        Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
+                        try
+                        {
+                            CorrectionOffset = ntpClient.GetCorrectionOffset();
+                            Synced = true;
+                            Trace.WriteLine($"Succesfully synced to '{poolAddress}' with offset ({correctionOffset}).");
+                        }
+                        catch(Exception)
+                        {
+                            Synced = false;
+                            Trace.WriteLine($"Unable to sync to '{poolAddress}'.");
+                        }
+
                     }).ConfigureAwait(false);
                 }
             }

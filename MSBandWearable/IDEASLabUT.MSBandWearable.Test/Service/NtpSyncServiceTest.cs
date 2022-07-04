@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
+    /// <summary>
+    /// Unit test for <see cref="NtpSyncService"/>
+    /// </summary>
     [TestClass]
     public class NtpSyncServiceTest : BaseHyperMock<NtpSyncService>
     {

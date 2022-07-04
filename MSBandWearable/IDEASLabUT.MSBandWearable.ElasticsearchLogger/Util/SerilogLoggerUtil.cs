@@ -29,9 +29,9 @@ namespace IDEASLabUT.MSBandWearable.Util
                 return new LoggerConfiguration().WriteTo.DurableHttpUsingFileSizeRolledBuffers(
                     requestUri: propertiesService.GetProperty(ElasticsearchUriJsonKey),
                     bufferBaseFileName: Path.Combine(ApplicationData.Current.LocalFolder.Path, propertiesService.GetProperty(LoggerFileUriJsonKey)),
-                    batchPostingLimit: 200,
+                    logEventsInBatchLimit: 200,
                     textFormatter: new ElasticsearchEventJsonFormatter(),
-                    batchFormatter: new ElasticsearchBatchEventFormatter(null),
+                    batchFormatter: new ElasticsearchBatchEventFormatter(),
                     httpClient: ElasticsearchLoggerHttpClient.Singleton,
                     period: TimeSpan.FromSeconds(8),
                     configuration: propertiesService.GetProperties

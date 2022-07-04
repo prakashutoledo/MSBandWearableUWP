@@ -77,10 +77,10 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// <returns>A task that can be awaited</returns>
         public static async Task<string> ToJsonAsync<T>(this T value)
         {
-            var memoryStream = new MemoryStream();
+            Stream memoryStream = new MemoryStream();
             await JsonSerializer.SerializeAsync<object>(memoryStream, value, DefaultJsonSerializerOptions).ConfigureAwait(false);
             _ = memoryStream.Seek(0, Begin);
-            using (var streamReader = new StreamReader(memoryStream))
+            using (TextReader streamReader = new StreamReader(memoryStream))
             {
                 return await streamReader.ReadToEndAsync().ConfigureAwait(false);
             }

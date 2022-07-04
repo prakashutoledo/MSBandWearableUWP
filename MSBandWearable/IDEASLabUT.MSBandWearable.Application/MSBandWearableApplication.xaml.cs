@@ -90,17 +90,13 @@ namespace IDEASLabUT.MSBandWearable
             {
                 ServiceFactory.Singleton.GetSubjectViewService.SessionInProgress = false;
                 await ServiceFactory.Singleton.GetBandManagerService.UnsubscribeSensors();
-                var loggerTaskSource = new TaskCompletionSource<object>();
                 await Task.Run(() =>
                 {
                     // Sets the global logger
                     // On application close request, flush the logger and close it
                     Log.Logger = ServiceFactory.Singleton.GetLogger;
                     Log.CloseAndFlush();
-                    loggerTaskSource.SetResult(null);
-                }).ConfigureAwait(false);
-
-                _ = await loggerTaskSource.Task.ConfigureAwait(false);
+                });
             }
             else
             {

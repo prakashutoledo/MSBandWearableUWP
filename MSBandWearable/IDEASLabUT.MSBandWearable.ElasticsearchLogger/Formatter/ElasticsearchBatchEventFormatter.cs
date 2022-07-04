@@ -1,17 +1,15 @@
-﻿using Serilog.Sinks.Http.BatchFormatters;
+﻿using Serilog.Sinks.Http;
 
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using static Serilog.Sinks.Http.ByteSize;
 
 namespace IDEASLabUT.MSBandWearable.Formatter
 {
     /// <summary>
     /// A serilog batch event formatter for creating post body for Elasticsearch bulk api a newline delimited JSON (NDJSON)
     /// </summary>
-    internal class ElasticsearchBatchEventFormatter : BatchFormatter
+    internal class ElasticsearchBatchEventFormatter : IBatchFormatter
     {
         private const char StringSplitChar = '\\';
         private const string ElasticsearchIndexJsonPrefix = "{\"index\":{\"_index\": \"";
@@ -20,8 +18,7 @@ namespace IDEASLabUT.MSBandWearable.Formatter
         /// <summary>
         /// Initializes a new instance of <see cref="ElasticsearchBatchEventFormatter"/>
         /// </summary>
-        /// <param name="eventBodyLimitBytes">An event body limit bytes to set</param>
-        public ElasticsearchBatchEventFormatter(long? eventBodyLimitBytes = 256 * KB) : base(eventBodyLimitBytes)
+        public ElasticsearchBatchEventFormatter()
         {
         }
 
@@ -49,7 +46,7 @@ namespace IDEASLabUT.MSBandWearable.Formatter
         /// </summary>
         /// <param name="logEvents">A log events to format</param>
         /// <param name="output">A output writer to write formatter log events</param>
-        public override void Format(IEnumerable<string> logEvents, TextWriter output)
+        public void Format(IEnumerable<string> logEvents, TextWriter output)
         {
             if (logEvents == null || output == null || !logEvents.Any())
             {
