@@ -16,13 +16,6 @@ namespace IDEASLabUT.MSBandWearable.Formatter
         private const string ElasticsearchIndexJsonPostfix = "\"}}";
 
         /// <summary>
-        /// Initializes a new instance of <see cref="ElasticsearchBatchEventFormatter"/>
-        /// </summary>
-        public ElasticsearchBatchEventFormatter()
-        {
-        }
-
-        /// <summary>
         /// Formats the given enumeration of log events to an Elasticsearch bulk request json request data and gets
         /// written into given output text writer. Each events are in the format of 
         /// <code>

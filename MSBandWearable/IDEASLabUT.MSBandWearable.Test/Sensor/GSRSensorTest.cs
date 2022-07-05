@@ -3,6 +3,8 @@
 using Microsoft.Band.Sensors;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Sensor
@@ -18,6 +20,14 @@ namespace IDEASLabUT.MSBandWearable.Sensor
         /// </summary>
         public GSRSensorTest() : base(sensorManager => sensorManager.Gsr)
         {
+        }
+
+        [TestInitialize]
+        public void setupGsr()
+        {
+            MockFor<IBandSensor<IBandGsrReading>>(gsrMock => gsrMock.SetupGet(gsr => gsr.SupportedReportingIntervals).Returns(new List<TimeSpan> {
+                TimeSpan.FromMilliseconds(200)
+            }));
         }
 
         [TestMethod]

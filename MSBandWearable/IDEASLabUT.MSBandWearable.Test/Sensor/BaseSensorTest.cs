@@ -73,7 +73,7 @@ namespace IDEASLabUT.MSBandWearable.Sensor
         public async Task SubscribeSensorWithRequestUserConsentNotGranted()
         {
             var actualStatus = await MockSubscribe(currentUserConsent: Declined);
-            VerifySubscribe(false, actualStatus, Once(), Once(), Once(), Once(), Never());
+            VerifySubscribe(false, actualStatus, Once(), Once(), Once(), Never(), Never());
         }
 
         [TestCleanup]
@@ -229,13 +229,13 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             Assert.AreEqual(expectedModel.ToString(), Subject.Model.ToString(), "Expected serialized model should match actual model");
             MockFor<ISubjectViewService>(subjectViewServiceMock =>
             {
-                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.CurrentView, AtLeast(1));
-                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.SubjectId, AtLeast(1));
-                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, AtLeast(1));
+                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.CurrentView, Once());
+                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.SubjectId, Once());
+                subjectViewServiceMock.VerifyGet(subjectViewService => subjectViewService.SessionInProgress, Once());
             });
 
-            MockFor<INtpSyncService>(ntpSyncServiceMock => ntpSyncServiceMock.VerifyGet(ntpSyncService => ntpSyncService.LocalTimeNow, AtLeast(1)));
-            MockFor<ILogger>(loggerMock => loggerMock.Verify(logger => logger.Information($"{{{Subject.SensorType.GetName()}}}", Param.IsAny<SensorEvent>()), AtLeast(1)));
+            MockFor<INtpSyncService>(ntpSyncServiceMock => ntpSyncServiceMock.VerifyGet(ntpSyncService => ntpSyncService.LocalTimeNow, Once()));
+            MockFor<ILogger>(loggerMock => loggerMock.Verify(logger => logger.Information($"{{{Subject.SensorType.GetName()}}}", Param.IsAny<SensorEvent>()), Once()));
         }
     }
 }

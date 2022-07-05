@@ -287,13 +287,9 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// <param name="command">A ui command that has been inkoked</param>
         private async void CommandInvokedHandler(IUICommand command)
         {
-            switch ((int) command.Id)
+            if (1.Equals(command.Id))
             {
-                case 1:
-                    _ = await Launcher.LaunchUriAsync(new Uri("ms-settings:bluetooth"));
-                    break;
-                default:
-                    break;
+                _ = await Launcher.LaunchUriAsync(new Uri("ms-settings:bluetooth"));
             }
         }
 
