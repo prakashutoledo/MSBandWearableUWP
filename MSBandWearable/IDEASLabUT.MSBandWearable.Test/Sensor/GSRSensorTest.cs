@@ -23,7 +23,7 @@ namespace IDEASLabUT.MSBandWearable.Sensor
         }
 
         [TestInitialize]
-        public void setupGsr()
+        public void SetupGsr()
         {
             MockFor<IBandSensor<IBandGsrReading>>(gsrMock => gsrMock.SetupGet(gsr => gsr.SupportedReportingIntervals).Returns(new List<TimeSpan> {
                 TimeSpan.FromMilliseconds(200)
