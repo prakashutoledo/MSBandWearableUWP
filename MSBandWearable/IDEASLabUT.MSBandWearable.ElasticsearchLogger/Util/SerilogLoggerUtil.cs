@@ -30,7 +30,7 @@ namespace IDEASLabUT.MSBandWearable.Util
                     requestUri: propertiesService.GetProperty(ElasticsearchUriJsonKey),
                     bufferBaseFileName: Path.Combine(ApplicationData.Current.LocalFolder.Path, propertiesService.GetProperty(LoggerFileUriJsonKey)),
                     logEventsInBatchLimit: 200,
-                    textFormatter: new ElasticsearchEventJsonFormatter(),
+                    textFormatter: new ElasticsearchEventJsonFormatter(null),
                     batchFormatter: new ElasticsearchBatchEventFormatter(),
                     httpClient: ElasticsearchLoggerHttpClient.Singleton,
                     period: TimeSpan.FromSeconds(8),

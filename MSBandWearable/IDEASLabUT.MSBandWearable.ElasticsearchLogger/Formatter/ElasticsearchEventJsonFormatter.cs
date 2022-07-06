@@ -1,6 +1,7 @@
 ﻿using Serilog.Events;
 using Serilog.Formatting;
 
+using System;
 using System.IO;
 using System.Linq;
 
@@ -12,6 +13,15 @@ namespace IDEASLabUT.MSBandWearable.Formatter
     internal class ElasticsearchEventJsonFormatter : ITextFormatter
     {
         private const char StringSplitChar = '\\';
+
+        private readonly Action<string> invalidAction;
+
+        public ElasticsearchEventJsonFormatter(Action<string> invalidAction)
+        {
+            this.invalidAction = invalidAction;
+        }
+
+
 
         /// <summary>
         /// Formats the given single Serilog event into elastisearch bulk api json data format and writes it into
@@ -37,26 +47,54 @@ namespace IDEASLabUT.MSBandWearable.Formatter
         /// <seealso cref="ElasticsearchBatchEventFormatter"/>
         public void Format(LogEvent logEvent, TextWriter output)
         {
-            if (logEvent == null || output == null)
+            if (logEvent == null) 
             {
+                NotifyInvalidInput($"{nameof(logEvent)} is null");
+                return;
+            }
+
+            if (output == null)
+            {
+                NotifyInvalidInput($"{nameof(output)} is null");
                 return;
             }
 
             var properties = logEvent.Properties;
-            if (properties == null || !properties.Any())
+            if (!properties.Any())
             {
+                NotifyInvalidInput("Properties is empty");
                 return;
             }
-            
+
             var eventPair = logEvent.Properties.First();
+
             // Use ScalarValue in order to avoid formatted string represented by Serilog
-            if (!(eventPair.Value is ScalarValue scalarValue && scalarValue.Value is string rawJsonEvent))
+            if (!(eventPair.Value is ScalarValue scalarValue))
             {
                 // Currently we don't support any other value bar Scalar value
+                NotifyInvalidInput($"{eventPair.Value.GetType().Name} is not supported value");
+                return;
+            }
+
+            if (!(scalarValue.Value is string rawJsonEvent))
+            {
+                // Value in scalar value should be string
+                NotifyInvalidInput($"{(scalarValue.Value == null ? "Null" : scalarValue.Value.GetType().Name)} value inside ScalarValue is not supported value");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(rawJsonEvent))
+            {
+                NotifyInvalidInput("Empty value inside ScalarValue is not supported value");
                 return;
             }
 
             output.WriteLine(string.Concat(eventPair.Key, StringSplitChar, rawJsonEvent));
+        }
+        
+        private void NotifyInvalidInput(string reason)
+        {
+            invalidAction?.Invoke(reason);
         }
     }
 }
