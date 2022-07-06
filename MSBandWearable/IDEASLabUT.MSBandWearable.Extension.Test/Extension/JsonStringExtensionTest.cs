@@ -64,5 +64,25 @@ namespace IDEASLabUT.MSBandWearable.Extension
             var actualJson = await someClass.ToJsonAsync();
             Assert.AreEqual(expectedJson, actualJson, "Expected json value should match actual value");
         }
+
+        [TestMethod]
+        public async Task ShouldDeserializedAsync()
+        {
+            var json = "{\"derivedValue\":\"Async Derived Value\",\"value\":\"Some Async Value\"}";
+            var deserializedObject = await json.FromJsonAsync(typeof(DerivedClass));
+            Assert.IsInstanceOfType(deserializedObject, typeof(DerivedClass));
+            var actualObject = deserializedObject as DerivedClass;
+            Assert.AreEqual("Async Derived Value", actualObject.DerivedValue, "Derived Value");
+            Assert.AreEqual("Some Async Value", actualObject.Value, "Some Value");
+        }
+
+        [TestMethod]
+        public async Task ShouldDeserializedAsyncWithExplicitType()
+        {
+            var json = "{\"derivedValue\":\"Async Derived Value\",\"value\":\"Some Async Value\"}";
+            var deserializedObject = await json.FromJsonAsync<SomeClass>();
+            Assert.IsInstanceOfType(deserializedObject, typeof(SomeClass));
+            Assert.AreEqual("Some Async Value", deserializedObject.Value);
+        }
     }
 }

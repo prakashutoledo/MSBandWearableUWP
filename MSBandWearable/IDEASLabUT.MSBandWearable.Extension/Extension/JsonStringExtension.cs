@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 using static System.IO.SeekOrigin;
+using static System.Text.Encoding;
 using static System.Text.Json.JsonNamingPolicy;
 using static System.Text.Json.Serialization.JsonIgnoreCondition;
 
@@ -52,10 +53,38 @@ namespace IDEASLabUT.MSBandWearable.Extension
         /// </summary>
         /// <param name="json">A json string to be deserialized</param>
         /// <param name="toType">A deserialized object parameter</param>
-        /// <returns>A serialized object from given json string</returns>
+        /// <returns>A deserialized object from given json string</returns>
         public static object FromJson(this string json, in Type toType)
         {
             return JsonSerializer.Deserialize(json, toType, DefaultJsonSerializerOptions);
+        }
+
+        /// <summary>
+        /// An extension which deserializes json string into object of given type
+        /// </summary>
+        /// <param name="json">A json string to be deserialized</param>
+        /// <param name="toType">A type of object to be given json string to be deserialized into</param>
+        /// <returns>A task that can be awaited</returns>
+        public static async Task<object> FromJsonAsync(this string json, Type toType)
+        {
+            using(Stream jsonStream = new MemoryStream(UTF8.GetBytes(json), false))
+            {
+                return await JsonSerializer.DeserializeAsync(jsonStream, toType, DefaultJsonSerializerOptions).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// An extension which deserializes json string into object of type <see cref="{T}"/>
+        /// </summary>
+        /// <typeparam name="T">A type of deserialized object</typeparam>
+        /// <param name="json">A json string to be deserialized</param>
+        /// <returns>A task that can be awaited</returns>
+        public static async Task<T> FromJsonAsync<T>(this string json)
+        {
+            using(Stream jsonStream = new MemoryStream(UTF8.GetBytes(json), false))
+            {
+                return await JsonSerializer.DeserializeAsync<T>(jsonStream, DefaultJsonSerializerOptions).ConfigureAwait(false);
+            }
         }
 
         /// <summary>

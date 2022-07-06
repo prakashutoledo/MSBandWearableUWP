@@ -36,7 +36,7 @@ namespace IDEASLabUT.MSBandWearable.Util
                 return false;
             }
 
-            var baseMessage = message.FromJson<BaseMessage>();
+            var baseMessage = await message.FromJsonAsync<BaseMessage>().ConfigureAwait(false);
             
             if (baseMessage == null || !baseMessage.PayloadType.HasValue)
             {
@@ -54,8 +54,8 @@ namespace IDEASLabUT.MSBandWearable.Util
                 return false;
             }
 
-            var websocketMessage = message.FromJson(notificationMessageType);
-            return await messagePostProcessor.Invoke(websocketMessage).ContinueWithStatus();
+            var websocketMessage = await message.FromJsonAsync(notificationMessageType).ConfigureAwait(false);
+            return await messagePostProcessor.Invoke(websocketMessage).ContinueWithStatus().ConfigureAwait(false);
         }
     }
 }
