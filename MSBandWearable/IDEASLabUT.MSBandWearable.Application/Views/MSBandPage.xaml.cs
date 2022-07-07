@@ -318,6 +318,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         protected override async void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             base.OnNavigatedTo(navigationEventArgs);
+            /*
             await Task.CompletedTask;
             var test = new EmpaticaE4BandMessage
             {
@@ -338,6 +339,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             var webSockerService = ServiceFactory.GetWebSocketService;
             await webSockerService.Connect("wss://ws.postman-echo.com/raw", Test1);
             await webSockerService.SendMessage(test, Test1);
+            */
             await Task.CompletedTask;
         }
 
@@ -403,7 +405,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             commandBar.IsEnabled = false;
 
             var dateTime = DateTime.Now;
-            Trace.WriteLine(dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'FFFFFFFZ"));
+            //Trace.WriteLine(dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'FFFFFFFZ"));
             await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
             var bandManagerService = ServiceFactory.GetBandManagerService;
     
@@ -476,7 +478,11 @@ namespace IDEASLabUT.MSBandWearable.Views
             });
             var propertiesService = ServiceFactory.GetPropertiesService;
             await ServiceFactory.GetNtpSyncService.SyncTimestamp(propertiesService.GetProperty(NtpPoolUriJsonKey));
-            Task ContinueTask(bool _) => Task.CompletedTask;
+            Task ContinueTask(bool _)
+            {
+                return Task.CompletedTask;
+            }
+
             await ServiceFactory.GetWebSocketService.Connect(propertiesService.GetProperty(WebSocketConnectionUriJsonKey), ContinueTask);
             WebSocketTimer.Start();
         }

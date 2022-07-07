@@ -4,7 +4,6 @@ using IDEASLabUT.MSBandWearable.Service;
 using Serilog;
 
 using System;
-using System.Diagnostics;
 using System.IO;
 
 using Windows.Storage;
@@ -31,14 +30,13 @@ namespace IDEASLabUT.MSBandWearable.Util
                     bufferBaseFileName: Path.Combine(ApplicationData.Current.LocalFolder.Path, propertiesService.GetProperty(LoggerFileUriJsonKey)),
                     logEventsInBatchLimit: 200,
                     textFormatter: new ElasticsearchEventJsonFormatter(null),
-                    batchFormatter: new ElasticsearchBatchEventFormatter(),
+                    batchFormatter: new ElasticsearchBatchEventFormatter(null),
                     httpClient: ElasticsearchLoggerHttpClient.Singleton,
                     period: TimeSpan.FromSeconds(8),
                     configuration: propertiesService.GetProperties
                 );
             });
 
-            Trace.WriteLine(ApplicationData.Current.LocalFolder.Path);
             LoggerInstance = new Lazy<ILogger>(() => LoggerFactory.CreateLogger());
         }
 

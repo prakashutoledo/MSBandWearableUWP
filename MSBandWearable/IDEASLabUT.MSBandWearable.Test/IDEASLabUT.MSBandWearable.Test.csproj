@@ -119,6 +119,8 @@
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Formatter\BaseFormatterTest.cs" />
+    <Compile Include="Formatter\ElasticsearchBatchEventFormatterTest.cs" />
     <Compile Include="Formatter\ElasticsearchEventJsonFormatterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MSBandWearableTestApplication.xaml.cs">

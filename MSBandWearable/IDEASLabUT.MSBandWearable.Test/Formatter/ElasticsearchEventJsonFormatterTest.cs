@@ -17,16 +17,14 @@ namespace IDEASLabUT.MSBandWearable.Formatter
     /// Unit test for <see cref="ElasticsearchEventJsonFormatter"/>
     /// </summary>
     [TestClass]
-    public class ElasticsearchEventJsonFormatterTest
+    public class ElasticsearchEventJsonFormatterTest : BaseFormatterTest
     {
-        private string actualReason;
         private ITextFormatter formatter;
 
         [TestInitialize]
         public void Setup()
         {
-            actualReason = null;
-            formatter = new ElasticsearchEventJsonFormatter(InvalidInput);
+            formatter = new ElasticsearchEventJsonFormatter(InvalidAction);
         }
 
         [DataTestMethod]
@@ -38,7 +36,12 @@ namespace IDEASLabUT.MSBandWearable.Formatter
         }
 
         [DataTestMethod]
-        [DynamicData(nameof(ValidDataSupplier), Method)]
+        [DataRow("accelerometer", "{\"accererometerX\":\"1.2\"}", "accelerometer\\{\"accererometerX\":\"1.2\"}\r\n")]
+        [DataRow("gsr", "{\"resistance\":\"0.1\"}", "gsr\\{\"resistance\":\"0.1\"}\r\n")]
+        [DataRow("gyroscope", "{\"angularX\":\"2.1\"}", "gyroscope\\{\"angularX\":\"2.1\"}\r\n")]
+        [DataRow("heartrate", "{\"value\":\"value\"}", "heartrate\\{\"value\":\"value\"}\r\n")]
+        [DataRow("ibi", "{\"bpm\":\"60\"}", "ibi\\{\"bpm\":\"60\"}\r\n")]
+        [DataRow("temperature", "{\"temperature\":\"35.2\"}", "temperature\\{\"temperature\":\"35.2\"}\r\n")]
         public void ShouldFormatLogEvent(string indexName, string rawJsonEvent, string expectedFormattedEvent)
         {
             using(var textWriter = new StringWriter())
@@ -53,22 +56,6 @@ namespace IDEASLabUT.MSBandWearable.Formatter
                 Assert.IsNull(actualReason, "No error while writing");
                 Assert.AreEqual(expectedFormattedEvent, textWriter.ToString(), "Formatted log event");
             }
-        }
-
-        /// <summary>
-        /// Supplies valid data needed for formatting single serilog log event
-        /// </summary>
-        /// <returns>A collection valid datas</returns>
-        private static IEnumerable<object[]> ValidDataSupplier()
-        {
-            return new List<object[]>
-            {
-                new object[] { "accelerometer", "{\"accererometerX\":\"1.2\"}", "accelerometer\\{\"accererometerX\":\"1.2\"}\r\n" },
-                new object[] { "gsr", "{\"resistance\":\"0.1\"}", "gsr\\{\"resistance\":\"0.1\"}\r\n" },
-                new object[] { "gyroscope", "{\"angularX\":\"2.1\"}", "gyroscope\\{\"angularX\":\"2.1\"}\r\n" },
-                new object[] { "heartrate", "{\"value\":\"value\"}", "heartrate\\{\"value\":\"value\"}\r\n" },
-                new object[] { "ibi", "{\"bpm\":\"60\"}", "ibi\\{\"bpm\":\"60\"}\r\n" },
-            };
         }
 
         /// <summary>
@@ -146,11 +133,6 @@ namespace IDEASLabUT.MSBandWearable.Formatter
             );
             logEventAction?.Invoke(logEvent);
             return logEvent;
-        }
-
-        private void InvalidInput(string reason)
-        {
-            actualReason = reason;
         }
     }
 }
