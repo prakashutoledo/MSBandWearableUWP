@@ -5,11 +5,11 @@
     } 
   },
   "elasticsearch": {
-    "uri": "http://localhost:9200"
+    "uri": "https://search-ideaslabut-wearables-di2cqfqm4yw3ppkbokmwytm26i.us-east-2.es.amazonaws.com"
   },
   "webSocket": {
     "connection": {
-      "uri": "wss://ws.postman-echo.com/raw"
+      "uri": "wss://uarguq5ql3.execute-api.us-east-2.amazonaws.com/production"
     }
   },
   "ntp": {

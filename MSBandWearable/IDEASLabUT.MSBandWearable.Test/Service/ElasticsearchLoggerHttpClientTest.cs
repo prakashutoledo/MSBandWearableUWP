@@ -20,7 +20,7 @@ namespace IDEASLabUT.MSBandWearable.Service
     /// Unit test for <see cref="ElasticsearchLoggerHttpClient"/>
     /// </summary>
     [TestClass]
-    public class ElasticsearchServiceTest : BaseHyperMock<ElasticsearchLoggerHttpClient>
+    public class ElasticsearchLoggerHttpClientTest : BaseHyperMock<ElasticsearchLoggerHttpClient>
     {
         [TestMethod]
         public async Task ShouldPostAsync()

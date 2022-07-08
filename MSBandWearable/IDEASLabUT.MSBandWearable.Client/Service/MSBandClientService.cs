@@ -49,9 +49,16 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(string bandName)
         {
+            if (string.IsNullOrWhiteSpace(bandName))
+            {
+                await Task.FromException(new ArgumentException($"Invalid {nameof(bandName)} empty or null"));
+                return;
+            }
+
             var pairedBands = await bandClientManager.GetBandsAsync(true);
             if (pairedBands == null || !pairedBands.Any())
             {
+                await Task.FromException(new InvalidOperationException("No paired bands available"));
                 return;
             }
 

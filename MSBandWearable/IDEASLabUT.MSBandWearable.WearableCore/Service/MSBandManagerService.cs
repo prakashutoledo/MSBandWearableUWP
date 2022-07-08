@@ -1,5 +1,6 @@
 ﻿using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Sensor;
+using IDEASLabUT.MSBandWearable.Util;
 
 using Serilog;
 
@@ -10,11 +11,10 @@ using System.Threading.Tasks;
 
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Enumeration;
-using IDEASLabUT.MSBandWearable.Util;
+
 using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 using static IDEASLabUT.MSBandWearable.Model.BandStatus;
 using static Microsoft.Band.Notifications.VibrationType;
-using System.Diagnostics;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
