@@ -61,7 +61,7 @@ namespace IDEASLabUT.MSBandWearable.Model.Notification
         /// </summary>
         /// <param name="description">A description of enum value to match</param>
         /// <returns>A matching nullable <see cref="PayloadAction?"/></returns>
-        public static PayloadAction? FromDescription(string description)
+        public static PayloadAction? ToPayloadAction(this string description)
         {
             return description == null ? null : PayloadActionMap.TryGetValue(description, out PayloadAction payloadAction) ? (PayloadAction?) payloadAction : null;
         }

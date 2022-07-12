@@ -57,7 +57,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// </summary>
         /// <param name="description">A description of enum value to match</param>
         /// <returns>A matching nullable <see cref="BandType?"/></returns>
-        public static BandType? FromDescription(string description)
+        public static BandType? ToBandType(this string description)
         {
             return description == null ? null : BandTypeMap.TryGetValue(description, out var bandType) ? (BandType?) bandType : null;
         }

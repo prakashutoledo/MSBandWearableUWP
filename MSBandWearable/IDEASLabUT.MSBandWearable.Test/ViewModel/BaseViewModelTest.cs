@@ -11,7 +11,7 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// Base view model test providing property changed handler for all classes inheriting <see cref="BaseViewModel"/>
     /// </summary>
     [TestClass]
-    public class BaseViewModelTest<ViewModel> : Test.BaseHyperMock<ViewModel> where ViewModel : BaseViewModel
+    public class BaseViewModelTest<ViewModel> : BaseHyperMock<ViewModel> where ViewModel : BaseViewModel
     {
         private readonly IDictionary<string, int> propertyMap;
 

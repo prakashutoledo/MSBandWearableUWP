@@ -123,6 +123,11 @@
     <Compile Include="Formatter\ElasticsearchBatchEventFormatterTest.cs" />
     <Compile Include="Formatter\ElasticsearchEventJsonFormatterTest.cs" />
     <Compile Include="Json\BandTypeConverterTest.cs" />
+    <Compile Include="Json\BaseEnumConverterTest.cs" />
+    <Compile Include="Json\BaseJsonConverterTest.cs" />
+    <Compile Include="Json\PayloadActionConverterTest.cs" />
+    <Compile Include="Json\PayloadTypeConverterTest.cs" />
+    <Compile Include="Json\ZonedDateTimeOptionalNanoConverterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MSBandWearableTestApplication.xaml.cs">
       <DependentUpon>MSBandWearableTestApplication.xaml</DependentUpon>
@@ -190,6 +195,10 @@
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.ElasticsearchLogger\IDEASLabUT.MSBandWearable.ElasticsearchLogger.csproj">
       <Project>{4084efa1-dea4-4ecf-b84b-9cded68cea1e}</Project>
       <Name>IDEASLabUT.MSBandWearable.ElasticsearchLogger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj">
+      <Project>{603BF5E6-1263-42C1-AC1B-2535B7CC64E7}</Project>
+      <Name>IDEASLabUT.MSBandWearable.Extension</Name>
     </ProjectReference>
     <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Notification\IDEASLabUT.MSBandWearable.Notification.csproj">
       <Project>{a8c05dd2-dd57-4a43-b00e-e2bbc0ec7acf}</Project>
