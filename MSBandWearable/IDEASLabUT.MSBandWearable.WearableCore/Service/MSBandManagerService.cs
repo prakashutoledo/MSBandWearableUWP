@@ -38,11 +38,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <param name="msBandService">A MS band service to set</param>
         /// <param name="subjectViewService">A subject view service to set</param>
         /// <param name="ntpSyncService">A ntp sync service to set</param>
-        /// <exception cref="ArgumentNullException">If msBandService is null</exception>
         private MSBandManagerService(ILogger logger, IBandClientService msBandService, ISubjectViewService subjectViewService, INtpSyncService ntpSyncService)
         {
             // private initialization
-            this.msBandService = msBandService ?? throw new ArgumentNullException(nameof(msBandService));
+            this.msBandService = msBandService;
             BandStatus = UNKNOWN;
             Accelerometer = new AccelerometerSensor(logger, msBandService, subjectViewService, ntpSyncService);
             Gsr = new GSRSensor(logger, msBandService, subjectViewService, ntpSyncService);
@@ -99,11 +98,10 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <returns>A task that can be awaited</returns>
         public async Task ConnectBand(string bandName)
         {
-            var connectTask = bandName == null ? Task.FromException(new ArgumentNullException(nameof(bandName))) : msBandService.ConnectBand(bandName);
-            await  connectTask
+            await msBandService.ConnectBand(bandName)
                     .ContinueWithSupplier(previousTask => ToBandStatusTask(previousTask))
                     .ContinueWithAction(bandStatus => BandStatus = bandStatus)
-                    .ContinueWithAction(() => BandName = bandName);
+                    .ContinueWithAction(() => BandName = BandStatus == Connected ? bandName : null);
         }
 
         /// <summary>

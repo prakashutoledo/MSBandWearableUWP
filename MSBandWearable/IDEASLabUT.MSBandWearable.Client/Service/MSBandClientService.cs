@@ -67,7 +67,7 @@ namespace IDEASLabUT.MSBandWearable.Service
             // Microsoft.Band.Store.BluetoothDeviceInfo
             bool PairedBandConnectionPredicate(IBandInfo bandInfo)
             {
-                
+                // Can't really test this
                 var deviceInfo = bandInfo.GetType().GetProperty(BluetoothDeviceInfoPeer).GetValue(bandInfo) as DeviceInformation;
                 return deviceInfo.Id.Contains(bandName.Split(' ').Last());
             }

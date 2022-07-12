@@ -115,6 +115,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         {
             var websocketService = ServiceFactory.GetWebSocketService;
             websocketService.Close();
+            Trace.WriteLine("Closed and connected");
             Task CotinueTask(bool _) => Task.CompletedTask;
             await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey), CotinueTask);
         }

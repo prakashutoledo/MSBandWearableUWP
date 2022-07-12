@@ -43,10 +43,21 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <inheritdoc/>
         public void Configure(IConfiguration configuration)
         {
+            if (configuration == null)
+            {
+                return;
+            }
+
+            var authorizationSection = configuration.GetSection(ElasticsearchAuthenticationJsonKey);
+            if (authorizationSection.Value == null)
+            {
+                return;
+            }
+
             elasticsearchRestClient.SetDefaultAuthenticationHeader(
                 new AuthenticationHeaderValue(
                     BasicAuthorization,
-                    configuration.GetSection(ElasticsearchAuthenticationJsonKey).Value
+                    authorizationSection.Value
                 )
             );
         }

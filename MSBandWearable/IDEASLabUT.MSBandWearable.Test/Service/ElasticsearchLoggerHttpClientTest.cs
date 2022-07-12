@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,22 @@ namespace IDEASLabUT.MSBandWearable.Service
             Assert.AreEqual(response, actualResponse, "Response should match");
             MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.BulkRequestAsync("https://fake-url", stream), Once()));
         }
-        
+
+        [TestMethod]
+        public void ShouldNotConfigureForNullConfiguration()
+        {
+            Subject.Configure(null);
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.SetDefaultAuthenticationHeader(Param.IsAny<AuthenticationHeaderValue>()), Never()));
+        }
+
+        [TestMethod]
+        public void ShouldNotConfigureForEmptySection()
+        {
+            MockFor<IConfiguration>(configurationMock => configurationMock.Setup(configuration => configuration.GetSection(Param.IsAny<string>())).Returns(MockValue<IConfigurationSection>()));
+            Subject.Configure(MockValue<IConfiguration>());
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.SetDefaultAuthenticationHeader(Param.IsAny<AuthenticationHeaderValue>()), Never()));
+        }
+
         [TestMethod]
         public void ShouldConfigure()
         {
@@ -42,9 +58,9 @@ namespace IDEASLabUT.MSBandWearable.Service
             MockFor<IConfiguration>(configurationMock => configurationMock.Setup(configuration => configuration.GetSection("elasticsearch:authenticationKey")).Returns(MockValue<IConfigurationSection>()));
 
             Subject.Configure(MockValue<IConfiguration>());
+            var authenticationHeaderValue = new AuthenticationHeaderValue("Basic", "Fake-Password");
 
-            MockFor<IConfiguration>(configurationMock => configurationMock.Verify(configuration => configuration.GetSection("elasticsearch:authenticationKey"), Once()));
-            MockFor<IConfigurationSection>(sectionMock => sectionMock.VerifyGet(section => section.Value, Once()));
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.SetDefaultAuthenticationHeader(authenticationHeaderValue), Once()));
             MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.Dispose(), Never()));
             MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.BulkRequestAsync(Param.IsAny<string>(), Param.IsAny<Stream>()), Never()));
         }
@@ -56,10 +72,9 @@ namespace IDEASLabUT.MSBandWearable.Service
             bool IsDisposed() => (bool) disposedValue.GetValue(Subject);
 
             Assert.IsFalse(IsDisposed(), "Subject is not disposed");
-            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Setup(restClient => restClient.Dispose()));
 
+            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Setup(restClient => restClient.Dispose()));
             Subject.Dispose();
-            MockFor<IElasticsearchRestClient>(restClientMock => restClientMock.Verify(restClient => restClient.Dispose(), Once()));
             Assert.IsTrue(IsDisposed(), "Subject is disposed");
         }
     }

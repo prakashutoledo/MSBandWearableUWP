@@ -17,23 +17,6 @@ namespace IDEASLabUT.MSBandWearable.Service
     [TestClass]
     public class MSBandClientServiceTest : BaseHyperMock<MSBandClientService>
     {
-        private class BluetoothDeviceInfo : IBandInfo
-        {
-            public BluetoothDeviceInfo(string name, BandConnectionType bandConnectionType, DeviceInformation deviceInformation)
-            {
-                Name = name;
-                ConnectionType = bandConnectionType;
-                Peer = deviceInformation;
-            }
-
-            public string Name { get; } 
-
-            public BandConnectionType ConnectionType { get; }
-
-            public DeviceInformation Peer { get; }
-        }
-
-
         [DataTestMethod]
         [DataRow(null, DisplayName = "Null bandName")]
         [DataRow("", DisplayName = "Empty(\"\") bandName")]
