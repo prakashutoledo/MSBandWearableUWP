@@ -1,17 +1,19 @@
-﻿using static IDEASLabUT.MSBandWearable.Model.BandStatus;
-using IDEASLabUT.MSBandWearable.Test;
+﻿using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Threading;
-using System.Diagnostics;
-using Microsoft.Band.Sensors;
+using System.Threading.Tasks;
+
+using static IDEASLabUT.MSBandWearable.Model.BandStatus;
 
 namespace IDEASLabUT.MSBandWearable.Service
 {
+    /// <summary>
+    /// Unit test for <see cref="MSBandManagerService"/>
+    /// </summary>
     [TestClass]
     public class MSBandManagerServiceTest : BaseHyperMock<MSBandManagerService>
     {

@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Windows.Devices.Enumeration;
-
 namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>

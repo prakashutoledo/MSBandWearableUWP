@@ -16,18 +16,32 @@ namespace IDEASLabUT.MSBandWearable.Json
             return typeof(BandType).IsAssignableFrom(typeToConvert);
         }
 
+        /// <inheritdoc/>
         public override BandType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var bandType = BandTypeExtension.FromDescription(reader.GetString());
+            if (!CanConvert(typeToConvert))
+            {
+                throw new ArgumentException($"{typeToConvert.Name} is not convertible to BandType");
+            }
+
+            
+            if (reader.TokenType == JsonTokenType.None)
+            {
+                throw new InvalidOperationException("No value is read by reader");
+            }
+
+            var readValue = reader.GetString();
+            var bandType = BandTypeExtension.FromDescription(readValue);
 
             if (bandType.HasValue)
             {
                 return bandType.Value;
             }
 
-            throw new ArgumentNullException("Cannot convert to band type");
+            throw new NullReferenceException($"Cannot convert `{readValue ?? "null"}` to BandType");
         }
 
+        /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, BandType value, JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.GetDescription());

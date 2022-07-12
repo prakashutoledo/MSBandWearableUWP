@@ -11,14 +11,14 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
     /// Base view model test providing property changed handler for all classes inheriting <see cref="BaseViewModel"/>
     /// </summary>
     [TestClass]
-    public class BaseHyperMock<ViewModel> : Test.BaseHyperMock<ViewModel> where ViewModel : BaseViewModel
+    public class BaseViewModelTest<ViewModel> : Test.BaseHyperMock<ViewModel> where ViewModel : BaseViewModel
     {
         private readonly IDictionary<string, int> propertyMap;
 
         /// <summary>
         /// Creates a new instance of <see cref="BaseViewModelTest"/>
         /// </summary>
-        public BaseHyperMock() => propertyMap = new Dictionary<string, int>();
+        public BaseViewModelTest() => propertyMap = new Dictionary<string, int>();
 
         [TestInitialize]
         public void PropertySetup()
@@ -30,6 +30,13 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
         public void CleanupProperty()
         {
             propertyMap.Clear();
+        }
+
+        protected void SetProperty(string propertyName, object value)
+        {
+            var propertyInfo = Subject.GetType().GetProperty(propertyName);
+
+            propertyInfo.SetValue(Subject, value);
         }
 
         /// <summary>

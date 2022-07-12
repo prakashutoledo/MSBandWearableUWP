@@ -3,27 +3,23 @@
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
     /// <summary>
-    /// View model test for <see cref="SubjectViewModel"/>
+    /// Unit test for <see cref="TemperatureModel"/>
     /// </summary>
     [TestClass]
-    public class SubjectViewModelTest : BaseViewModelTest<SubjectViewModel>
+    public class TemperatureModelTest : BaseViewModelTest<TemperatureModel>
     {
-
         [DataTestMethod]
-        [DataRow("SubjectId")]
-        [DataRow("CurrentView")]
-        [DataRow("E4SerialNumber")]
-        [DataRow("MSBandSerialNumber")]
+        [DataRow("Temperature")]
         public void ShouldHavePropertyChanged(string propertyName)
         {
-            SetProperty(propertyName, "Fake Value");
+            SetProperty(propertyName, 37.0);
             VerifyProperty(propertyName: propertyName, expectedCount: 1);
 
-            SetProperty(propertyName, "Fake Value");
+            SetProperty(propertyName, 37.0);
             // Will not invoke property changed event as changed value is same as previous value
             VerifyProperty(propertyName: propertyName, expectedCount: 1);
 
-            SetProperty(propertyName, "New Fake Value");
+            SetProperty(propertyName, 38.2);
             VerifyProperty(propertyName: propertyName, expectedCount: 2);
         }
     }
