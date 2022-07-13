@@ -26,7 +26,7 @@ namespace IDEASLabUT.MSBandWearable.Json
         }
 
         [TestMethod]
-        public void ShouldCanConvert()
+        public void ShouldNotConvertToUnknownType()
         {
             Assert.IsFalse(jsonConverter.CanConvert(typeof(string)), "string type is not convertible");
             Assert.IsTrue(jsonConverter.CanConvert(typeof(AnyType)), "Converter enum is convertible");
@@ -49,8 +49,16 @@ namespace IDEASLabUT.MSBandWearable.Json
                 _ = jsonConverter.Read(ref jsonReader, typeof(AnyType), default);
             });
 
-
             Assert.AreEqual("No value has been read by reader", exception1.Message);
+
+            var exception2 = Assert.ThrowsException<NullReferenceException>(() =>
+            {
+                var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes("null")));
+                jsonReader.Read();
+                _ = jsonConverter.Read(ref jsonReader, typeof(AnyType), default);
+            });
+
+            Assert.AreEqual($"Cannot convert `null` to {typeof(AnyType).Name}", exception2.Message);
         }
 
         /// <summary>
@@ -80,7 +88,7 @@ namespace IDEASLabUT.MSBandWearable.Json
         {
             using (Stream stream = new MemoryStream())
             using (var jsonWriter = new Utf8JsonWriter(stream, default))
-            using (var stringReader = new StreamReader(stream))
+            using (var stringReader = new StreamReader(stream, UTF8))
             {
                 jsonConverter.Write(jsonWriter, anyType, default);
                 await jsonWriter.FlushAsync();

@@ -15,7 +15,7 @@ namespace IDEASLabUT.MSBandWearable.Json
         [TestMethod]
         public void ShouldReadPayloadAction()
         {
-            VerifyRead("\"sendMessage\"", PayloadAction.SendMessage, "SendMessage payload action should be read");
+            VerifyRead("\"sendMessage\"", PayloadAction.SendMessage, "SendMessage payload action shall be read");
         }
 
         [TestMethod]

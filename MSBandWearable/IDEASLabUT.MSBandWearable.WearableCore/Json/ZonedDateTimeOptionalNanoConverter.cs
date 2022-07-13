@@ -11,13 +11,15 @@ namespace IDEASLabUT.MSBandWearable.Json
     /// </summary>
     public class ZonedDateTimeOptionalNanoConverter : JsonConverter<DateTime>
     {
-        private const string DateTimeFormatter = "yyyy-MM-dd'T'HH:mm:ss.ffffffzzz";
+        private const string DateTimeFormatter = "yyyy-MM-dd'T'HH:mm:ss.ffffffzzzz";
 
+        /// <inheritdoc/>
         public override bool CanConvert(Type typeToConvert)
         {
             return typeof(DateTime).IsAssignableFrom(typeToConvert);
         }
 
+        /// <inheritdoc/>
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (!CanConvert(typeToConvert))
@@ -29,11 +31,31 @@ namespace IDEASLabUT.MSBandWearable.Json
             {
                 throw new InvalidOperationException("No value has been read by reader");
             }
-            return reader.TokenType == Null ? default : DateTime.ParseExact(reader.GetString(), DateTimeFormatter, null);
+
+            switch (reader.TokenType)
+            {
+                case None:
+                    throw new InvalidOperationException("No value has been read by reader");
+
+                case Null:
+                    throw new NullReferenceException($"Cannot convert `null` to {typeof(DateTime).Name}");
+            }
+
+            var dateTimeString = reader.GetString();
+            try
+            {
+                return DateTime.ParseExact(dateTimeString, DateTimeFormatter, null);
+            }
+            catch(FormatException)
+            {
+                throw new InvalidOperationException($"`{dateTimeString}` is not a valid `{DateTimeFormatter}` format");
+            }
         }
 
+        /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
+            var test = value.ToString(DateTimeFormatter);
             writer.WriteStringValue(value.ToString(DateTimeFormatter));
         }
     }

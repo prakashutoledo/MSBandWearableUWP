@@ -13,8 +13,8 @@ namespace IDEASLabUT.MSBandWearable.Json
     public class PayloadTypeConverterTest : BaseEnumConverterTest<PayloadTypeConverter, PayloadType>
     {
         [DataTestMethod]
-        [DataRow("\"MSBand\"", PayloadType.MSBand, "MSBand payload type should be read")]
-        [DataRow("\"E4Band\"", PayloadType.E4Band, "E4Band payload type should be read")]
+        [DataRow("\"MSBand\"", PayloadType.MSBand, "MSBand payload type shall be read")]
+        [DataRow("\"E4Band\"", PayloadType.E4Band, "E4Band payload type shall be read")]
         public void ShouldReadPayloadType(string description, PayloadType expectedPayloadType, string message)
         {
             VerifyRead(description, expectedPayloadType, message);

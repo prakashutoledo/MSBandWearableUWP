@@ -16,17 +16,8 @@ namespace IDEASLabUT.MSBandWearable.Json
     public class BaseEnumConverterTest<Converter, ConverterEnum> : BaseJsonConverterTest<Converter, ConverterEnum> where Converter : JsonConverter<ConverterEnum>, new() where ConverterEnum : Enum
     {
         [TestMethod]
-        public void ShouldFailedReadForNullAndInvalidName()
+        public void ShouldFailedReadInvalidBandTypeDescription()
         {
-            var exception2 = Assert.ThrowsException<NullReferenceException>(() =>
-            {
-                var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes("null")));
-                jsonReader.Read();
-                _ = jsonConverter.Read(ref jsonReader, typeof(ConverterEnum), default);
-            });
-
-            Assert.AreEqual($"Cannot convert `null` to {typeof(ConverterEnum).Name}", exception2.Message);
-
             var exception3 = Assert.ThrowsException<NullReferenceException>(() =>
             {
                 var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes("\"some\"")));

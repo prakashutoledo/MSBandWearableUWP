@@ -13,8 +13,8 @@ namespace IDEASLabUT.MSBandWearable.Json
     public class BandTypeConverterTest : BaseEnumConverterTest<BandTypeConverter, BandType>
     {
         [DataTestMethod]
-        [DataRow("\"MSBAND\"", BandType.MSBand, "MSBand type should be read")]
-        [DataRow("\"E4BAND\"", BandType.E4Band, "E4Band type should be read")]
+        [DataRow("\"MSBAND\"", BandType.MSBand, "MSBand type shall be read")]
+        [DataRow("\"E4BAND\"", BandType.E4Band, "E4Band type shall be read")]
         public void ShouldReadBandType(string description, BandType expectedBandType, string message)
         {
             VerifyRead(description, expectedBandType, message);
