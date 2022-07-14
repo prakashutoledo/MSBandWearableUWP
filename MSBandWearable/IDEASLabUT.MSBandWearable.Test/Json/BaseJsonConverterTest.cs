@@ -79,11 +79,25 @@ namespace IDEASLabUT.MSBandWearable.Json
             }
         }
 
+        /// <summary>
+        /// Creates a new action delegate for reading utf-8 json reader for given type with given string svalue
+        /// </summary>
+        /// <param name="toType">A type to read</param>
+        /// <param name="value">A string value to read</param>
+        /// <param name="canRead">A flag to set for reading reader or not</param>
+        /// <returns></returns>
         protected Action InvalidConverterRead(Type toType, string value = null, bool canRead = false)
         {
             return () => Read(toType, value, canRead);
         }
 
+        /// <summary>
+        /// Reads the utf8 json reader for given type and string value if canRead flag is set
+        /// </summary>
+        /// <param name="toType">A type to read</param>
+        /// <param name="value">A string value to read for the type</param>
+        /// <param name="canRead">A read falg to set if reader can read or not</param>
+        /// <returns>A value read from json converter</returns>
         protected AnyType Read(Type toType, string value = null, bool canRead = false)
         {
             var bytes = value == null ? null : new ReadOnlySpan<byte>(UTF8.GetBytes(value));

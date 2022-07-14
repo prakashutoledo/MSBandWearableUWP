@@ -75,8 +75,17 @@ namespace IDEASLabUT.MSBandWearable.Json
         }
     }
 
+    /// <summary>
+    /// An extension class for <see cref="DateTime"/>
+    /// </summary>
     public static class DateTimeExtension
     {
+        /// <summary>
+        /// An extension to add microseconds value to this date time
+        /// </summary>
+        /// <param name="dateTime">A datetime value to add microseconds</param>
+        /// <param name="microseconds">A microseconds value to add</param>
+        /// <returns></returns>
         public static DateTime AddMicroseconds(this DateTime dateTime, int microseconds)
         {
             return dateTime.AddTicks(microseconds * 10);
