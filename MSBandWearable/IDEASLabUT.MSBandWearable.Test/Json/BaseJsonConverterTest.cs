@@ -35,29 +35,13 @@ namespace IDEASLabUT.MSBandWearable.Json
         [TestMethod]
         public void ShouldFailedReadForNonConvertibleTypeAndNone()
         {
-            var exception = Assert.ThrowsException<ArgumentException>(() =>
-            {
-                var jsonReader = new Utf8JsonReader();
-                _ = jsonConverter.Read(ref jsonReader, typeof(string), default);
-            });
-
+            var exception = Assert.ThrowsException<ArgumentException>(InvalidConverterRead(typeof(string)));
             Assert.AreEqual($"String is not convertible to {typeof(AnyType).Name}", exception.Message);
 
-            var exception1 = Assert.ThrowsException<InvalidOperationException>(() =>
-            {
-                var jsonReader = new Utf8JsonReader();
-                _ = jsonConverter.Read(ref jsonReader, typeof(AnyType), default);
-            });
-
+            var exception1 = Assert.ThrowsException<InvalidOperationException>(InvalidConverterRead(typeof(AnyType)));
             Assert.AreEqual("No value has been read by reader", exception1.Message);
 
-            var exception2 = Assert.ThrowsException<NullReferenceException>(() =>
-            {
-                var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes("null")));
-                jsonReader.Read();
-                _ = jsonConverter.Read(ref jsonReader, typeof(AnyType), default);
-            });
-
+            var exception2 = Assert.ThrowsException<NullReferenceException>(InvalidConverterRead(typeof(AnyType), "null", true));
             Assert.AreEqual($"Cannot convert `null` to {typeof(AnyType).Name}", exception2.Message);
         }
 
@@ -69,12 +53,7 @@ namespace IDEASLabUT.MSBandWearable.Json
         /// <param name="message">A massege to set</param>
         protected void VerifyRead(string description, AnyType expected, string message)
         {
-            var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes(description)));
-            jsonReader.Read();
-
-            var actual = jsonConverter.Read(ref jsonReader, typeof(AnyType), default);
-
-            Assert.AreEqual(expected, actual, message);
+            Assert.AreEqual(expected, Read(typeof(AnyType), description, true), message);
         }
 
         /// <summary>
@@ -98,6 +77,22 @@ namespace IDEASLabUT.MSBandWearable.Json
 
                 Assert.AreEqual(expected, actual, message);
             }
+        }
+
+        protected Action InvalidConverterRead(Type toType, string value = null, bool canRead = false)
+        {
+            return () => Read(toType, value, canRead);
+        }
+
+        protected AnyType Read(Type toType, string value = null, bool canRead = false)
+        {
+            var bytes = value == null ? null : new ReadOnlySpan<byte>(UTF8.GetBytes(value));
+            var jsonReader = new Utf8JsonReader(bytes, default);
+            if (canRead)
+            {
+                jsonReader.Read();
+            }
+            return jsonConverter.Read(ref jsonReader, toType, default);
         }
     }
 }

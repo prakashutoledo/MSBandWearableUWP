@@ -2,12 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 using static Microsoft.VisualStudio.TestTools.UnitTesting.DynamicDataSourceType;
 using static System.DateTimeKind;
-using static System.Text.Encoding;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {
@@ -28,14 +26,7 @@ namespace IDEASLabUT.MSBandWearable.Json
         [DataRow("\"2019-01-20T23:21:29.00121105:0\"", "`2019-01-20T23:21:29.00121105:0` is not a valid `yyyy-MM-dd'T'HH:mm:ss.ffffffzzzz` format")]
         public void ShouldFailedToReadInvalidDateTimeFormat(string invalidDateTimeString, string expectedMessage)
         {
-            void ReadInvalidString()
-            {
-                var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes(invalidDateTimeString)));
-                jsonReader.Read();
-                jsonConverter.Read(ref jsonReader, typeof(DateTime), default);
-            }
-
-            var exception = Assert.ThrowsException<InvalidOperationException>(ReadInvalidString);
+            var exception = Assert.ThrowsException<InvalidOperationException>(InvalidConverterRead(typeof(DateTime), invalidDateTimeString, true));
             Assert.AreEqual(expectedMessage, exception.Message, "Invalid date format");
         }
 

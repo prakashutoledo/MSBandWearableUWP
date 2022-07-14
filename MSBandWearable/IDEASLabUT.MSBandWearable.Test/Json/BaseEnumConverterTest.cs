@@ -1,10 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-
-using static System.Text.Encoding;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {
@@ -18,14 +15,8 @@ namespace IDEASLabUT.MSBandWearable.Json
         [TestMethod]
         public void ShouldFailedReadInvalidBandTypeDescription()
         {
-            var exception3 = Assert.ThrowsException<NullReferenceException>(() =>
-            {
-                var jsonReader = new Utf8JsonReader(new ReadOnlySpan<byte>(UTF8.GetBytes("\"some\"")));
-                jsonReader.Read();
-                _ = jsonConverter.Read(ref jsonReader, typeof(ConverterEnum), default);
-            });
-
-            Assert.AreEqual($"Cannot convert `some` to {typeof(ConverterEnum).Name}", exception3.Message);
+            var exception = Assert.ThrowsException<NullReferenceException>(InvalidConverterRead(typeof(ConverterEnum), "\"some\"", true));
+            Assert.AreEqual($"Cannot convert `some` to {typeof(ConverterEnum).Name}", exception.Message);
         }
     }
 }

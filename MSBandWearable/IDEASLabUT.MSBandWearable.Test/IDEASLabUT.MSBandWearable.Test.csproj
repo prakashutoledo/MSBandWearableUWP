@@ -136,6 +136,7 @@
     <Compile Include="Service\MSBandClientServiceTest.cs" />
     <Compile Include="Service\MSBandManagerServiceTest.cs" />
     <Compile Include="Service\NtpSyncServiceTest.cs" />
+    <Compile Include="Service\PropertiesServiceTest.cs" />
     <Compile Include="Service\SubjectViewServiceTest.cs" />
     <Compile Include="Service\WebSocketServiceTest.cs" />
     <Compile Include="Util\CoreDispatcherUtilTest.cs" />

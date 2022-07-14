@@ -40,7 +40,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         private PropertiesService(IConfiguration configuration)
         {
             // private initialization
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.configuration = configuration;
         }
 
         public IConfiguration GetProperties => configuration;
@@ -53,7 +53,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <exception cref="ArgumentNullException">if key is null</exception>
         public string GetProperty(string key)
         {
-            return key == null ? throw new ArgumentNullException(nameof(key)) : configuration.GetSection(key)?.Value;
+            return string.IsNullOrWhiteSpace(key) ? throw new ArgumentNullException(nameof(key)) : configuration.GetSection(key)?.Value;
         }
     }
 }
