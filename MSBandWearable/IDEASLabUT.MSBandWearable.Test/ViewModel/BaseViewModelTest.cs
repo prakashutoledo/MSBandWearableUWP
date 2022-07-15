@@ -33,6 +33,11 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             propertyMap.Clear();
         }
 
+        /// <summary>
+        /// Sets the propertyName with given value using reflection
+        /// </summary>
+        /// <param name="propertyName">A property name to be called</param>
+        /// <param name="value">A new value of given property name</param>
         protected void SetProperty(string propertyName, object value)
         {
             var propertyInfo = Subject.GetType().GetProperty(propertyName);
@@ -56,6 +61,12 @@ namespace IDEASLabUT.MSBandWearable.ViewModel
             propertyMap[propertyName]++;
         }
 
+        /// <summary>
+        /// Verifies the given propertyName as been called with expected count
+        /// </summary>
+        /// <param name="propertyName">A property name to verify if it is in the map</param>
+        /// <param name="expectedCount">An expected count of times which property name was invoked as a value</param>
+        /// <param name="expectedExists">An exists flag to check if propertyName as key contains expected count as value</param>
         protected void VerifyProperty(string propertyName, int expectedCount, bool expectedExists = true)
         {
             Assert.AreEqual(expectedExists, propertyMap.Contains(new KeyValuePair<string, int>(propertyName, expectedCount)));
