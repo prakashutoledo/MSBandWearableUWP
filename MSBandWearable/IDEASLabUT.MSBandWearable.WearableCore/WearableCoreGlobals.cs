@@ -1,5 +1,9 @@
-﻿namespace IDEASLabUT.MSBandWearable
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+namespace IDEASLabUT.MSBandWearable
 {
+    /// <summary>
+    /// Global constants for assembly IDEASLabUT.MSBandWearable.WearableCore
+    /// </summary>
     internal class WearableCoreGlobals
     {
         internal const string AccelerometerSensorName = "accelerometer";

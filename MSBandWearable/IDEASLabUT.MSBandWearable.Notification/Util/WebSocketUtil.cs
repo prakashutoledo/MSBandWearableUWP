@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Model.Notification;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Model.Notification;
 
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 
 namespace IDEASLabUT.MSBandWearable.Util
 {
+    /// <summary>
+    /// Utility class for webSocket
+    /// </summary>
     public static class WebSocketUtil
     {
         private static readonly Lazy<IReadOnlyDictionary<PayloadType, Type>> NotificationTypeMapInstance;
@@ -21,6 +25,9 @@ namespace IDEASLabUT.MSBandWearable.Util
             });
         }
 
+        /// <summary>
+        /// Gets all the supported webSocket message paylod type
+        /// </summary>
         public static IReadOnlyDictionary<PayloadType, Type> SupportedNotificationTypeMap => NotificationTypeMapInstance.Value;
 
         /// <summary>

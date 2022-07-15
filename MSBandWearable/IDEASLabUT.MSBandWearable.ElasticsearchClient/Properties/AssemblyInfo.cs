@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

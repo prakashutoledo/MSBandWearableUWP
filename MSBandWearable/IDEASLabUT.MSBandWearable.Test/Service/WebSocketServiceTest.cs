@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Model.Notification;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Model.Notification;
 using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,4 +1,5 @@
-﻿using Serilog.Events;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using Serilog.Events;
 using Serilog.Formatting;
 
 using System;

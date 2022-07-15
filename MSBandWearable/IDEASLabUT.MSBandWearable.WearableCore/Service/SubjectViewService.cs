@@ -1,4 +1,5 @@
-﻿using System;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using System;
 
 using static System.Threading.Interlocked;
 

@@ -1,7 +1,11 @@
-﻿using System;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using System;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
+    /// <summary>
+    /// RR interval sensor view model
+    /// </summary>
     public class RRIntervalModel : BaseViewModel
     {
         private static readonly Lazy<RRIntervalModel> RRIntervalModelInstance;

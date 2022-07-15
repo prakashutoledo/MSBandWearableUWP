@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using System.Net.Http;
 
 namespace IDEASLabUT.MSBandWearable.Model
 {

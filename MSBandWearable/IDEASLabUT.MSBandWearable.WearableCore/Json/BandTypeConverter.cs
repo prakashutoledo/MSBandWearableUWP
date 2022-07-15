@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Model;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Model;
 
 namespace IDEASLabUT.MSBandWearable.Json
 {

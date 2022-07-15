@@ -1,6 +1,4 @@
-﻿/*
- * Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
- */
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
 using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Service;
 
@@ -11,9 +9,9 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 
+using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
 using static IDEASLabUT.MSBandWearable.Extension.TaskExtension;
 using static Microsoft.Band.UserConsent;
-using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
 
 namespace IDEASLabUT.MSBandWearable.Sensor
 {

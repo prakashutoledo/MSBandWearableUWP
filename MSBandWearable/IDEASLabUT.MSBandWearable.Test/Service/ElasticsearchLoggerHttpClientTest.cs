@@ -1,4 +1,5 @@
-﻿using HyperMock;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using HyperMock;
 
 using IDEASLabUT.MSBandWearable.Test;
 

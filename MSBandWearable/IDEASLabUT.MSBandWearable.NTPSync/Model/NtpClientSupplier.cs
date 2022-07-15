@@ -1,4 +1,5 @@
-﻿using GuerrillaNtp;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using GuerrillaNtp;
 
 using System;
 using System.Net;

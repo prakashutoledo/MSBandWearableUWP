@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Formatter;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Formatter;
 using IDEASLabUT.MSBandWearable.Service;
 
 using Serilog;

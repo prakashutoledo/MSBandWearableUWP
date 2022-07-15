@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Model.Notification;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Model.Notification;
 
 using System;
 using System.Collections.Generic;
@@ -98,7 +99,7 @@ namespace IDEASLabUT.MSBandWearable.Service
         /// <summary>
         /// Close the given message WebSocket instance with given reason
         /// </summary>
-        /// <param name="reason"></param>
+        /// <param name="reason">A reason phrase to close</param>
         public void Close(string reason = "Application Closed")
         {
             messageWebSocket?.Close(1000, reason);

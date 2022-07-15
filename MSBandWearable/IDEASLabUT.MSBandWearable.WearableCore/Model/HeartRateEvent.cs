@@ -1,4 +1,5 @@
-﻿using Microsoft.Band.Sensors;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using Microsoft.Band.Sensors;
 
 using System.Text.Json.Serialization;
 

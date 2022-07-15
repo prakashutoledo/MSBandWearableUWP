@@ -1,4 +1,5 @@
-﻿using System;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -65,7 +66,7 @@ namespace IDEASLabUT.MSBandWearable.Model
         /// </summary>
         /// <param name="name">A name of enum value to match</param>
         /// <returns>A matching nullable <see cref="SensorType?"/></returns>
-        public static SensorType? FromName(in string name)
+        public static SensorType? ToSensorType(this string name)
         {
             return name == null ? null : SensorTypeMap.TryGetValue(name, out SensorType sensorType) ? (SensorType?) sensorType : null;
         }

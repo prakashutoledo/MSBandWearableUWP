@@ -1,6 +1,4 @@
-﻿
-using HyperMock;
-
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
 using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Test;
 
@@ -12,7 +10,6 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 

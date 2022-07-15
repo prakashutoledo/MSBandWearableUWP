@@ -1,4 +1,5 @@
-﻿using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using static IDEASLabUT.MSBandWearable.Extension.JsonStringExtension;
 
 namespace IDEASLabUT.MSBandWearable.Model.Notification
 {

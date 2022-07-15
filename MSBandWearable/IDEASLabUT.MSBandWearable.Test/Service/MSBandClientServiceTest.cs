@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Test;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Test;
 
 using Microsoft.Band;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

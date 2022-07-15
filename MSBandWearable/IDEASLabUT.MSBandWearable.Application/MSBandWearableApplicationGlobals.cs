@@ -1,4 +1,5 @@
-﻿namespace IDEASLabUT.MSBandWearable
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+namespace IDEASLabUT.MSBandWearable
 {
     /// <summary>
     /// Application global constant for MS Band Wearable application

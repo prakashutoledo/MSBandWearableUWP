@@ -1,4 +1,5 @@
-﻿namespace IDEASLabUT.MSBandWearable.Model.Notification
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+namespace IDEASLabUT.MSBandWearable.Model.Notification
 {
     /// <summary>
     /// An webSocket message details POCO

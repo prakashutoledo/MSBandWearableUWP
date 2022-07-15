@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using Microsoft.Extensions.Configuration;
 
 using Serilog.Sinks.Http;
 

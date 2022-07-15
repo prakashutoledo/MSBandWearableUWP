@@ -1,4 +1,5 @@
-﻿using GuerrillaNtp;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using GuerrillaNtp;
 
 using IDEASLabUT.MSBandWearable.Model;
 using IDEASLabUT.MSBandWearable.Test;

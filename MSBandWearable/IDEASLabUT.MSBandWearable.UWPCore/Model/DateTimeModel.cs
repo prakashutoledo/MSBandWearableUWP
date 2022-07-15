@@ -1,4 +1,5 @@
-﻿namespace IDEASLabUT.MSBandWearable.Model
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+namespace IDEASLabUT.MSBandWearable.Model
 {
     /// <summary>
     /// POCO holding date time model mapper value used in line charts

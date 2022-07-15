@@ -1,7 +1,11 @@
-﻿using System;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using System;
 
 namespace IDEASLabUT.MSBandWearable.ViewModel
 {
+    /// <summary>
+    /// Gsr sensor view model
+    /// </summary>
     public class GSRModel : BaseViewModel
     {
         private static readonly Lazy<GSRModel> GSRModelInstance;

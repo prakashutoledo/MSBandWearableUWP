@@ -1,7 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace IDEASLabUT.MSBandWearable.Extension
 {
+    /// <summary>
+    /// Unit test for <see cref="StringExtension"/>
+    /// </summary>
     [TestClass]
     public class StringExtensionTest
     {

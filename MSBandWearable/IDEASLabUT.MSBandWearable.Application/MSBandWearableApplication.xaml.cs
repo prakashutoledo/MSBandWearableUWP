@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Service;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Service;
 using IDEASLabUT.MSBandWearable.Views;
 
 using Serilog;
@@ -17,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 /// <summary>
 /// <author>Prakash Khadka</author>
 /// <mailto>prakashkhadka@aol.com</mailto>
+/// <mailto>prakash.khadka@rockets.utoledo.edu</mailto>
 /// </summary>
 namespace IDEASLabUT.MSBandWearable
 {

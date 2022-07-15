@@ -1,4 +1,5 @@
-﻿using Serilog.Sinks.Http;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using Serilog.Sinks.Http;
 
 using System;
 using System.Collections.Generic;

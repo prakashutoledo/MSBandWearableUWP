@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
 using System.Text.Json.Serialization;

@@ -1,4 +1,5 @@
-﻿using IDEASLabUT.MSBandWearable.Json;
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+using IDEASLabUT.MSBandWearable.Json;
 
 using System.Text.Json.Serialization;
 

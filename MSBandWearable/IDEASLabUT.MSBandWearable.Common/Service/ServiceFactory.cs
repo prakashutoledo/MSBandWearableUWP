@@ -29,10 +29,14 @@ namespace IDEASLabUT.MSBandWearable.Service
                 GetLogger = SerilogLoggerUtil.Logger;
             }
 
-            /// <inheritdoc/>
+            /// <summary>
+            /// Gets the implementation instance of <see cref="IWebSocketService"/>
+            /// </summary>
             public sealed override IWebSocketService GetWebSocketService { get; }
 
-            /// <inheritdoc/>
+            /// <summary>
+            /// Gets the implementation instance of <see cref="IPropertiesService"/>
+            /// </summary>
             public sealed override IPropertiesService GetPropertiesService { get; }
 
             /// <summary>
@@ -56,12 +60,7 @@ namespace IDEASLabUT.MSBandWearable.Service
             public sealed override ILogger GetLogger { get; }
         }
 
-        private static readonly Lazy<ServiceFactory> serviceFactoryInstance;
-
-        static ServiceFactory()
-        {
-            serviceFactoryInstance = new Lazy<ServiceFactory>(() => new ServiceFactoryImpl());
-        }
+        private static readonly Lazy<ServiceFactory> serviceFactoryInstance = new Lazy<ServiceFactory>(() => new ServiceFactoryImpl());
 
         /// <summary>
         /// Gets the singleton instance of <see cref="ServiceFactory"/>

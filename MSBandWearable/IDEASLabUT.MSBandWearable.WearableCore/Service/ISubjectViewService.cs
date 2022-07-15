@@ -1,4 +1,5 @@
-﻿namespace IDEASLabUT.MSBandWearable.Service
+﻿/// Copyright 2022 IDEAS Lab @ University of Toledo. All rights reserved.
+namespace IDEASLabUT.MSBandWearable.Service
 {
     /// <summary>
     /// An interface for providing subject view service
