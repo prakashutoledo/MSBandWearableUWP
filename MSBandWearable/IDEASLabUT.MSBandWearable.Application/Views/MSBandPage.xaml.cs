@@ -7,11 +7,8 @@ using IDEASLabUT.MSBandWearable.ViewModel;
 using LiveCharts;
 using LiveCharts.Configurations;
 
-using Microsoft.Band;
-
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -47,6 +44,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         // These chart values properties should be public for data binding line series chart
         public ChartValues<DateTimeModel> GsrDataPoint { get; } = new ChartValues<DateTimeModel>();
         public ChartValues<DateTimeModel> IbiDataPoint { get; } = new ChartValues<DateTimeModel>();
+
+        private int connectionCount = 0;
 
         /// <summary>
         /// Initializes a new instance of <see cref="MSBandPage"/>
@@ -116,9 +115,7 @@ namespace IDEASLabUT.MSBandWearable.Views
         {
             var websocketService = ServiceFactory.GetWebSocketService;
             websocketService.Close();
-            Trace.WriteLine("Closed and connected");
-            Task CotinueTask(bool _) => Task.CompletedTask;
-            await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey), CotinueTask);
+            await websocketService.Connect(ServiceFactory.GetPropertiesService.GetProperty(WebSocketConnectionUriJsonKey), WebSocketContinueTask);
         }
 
         /// <summary>
@@ -320,28 +317,6 @@ namespace IDEASLabUT.MSBandWearable.Views
         protected override async void OnNavigatedTo(NavigationEventArgs navigationEventArgs)
         {
             base.OnNavigatedTo(navigationEventArgs);
-            /*
-            await Task.CompletedTask;
-            var test = new EmpaticaE4BandMessage
-            {
-                Payload = new EmpaticaE4Band
-                {
-                    Device = new Device
-                    {
-                        Connected = true,
-                        SerialNumber = "Fake Number1"
-                    },
-                    FromView = "Fake View11",
-                    SubjectId = "Fake Id"
-                },
-                PayloadType = E4Band,
-                Action = PayloadAction.SendMessage
-            };
-            Task Test1(bool _) => Task.CompletedTask;
-            var webSockerService = ServiceFactory.GetWebSocketService;
-            await webSockerService.Connect("wss://ws.postman-echo.com/raw", Test1);
-            await webSockerService.SendMessage(test, Test1);
-            */
             await Task.CompletedTask;
         }
 
@@ -389,8 +364,8 @@ namespace IDEASLabUT.MSBandWearable.Views
         /// An action callback when paired MS band is selected from the available bands combo box
         /// </summary>
         /// <param name="sender">The sender of current combo box selected event</param>
-        /// <param name="changedEventArgs">A selected changed event arguments</param>
-        private async void BandSelectionChanged(object sender, SelectionChangedEventArgs changedEventArgs)
+        /// <param name="_">A selected changed event arguments</param>
+        private async void BandSelectionChanged(object sender, SelectionChangedEventArgs _)
         {
             await ConnectBand((sender as ComboBox).SelectedValue.ToString());
         }
@@ -406,56 +381,27 @@ namespace IDEASLabUT.MSBandWearable.Views
             syncStackPanel.Visibility = Visibility.Visible;
             commandBar.IsEnabled = false;
 
-            var dateTime = DateTime.Now;
-            //Trace.WriteLine(dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'FFFFFFFZ"));
             await HideAllGridsWithMessage($"Connecting to band ({bandName})...");
+
             var bandManagerService = ServiceFactory.GetBandManagerService;
-    
             await bandManagerService.ConnectBand(bandName);
             switch (bandManagerService.BandStatus)
             {
-                case BandStatus.Connected:
-                    //await StartDashboard();
-                    break;
-                case BandStatus.Subscribed:
-                    break;
-                case BandStatus.UnSubscribed:
-                    break;
                 case BandStatus.Error:
-                    break;
                 case BandStatus.UNKNOWN:
+                    messageDialog.Content = $"Failed to connect to Microsoft Band ({bandName}).";
+                    messageDialog.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
                     break;
             }
-            try
+            if (!string.IsNullOrEmpty(messageDialog.Content))
             {
-                //await BandManagerService.ConnectBand(bandName);
+                syncStackPanel.Visibility = Visibility.Collapsed;
+                _ = await messageDialog.ShowAsync();
+                availableBandGrid.Visibility = Visibility.Visible;
             }
-            catch (BandAccessDeniedException)
+            else
             {
-                messageDialog.Content = $"Microsoft Band ({bandName}) doesn't have a permission to synchorize with this device";
-                messageDialog.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
-            }
-            catch (BandIOException)
-            {
-                messageDialog.Content = $"Failed to connect to Microsoft Band ({bandName}).";
-                messageDialog.Commands.Add(new UICommand("Close", new UICommandInvokedHandler(CommandInvokedHandler), -1));
-            }
-            catch (Exception ex)
-            {
-                messageDialog.Content = ex.ToString();
-            }
-            finally
-            {
-                if (!string.IsNullOrEmpty(messageDialog.Content))
-                {
-                    syncStackPanel.Visibility = Visibility.Collapsed;
-                    _ = await messageDialog.ShowAsync();
-                    availableBandGrid.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    await StartDashboard();
-                }
+                await StartDashboard();
             }
         }
 
@@ -471,7 +417,6 @@ namespace IDEASLabUT.MSBandWearable.Views
             var bandManagerService = ServiceFactory.GetBandManagerService;
             await HideAllGridsWithMessage($"Preparing Dashboard for Microsoft Band ({bandManagerService.BandName})...");
             await bandManagerService.SubscribeSensors();
-            //await bandManagerService.Gsr.Subscribe();
             await RunLaterInUIThread(() =>
             {
                 commandBar.Visibility = Visibility.Visible;
@@ -480,13 +425,17 @@ namespace IDEASLabUT.MSBandWearable.Views
             });
             var propertiesService = ServiceFactory.GetPropertiesService;
             await ServiceFactory.GetNtpSyncService.SyncTimestamp(propertiesService.GetProperty(NtpPoolUriJsonKey));
-            Task ContinueTask(bool _)
+            await ServiceFactory.GetWebSocketService.Connect(propertiesService.GetProperty(WebSocketConnectionUriJsonKey), WebSocketContinueTask);
+        }
+
+        private Task WebSocketContinueTask(bool isConnected)
+        {
+            if (connectionCount++ == 0 && isConnected)
             {
-                return Task.CompletedTask;
+                WebSocketTimer.Start();
             }
 
-            await ServiceFactory.GetWebSocketService.Connect(propertiesService.GetProperty(WebSocketConnectionUriJsonKey), ContinueTask);
-            WebSocketTimer.Start();
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -497,7 +446,7 @@ namespace IDEASLabUT.MSBandWearable.Views
             switch (ServiceFactory.GetBandManagerService.BandStatus)
             {
                 case BandStatus.Connected:
-                    //return;
+                //return;
                 case BandStatus.Subscribed:
                     syncGrid.Visibility = Visibility.Collapsed;
                     startOrStopSessionButtton.IsEnabled = true;

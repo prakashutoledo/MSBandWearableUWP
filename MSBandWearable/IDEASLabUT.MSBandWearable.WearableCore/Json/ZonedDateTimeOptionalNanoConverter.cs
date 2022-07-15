@@ -56,7 +56,6 @@ namespace IDEASLabUT.MSBandWearable.Json
         /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            var test = value.ToString(DateTimeFormatter);
             writer.WriteStringValue(value.ToString(DateTimeFormatter));
         }
     }
