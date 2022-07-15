@@ -21,7 +21,7 @@ namespace IDEASLabUT.MSBandWearable.Util
         {
             string mutable = "";
             await RunLaterInUIThread(() => ApplyLatch(() => mutable = "Fake set"));
-            WaitFor();
+            await WaitAsync();
             Assert.AreEqual("Fake set", mutable, $"{nameof(mutable)} is updated in UI thread and should match actual value");
         }
 
@@ -36,7 +36,7 @@ namespace IDEASLabUT.MSBandWearable.Util
             var actualEvent = (TemperatureEvent) null;
 
             await RunLaterInUIThread(caughtEvent => ApplyLatch(() => actualEvent = caughtEvent), temperatureEvent);
-            WaitFor();
+            await WaitAsync();
             Assert.AreEqual(temperatureEvent, actualEvent, $"{nameof(actualEvent)} gets updated in ui thread and should match expected value");
         }
     }

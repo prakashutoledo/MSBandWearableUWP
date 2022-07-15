@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace IDEASLabUT.MSBandWearable.Test
 {
@@ -10,16 +10,58 @@ namespace IDEASLabUT.MSBandWearable.Test
     /// </summary>
     public class AwaitableTest
     {
-        private EventWaitHandle awaitLatch;
+        /// <summary>
+        /// Private wrapper implementation of <see cref="TaskCompletionSource{bool}"/>
+        /// </summary>
+        private sealed class SingleTaskCompletionSource
+        {
+            private readonly TaskCompletionSource<bool> taskCompletionSource;
+            private bool isSet;
+
+            /// <summary>
+            /// Creates a new instance of <see cref="SingleTaskCompletionSource"/>
+            /// </summary>
+            public SingleTaskCompletionSource()
+            {
+                taskCompletionSource = new TaskCompletionSource<bool>();
+                isSet = false;
+            }
+
+            /// <summary>
+            /// Sets the value of underlying task completion source to true
+            /// </summary>
+            public void Set()
+            {
+                isSet = true;
+                taskCompletionSource.TrySetResult(isSet);
+            }
+
+            /// <summary>
+            /// Waits for task created by underlying task completion source to complete if it has set the result.
+            /// If no set is called before calling wait it will not actually wait
+            /// </summary>
+            /// <returns></returns>
+            public Task WaitAsync()
+            {
+                if (!isSet)
+                {
+                    return Task.CompletedTask;
+                }
+
+                return taskCompletionSource.Task;
+            }
+        }
+
+        private SingleTaskCompletionSource awaitLatch;
 
         [TestInitialize]
         public void InitializeAwaitable()
         {
-            awaitLatch = new AutoResetEvent(false);
+            awaitLatch = new SingleTaskCompletionSource();
         }
         
         /// <summary>
-        /// Sets the await latch to send signal after apply given action
+        /// Sets the await latch to send signal after applying given action
         /// </summary>
         /// <param name="action"></param>
         protected void ApplyLatch(Action action = null)
@@ -29,11 +71,12 @@ namespace IDEASLabUT.MSBandWearable.Test
         }
 
         /// <summary>
-        /// Wait for await latch to receive the signals which blocks the current thread
+        /// Waits for await latch to set asynchronously
         /// </summary>
-        protected void WaitFor()
+        /// <returns>A task that can be awaited</returns>
+        protected Task WaitAsync()
         {
-            awaitLatch.WaitOne();
+            return awaitLatch.WaitAsync();
         }
 
         [TestCleanup]

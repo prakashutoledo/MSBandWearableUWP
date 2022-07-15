@@ -197,7 +197,7 @@
       <Project>{4084efa1-dea4-4ecf-b84b-9cded68cea1e}</Project>
       <Name>IDEASLabUT.MSBandWearable.ElasticsearchLogger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj">
+    <ProjectReference Include="..\IDEASLabUT.MSBandWearable.Extension\IDEASLabUT.MSBandWearable.Extension.csproj" SetTargetFramework="TargetFramework=uap10.0.19041">
       <Project>{603BF5E6-1263-42C1-AC1B-2535B7CC64E7}</Project>
       <Name>IDEASLabUT.MSBandWearable.Extension</Name>
     </ProjectReference>

@@ -146,7 +146,7 @@ namespace IDEASLabUT.MSBandWearable.Sensor
             // Raise Sensor reading change event
             MockFor<IBandSensor<SensorReading>>(sensorMock => sensorMock.Raise(sensor => sensor.ReadingChanged += null, new BandSensorReadingEventArgs<SensorReading>(MockValue<SensorReading>())));
             // Wait for signal to be received
-            WaitFor();
+            await WaitAsync();
         }
 
         /// <summary>
